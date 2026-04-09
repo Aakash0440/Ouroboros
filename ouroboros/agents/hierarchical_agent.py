@@ -71,7 +71,7 @@ class HierarchicalAgent(SynthesisAgent):
             beam_width=beam_width,
             max_depth=max_depth,
             const_range=const_range,
-            mcmc_iterations=mcmc_iterations,
+            mcmc_iters=mcmc_iterations,
             lambda_weight=lambda_weight,
             seed=seed
         )
@@ -106,7 +106,7 @@ class HierarchicalAgent(SynthesisAgent):
         history = self.observation_history
         if len(history) < max(self.scales) * 4:
             # Not enough data to aggregate at all scales
-            return super().search_and_update(search_budget)
+            return super().search_and_update()
 
         # Scale-aware search
         search_data = history[:min(800, len(history))]
@@ -132,7 +132,7 @@ class HierarchicalAgent(SynthesisAgent):
         self.cross_scale_consistency = self._compute_consistency(search_data)
 
         # Standard hybrid search (parent class handles MCMC + n-gram)
-        base_cost = super().search_and_update(search_budget)
+        base_cost = super().search_and_update()
 
         # Override with best scale program if it's better
         dominant_expr = self.scale_programs.get(self.dominant_scale)

@@ -24,7 +24,8 @@ This module provides:
 """
 
 from typing import List, Dict, Tuple, Optional
-from ouroboros.compression.program_synthesis import ExprNode, BeamSearchSynthesizer, C
+from ouroboros.compression.program_synthesis import ExprNode, C
+from ouroboros.compression.beam_search import BeamSearchSynthesizer
 from ouroboros.compression.hierarchical_mdl import HierarchicalMDL, aggregate_sequence
 from ouroboros.compression.mdl import naive_bits
 
@@ -70,7 +71,7 @@ class ScaleAwareSynthesizer:
                 max_depth=max_depth,
                 const_range=const_range,
                 alphabet_size=alphabet_size,
-                mdl_lambda=mdl_lambda
+                lambda_weight=mdl_lambda
             )
             for scale in self.scales
         }
