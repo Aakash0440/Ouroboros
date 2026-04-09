@@ -51,11 +51,11 @@ class BeamSearchSynthesizer:
 
     def __init__(
         self,
-        beam_width: int = 25,
+        beam_width: int = 50,
         max_depth: int = 3,
         const_range: int = 20,
         alphabet_size: int = 10,
-        lambda_weight: float = 1.0,
+        lambda_weight: float = 0.1,
     ):
         self.beam_width = beam_width
         self.max_depth = max_depth
@@ -93,10 +93,10 @@ class BeamSearchSynthesizer:
         We don't expand if already at max_depth-1.
         We limit leaves to first 12 for speed (0..11 covers most useful constants).
         """
-        if node.depth() >= self.max_depth - 1:
+        if node.depth() >= self.max_depth:
             return []
 
-        leaves = self._leaf_nodes()[:12]  # Limit for speed
+        leaves = self._leaf_nodes()[:self.const_range + 1] 
         expansions = []
 
         for leaf in leaves:
@@ -112,27 +112,40 @@ class BeamSearchSynthesizer:
                 expansions.append(MOD(leaf, node))
 
         return expansions
+    def _structural_seeds(self) -> List[ExprNode]:
+        """
+        Hand-crafted templates that preserve arithmetic structure candidates.
+
+        Without these seeds, shallow constants can dominate early beam pruning
+        and remove useful modular forms before they are expanded.
+        """
+        seeds: List[ExprNode] = []
+        max_c = self.const_range
+
+        for c in range(1, max_c + 1):
+            seeds.append(MUL(T(), C(c)))
+            seeds.append(ADD(T(), C(c)))
+            seeds.append(MOD(T(), C(c)))
+
+        # Include linear-modular templates directly:
+        # (a*t + b) mod m
+        # Keep this bounded to avoid a combinatorial blowup.
+        max_a = min(max_c, 8)
+        max_b = min(max_c, 8)
+        max_m = min(max_c, 12)
+        for a in range(1, max_a + 1):
+            for b in range(0, max_b + 1):
+                inner = ADD(MUL(T(), C(a)), C(b))
+                for m in range(2, max_m + 1):
+                    seeds.append(MOD(inner, C(m)))
+
+        return seeds
 
     def search(
         self,
         actuals: List[int],
         verbose: bool = False,
     ) -> Tuple[ExprNode, float]:
-        """
-        Run beam search to find best expression for actuals.
-
-        Args:
-            actuals: The observation sequence to fit
-            verbose: If True, print best expression at each depth
-
-        Returns:
-            (best_expression, best_mdl_cost)
-
-        Example:
-            actuals = [(3*t+1) % 7 for t in range(500)]
-            expr, cost = synthesizer.search(actuals)
-            # expr.to_string() should be close to "(t * 3 + 1) mod 7"
-        """
         if not actuals:
             return C(0), float('inf')
 
@@ -145,12 +158,32 @@ class BeamSearchSynthesizer:
         scored.sort(key=lambda x: x[0])
         beam = scored[:self.beam_width]
 
+        # ── Force structural seeds into beam so MUL(T,k) survives pruning ──────
+        seed_scored = []
+        for node in self._structural_seeds():
+            cost = self._score(node, actuals)
+            seed_scored.append((cost, node))
+        seed_scored.sort(key=lambda x: x[0])
+
+        # Keep enough structural seeds so modular candidates survive to depth>1.
+        seed_keep = max(10, self.beam_width // 2)
+        combined = beam + seed_scored[:seed_keep]
+        combined.sort(key=lambda x: x[0])
+        seen = set()
+        deduped = []
+        for cost, expr in combined:
+            key = expr.to_string()
+            if key not in seen:
+                seen.add(key)
+                deduped.append((cost, expr))
+        beam = deduped[:self.beam_width + seed_keep]
+
         if verbose:
             best = beam[0]
             print(f"  D0: {best[1].to_string()!r}  cost={best[0]:.1f}")
 
         # ── Depth 1..max_depth: expand and score ───────────────────────────────
-        for depth in range(1, self.max_depth):
+        for depth in range(1, self.max_depth + 1):
             new_candidates: List[Tuple[float, ExprNode]] = []
 
             for _, node in beam:
@@ -161,11 +194,9 @@ class BeamSearchSynthesizer:
             if not new_candidates:
                 break
 
-            # Merge beam with new candidates, keep top beam_width
             all_candidates = beam + new_candidates
             all_candidates.sort(key=lambda x: x[0])
 
-            # Deduplicate by string representation
             seen = set()
             deduped = []
             for cost, expr in all_candidates:

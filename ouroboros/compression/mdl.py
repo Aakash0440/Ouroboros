@@ -198,18 +198,10 @@ class MDLCost:
         self.lambda_weight = lambda_weight
 
     def program_description_bits(self, program_bytes: bytes) -> float:
-        """
-        Bits to describe the program.
-
-        Uses zstd of the program's byte representation.
-        A short symbolic expression → few bytes → fewer bits.
-        A large lookup table → many bytes → many bits.
-
-        This is what rewards compact mathematical expressions
-        over brute-force memorization.
-        """
         if not program_bytes:
             return 0.0
+        if len(program_bytes) < 200:
+            return float(len(program_bytes) * 8)
         return float(zstd_compressed_bits(program_bytes))
 
     def prediction_error_bits(

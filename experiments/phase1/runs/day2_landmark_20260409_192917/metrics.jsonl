@@ -1,0 +1,9 @@
+{"type": "run_metadata", "timestamp": "2026-04-09T19:29:17.004016", "run_dir": "experiments\\phase1\\runs\\day2_landmark_20260409_192917"}
+{"step": 1000, "ts": 1775744958.937013, "agent_id": 0, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744960.958061, "agent_id": 1, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744962.9365232, "agent_id": 2, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744964.9354005, "agent_id": 3, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744967.6005387, "agent_id": 4, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744970.2336893, "agent_id": 5, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744972.9661174, "agent_id": 6, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
+{"step": 1000, "ts": 1775744975.7225463, "agent_id": 7, "expression": "((t + 5) * 3)", "compression_ratio": 0.03704554745923431, "using_symbolic": true}
