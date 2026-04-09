@@ -174,7 +174,8 @@ class ProtoAxiomPool:
         self,
         step: int,
         environment_name: str,
-        stream_naive_bits: float,
+        stream_naive_bits: Optional[float] = None,
+        naive_bits: Optional[float] = None,
     ) -> List[ProtoAxiom]:
         """
         Find expressions agreed upon by >= threshold of agents.
@@ -185,10 +186,14 @@ class ProtoAxiomPool:
             environment_name: Label for the environment
             stream_naive_bits: Naive description length of the stream
                                (used to compute compression improvement)
+            naive_bits: Backward-compatible alias for stream_naive_bits
 
         Returns:
             List of newly promoted ProtoAxioms (may be empty)
         """
+        if stream_naive_bits is None:
+            stream_naive_bits = naive_bits if naive_bits is not None else 0.0
+
         if len(self.submissions) < 2:
             return []
 
@@ -226,6 +231,11 @@ class ProtoAxiomPool:
                 compression_improvement = 0.0
 
             compression_r = best_cost / stream_naive_bits if stream_naive_bits > 0 else 1.0
+
+            # Reject non-improving candidates (e.g. random/noise consensus on constants).
+            # Consensus alone is not enough: an axiom must beat naive coding.
+            if compression_improvement <= 0.0:
+                continue
 
             # Confidence: fraction of agents * how much improvement they achieve
             agent_fraction = len(group) / self.num_agents
