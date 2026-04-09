@@ -1,0 +1,31 @@
+{
+  "environment": "ModularArith(7,3,1)",
+  "stream_length": 5000,
+  "num_agents": 8,
+  "agent_type": "synthesis",
+  "final_ratios": {
+    "0": 0.0074,
+    "1": 0.0074,
+    "2": 0.0074,
+    "3": 0.0074,
+    "4": 0.0074,
+    "5": 0.0074,
+    "6": 0.0074,
+    "7": 0.0074
+  },
+  "mean_ratio": 0.0074,
+  "best_ratio": 0.0074,
+  "axioms_promoted": [
+    {
+      "axiom_id": "AX_00001",
+      "expression": "((t + 5) * 3)",
+      "step": 250,
+      "confidence": 0.8518,
+      "support": 8
+    }
+  ],
+  "discovery_step": 250,
+  "discovery_expression": "((t + 5) * 3)",
+  "elapsed_seconds": 1357.33,
+  "run_dir": "experiments/phase1/runs/landmark_001"
+}

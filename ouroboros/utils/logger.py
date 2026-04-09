@@ -139,6 +139,15 @@ class MetricsWriter:
     def __repr__(self) -> str:
         return f"MetricsWriter(path={self.metrics_path}, records={self._count})"
 
+    # Context manager support for convenient `with MetricsWriter(...) as w:`
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+        # Do not suppress exceptions
+        return False
+
 
 def make_run_dir(base_dir: str = 'experiments/runs', prefix: str = 'run') -> str:
     """
