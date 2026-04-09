@@ -126,6 +126,7 @@ class ProtoAxiomPool:
 
         # Current round submissions: agent_id → (expression, mdl_cost)
         self.submissions: Dict[int, Tuple[ExprNode, float]] = {}
+        self.current_submissions = self.submissions
 
         # All promoted axioms (never removed, only added)
         self.axioms: List[ProtoAxiom] = []
@@ -175,6 +176,7 @@ class ProtoAxiomPool:
         step: int,
         environment_name: str,
         stream_naive_bits: Optional[float] = None,
+        total_naive_bits: Optional[float] = None,
         naive_bits: Optional[float] = None,
     ) -> List[ProtoAxiom]:
         """
@@ -192,7 +194,11 @@ class ProtoAxiomPool:
             List of newly promoted ProtoAxioms (may be empty)
         """
         if stream_naive_bits is None:
-            stream_naive_bits = naive_bits if naive_bits is not None else 0.0
+            stream_naive_bits = (
+                total_naive_bits
+                if total_naive_bits is not None
+                else (naive_bits if naive_bits is not None else 0.0)
+            )
 
         if len(self.submissions) < 2:
             return []
@@ -260,6 +266,9 @@ class ProtoAxiomPool:
     def clear_submissions(self) -> None:
         """Clear current round submissions (call between episodes)."""
         self.submissions.clear()
+        # Keep alias in sync for callers that rely on it.
+        if self.current_submissions is not self.submissions:
+            self.current_submissions = self.submissions
 
     def get_axioms_sorted(self) -> List[ProtoAxiom]:
         """Return axioms sorted by confidence (highest first)."""

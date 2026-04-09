@@ -73,6 +73,12 @@ def aggregate_sequence(
     Returns:
         Aggregated sequence (length = len(sequence) // window)
     """
+    # Validate requested aggregation method even for trivial windows so bad
+    # inputs raise consistently (see tests).
+    valid_methods = {'sum_mod', 'majority', 'mean_round'}
+    if method not in valid_methods:
+        raise ValueError(f"Unknown aggregation method: {method}")
+
     if window <= 1:
         return list(sequence)
 
@@ -92,8 +98,6 @@ def aggregate_sequence(
             val = Counter(chunk).most_common(1)[0][0]
         elif method == 'mean_round':
             val = round(np.mean(chunk)) % alphabet_size
-        else:
-            raise ValueError(f"Unknown aggregation method: {method}")
 
         result.append(val)
 
