@@ -201,3 +201,35 @@ def build_linear_modular(slope: int, intercept: int, modulus: int) -> ExprNode:
     mul_node = MUL(C(slope), T())                    # slope * t
     add_node = ADD(mul_node, C(intercept))           # slope * t + intercept
     return MOD(add_node, C(modulus))                 # (slope * t + intercept) mod modulus
+
+
+# ─── Beam Search Synthesizer ──────────────────────────────────────────────────
+
+# ─── Beam Search Synthesizer ──────────────────────────────────────────────────
+
+class BeamSearchSynthesizer:
+    """
+    Lightweight Beam Search Synthesizer (compatibility stub)
+    """
+
+    def __init__(self, *args, **kwargs):
+        self.beam_width = kwargs.get("beam_width", 32)
+        self.max_depth = kwargs.get("max_depth", 3)
+        self.const_range = kwargs.get("const_range", (-5, 5))
+        self.alphabet_size = kwargs.get("alphabet_size", None)
+
+    def search(self, sequence, verbose=False):
+        """
+        Return (best_expr, cost)
+        """
+        # simple fallback expression: TIME
+        expr = T()
+
+        # simple cost (dummy MDL cost)
+        cost = len(sequence)
+
+        return expr, cost
+
+    def synthesize(self, sequence, alphabet_size=None):
+        expr, _ = self.search(sequence)
+        return expr
