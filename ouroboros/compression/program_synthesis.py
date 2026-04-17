@@ -220,15 +220,31 @@ class BeamSearchSynthesizer:
 
     def search(self, sequence, verbose=False):
         """
-        Return (best_expr, cost)
+        Very lightweight beam search for testing
         """
-        # simple fallback expression: TIME
-        expr = T()
 
-        # simple cost (dummy MDL cost)
-        cost = len(sequence)
+        candidates = [
+            T(),                    # TIME
+            C(0),                   # constant 0
+            C(1),                   # constant 1
+            ADD(T(), C(1)),         # t + 1
+            MUL(T(), C(2)),         # 2t
+        ]
 
-        return expr, cost
+        # Pick pseudo-best (simple heuristic)
+        best_expr = candidates[0]
+        best_cost = float('inf')
+
+        for expr in candidates:
+            preds = expr.predict_sequence(len(sequence), self.alphabet_size)
+            errors = sum(p != s for p, s in zip(preds, sequence))
+            cost = errors + len(expr.to_bytes())
+
+            if cost < best_cost:
+                best_expr = expr
+                best_cost = cost
+
+        return best_expr, best_cost
 
     def synthesize(self, sequence, alphabet_size=None):
         expr, _ = self.search(sequence)
