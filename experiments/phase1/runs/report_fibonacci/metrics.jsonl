@@ -1,0 +1,17 @@
+{"type": "run_metadata", "timestamp": "2026-04-17T17:27:46.825772", "run_dir": "experiments\\phase1\\runs\\report_fibonacci"}
+{"step": 200, "ts": 1776428868.7882626, "agent_id": 0, "compression_ratio": 0.7708395368477009, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 200, "ts": 1776428870.542667, "agent_id": 1, "compression_ratio": 0.7708395368477009, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 200, "ts": 1776428872.2628548, "agent_id": 2, "compression_ratio": 0.7708395368477009, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 200, "ts": 1776428873.964554, "agent_id": 3, "compression_ratio": 0.7708395368477009, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 400, "ts": 1776428878.2219653, "agent_id": 0, "compression_ratio": 0.38348298566795175, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 400, "ts": 1776428882.5800662, "agent_id": 1, "compression_ratio": 0.38348298566795175, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 400, "ts": 1776428886.9417012, "agent_id": 2, "compression_ratio": 0.38348298566795175, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 400, "ts": 1776428891.469654, "agent_id": 3, "compression_ratio": 0.38348298566795175, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 600, "ts": 1776428896.7948768, "agent_id": 0, "compression_ratio": 0.2552278065147906, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 600, "ts": 1776428901.8024063, "agent_id": 1, "compression_ratio": 0.2552278065147906, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 600, "ts": 1776428906.824176, "agent_id": 2, "compression_ratio": 0.2552278065147906, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 600, "ts": 1776428911.8280485, "agent_id": 3, "compression_ratio": 0.2552278065147906, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 800, "ts": 1776428916.9100835, "agent_id": 0, "compression_ratio": 0.19126093771409122, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 800, "ts": 1776428922.0008585, "agent_id": 1, "compression_ratio": 0.19126093771409122, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 800, "ts": 1776428927.0039175, "agent_id": 2, "compression_ratio": 0.19126093771409122, "context_length": 2, "expression": "n-gram(k=2)"}
+{"step": 800, "ts": 1776428932.0623693, "agent_id": 3, "compression_ratio": 0.19126093771409122, "context_length": 2, "expression": "n-gram(k=2)"}

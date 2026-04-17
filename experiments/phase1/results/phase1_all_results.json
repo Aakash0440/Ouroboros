@@ -1,0 +1,157 @@
+{
+  "binary": {
+    "environment": "BinaryRepeat",
+    "stream_length": 600,
+    "num_agents": 4,
+    "agent_type": "synthesis",
+    "final_ratios": {
+      "0": 0.0133,
+      "1": 0.0133,
+      "2": 0.0133,
+      "3": 0.0133
+    },
+    "mean_ratio": 0.0133,
+    "best_ratio": 0.0133,
+    "axioms_promoted": [
+      {
+        "axiom_id": "AX_00001",
+        "expression": "t",
+        "step": 200,
+        "confidence": 0.96,
+        "support": 4
+      }
+    ],
+    "discovery_step": 200,
+    "discovery_expression": "t",
+    "elapsed_seconds": 47.92,
+    "run_dir": "experiments/phase1/runs/report_binary"
+  },
+  "modular_7_3_1": {
+    "environment": "ModularArith(7,3,1)",
+    "stream_length": 1200,
+    "num_agents": 6,
+    "agent_type": "synthesis",
+    "final_ratios": {
+      "0": 0.0309,
+      "1": 0.0309,
+      "2": 0.0309,
+      "3": 0.0309,
+      "4": 0.0309,
+      "5": 0.0309
+    },
+    "mean_ratio": 0.0309,
+    "best_ratio": 0.0309,
+    "axioms_promoted": [
+      {
+        "axiom_id": "AX_00001",
+        "expression": "(((t * 3) + 1) + 7)",
+        "step": 300,
+        "confidence": 0.8195,
+        "support": 6
+      }
+    ],
+    "discovery_step": 300,
+    "discovery_expression": "(((t * 3) + 1) + 7)",
+    "elapsed_seconds": 76.96,
+    "run_dir": "experiments/phase1/runs/report_modular_7_3_1"
+  },
+  "fibonacci_11": {
+    "environment": "FibonacciMod(11)",
+    "stream_length": 800,
+    "num_agents": 4,
+    "agent_type": "synthesis",
+    "final_ratios": {
+      "0": 0.1913,
+      "1": 0.1913,
+      "2": 0.1913,
+      "3": 0.1913
+    },
+    "mean_ratio": 0.1913,
+    "best_ratio": 0.1913,
+    "axioms_promoted": [],
+    "discovery_step": null,
+    "discovery_expression": null,
+    "elapsed_seconds": 65.24,
+    "run_dir": "experiments/phase1/runs/report_fibonacci"
+  },
+  "prime": {
+    "environment": "PrimeSequence",
+    "stream_length": 600,
+    "num_agents": 4,
+    "agent_type": "synthesis",
+    "final_ratios": {
+      "0": 0.697,
+      "1": 0.697,
+      "2": 0.697,
+      "3": 0.697
+    },
+    "mean_ratio": 0.697,
+    "best_ratio": 0.697,
+    "axioms_promoted": [
+      {
+        "axiom_id": "AX_00001",
+        "expression": "0",
+        "step": 200,
+        "confidence": 0.182,
+        "support": 4
+      },
+      {
+        "axiom_id": "AX_00002",
+        "expression": "1",
+        "step": 400,
+        "confidence": 0.2682,
+        "support": 4
+      }
+    ],
+    "discovery_step": 200,
+    "discovery_expression": "0",
+    "elapsed_seconds": 35.09,
+    "run_dir": "experiments/phase1/runs/report_prime"
+  },
+  "noise": {
+    "environment": "Noise",
+    "stream_length": 600,
+    "num_agents": 4,
+    "agent_type": "synthesis",
+    "final_ratios": {
+      "0": 1.0066,
+      "1": 1.0066,
+      "2": 1.0066,
+      "3": 1.0066
+    },
+    "mean_ratio": 1.0066,
+    "best_ratio": 1.0066,
+    "axioms_promoted": [],
+    "discovery_step": null,
+    "discovery_expression": null,
+    "elapsed_seconds": 53.81,
+    "run_dir": "experiments/phase1/runs/report_noise"
+  },
+  "multiscale_28_7": {
+    "environment": "MultiScale(slow=28,fast=7)",
+    "stream_length": 800,
+    "num_agents": 4,
+    "agent_type": "hierarchical",
+    "final_ratios": {
+      "0": 0.5782,
+      "1": 0.5782,
+      "2": 0.5782,
+      "3": 0.5782
+    },
+    "mean_ratio": 0.5782,
+    "best_ratio": 0.5782,
+    "axioms_promoted": [
+      {
+        "axiom_id": "AX_00001",
+        "expression": "0",
+        "step": 600,
+        "confidence": 0.4058,
+        "support": 4
+      }
+    ],
+    "discovery_step": 600,
+    "discovery_expression": "0",
+    "elapsed_seconds": 325.13,
+    "run_dir": "experiments/phase1/runs/report_multiscale"
+  }
+}
