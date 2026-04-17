@@ -8,3 +8,8 @@
 {"step": 100, "ts": 1776416988.898292, "agent_id": 1, "compression_ratio": 0.37045547459234307, "context_length": 1, "expression": "((t + 5) * 3)"}
 {"step": 200, "ts": 1776416999.6682065, "agent_id": 0, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
 {"step": 200, "ts": 1776417009.5137014, "agent_id": 1, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-18T00:19:09.631946", "run_dir": "experiments\\phase1\\runs\\test_runner_tmp"}
+{"step": 100, "ts": 1776453550.6630018, "agent_id": 0, "compression_ratio": 0.37045547459234307, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 100, "ts": 1776453551.6794796, "agent_id": 1, "compression_ratio": 0.37045547459234307, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 200, "ts": 1776453553.8282175, "agent_id": 0, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 200, "ts": 1776453556.0612156, "agent_id": 1, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}

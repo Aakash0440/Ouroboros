@@ -98,3 +98,28 @@
 {"step": 1200, "ts": 1776416913.8375466, "agent_id": 3, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
 {"step": 1200, "ts": 1776416925.0939093, "agent_id": 4, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
 {"step": 1200, "ts": 1776416935.979953, "agent_id": 5, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"type": "run_metadata", "timestamp": "2026-04-18T00:17:52.121488", "run_dir": "experiments\\phase1\\runs\\integration_modular"}
+{"step": 300, "ts": 1776453473.7582672, "agent_id": 0, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 300, "ts": 1776453475.3204865, "agent_id": 1, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 300, "ts": 1776453476.8225427, "agent_id": 2, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 300, "ts": 1776453478.3101027, "agent_id": 3, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 300, "ts": 1776453479.7993352, "agent_id": 4, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(7 + (1 + (t * 3)))"}
+{"step": 300, "ts": 1776453481.3482382, "agent_id": 5, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}
+{"step": 600, "ts": 1776453483.672446, "agent_id": 0, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776453485.9507816, "agent_id": 1, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776453488.096421, "agent_id": 2, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776453491.0378318, "agent_id": 3, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776453493.3505454, "agent_id": 4, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776453495.6284251, "agent_id": 5, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776453498.1308236, "agent_id": 0, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776453500.3501039, "agent_id": 1, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776453502.5926392, "agent_id": 2, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776453504.8663378, "agent_id": 3, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776453507.362921, "agent_id": 4, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776453509.773993, "agent_id": 5, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776453512.9758477, "agent_id": 0, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776453516.9086862, "agent_id": 1, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776453520.9455132, "agent_id": 2, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776453525.7409446, "agent_id": 3, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776453530.1525037, "agent_id": 4, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776453533.6190944, "agent_id": 5, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
