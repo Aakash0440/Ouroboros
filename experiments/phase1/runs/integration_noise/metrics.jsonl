@@ -25,3 +25,12 @@
 {"step": 400, "ts": 1776416417.2592983, "agent_id": 1, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
 {"step": 400, "ts": 1776416418.8767598, "agent_id": 2, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
 {"step": 400, "ts": 1776416420.5318875, "agent_id": 3, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"type": "run_metadata", "timestamp": "2026-04-17T14:04:05.803607", "run_dir": "experiments\\phase1\\runs\\integration_noise"}
+{"step": 200, "ts": 1776416650.7432394, "agent_id": 0, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776416655.6542664, "agent_id": 1, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776416660.5290751, "agent_id": 2, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776416665.4451861, "agent_id": 3, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 400, "ts": 1776416675.1451147, "agent_id": 0, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776416685.0236137, "agent_id": 1, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776416694.6641486, "agent_id": 2, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776416704.35224, "agent_id": 3, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
