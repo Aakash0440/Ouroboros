@@ -1,0 +1,44 @@
+{
+  "ModArith(7,3,1)": {
+    "environment": "ModularArith(7,3,1)",
+    "num_agents": 5,
+    "num_rounds": 20,
+    "total_proposals": 7,
+    "total_approved": 7,
+    "total_rejected": 0,
+    "total_ood_failed": 0,
+    "approval_rate": 1.0,
+    "mean_final_ratio": 0.1843,
+    "converged": false,
+    "convergence_round": null,
+    "elapsed_seconds": 201.12,
+    "final_compression_ratios": {
+      "0": 0.19,
+      "1": 0.1805,
+      "2": 0.19,
+      "3": 0.1805,
+      "4": 0.1805
+    }
+  },
+  "ModArith(11,4,2)": {
+    "environment": "ModularArith(11,4,2)",
+    "num_agents": 5,
+    "num_rounds": 20,
+    "total_proposals": 22,
+    "total_approved": 22,
+    "total_rejected": 0,
+    "total_ood_failed": 0,
+    "approval_rate": 1.0,
+    "mean_final_ratio": 0.1527,
+    "converged": false,
+    "convergence_round": null,
+    "elapsed_seconds": 278.09,
+    "final_compression_ratios": {
+      "0": 0.1542,
+      "1": 0.1542,
+      "2": 0.1542,
+      "3": 0.1465,
+      "4": 0.1542
+    }
+  }
+}
