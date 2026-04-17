@@ -142,7 +142,7 @@ class ProtoAxiomPool:
         agent_id: int,
         expression: Optional[ExprNode],
         mdl_cost: float,
-        step: int,
+        step: int=0,
     ) -> None:
         """
         Agent submits its best expression.

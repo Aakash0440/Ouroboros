@@ -63,17 +63,22 @@ class SynthesisAgent(BaseAgent):
         const_range: int = 16,
         use_mcmc: bool = True,
         mcmc_iters: int = 150,
+        mcmc_iterations: Optional[int] = None,
         max_context_length: int = 6,
         lambda_weight: float = 1.0,
         seed: int = 42,
     ):
+    
         super().__init__(
             agent_id=agent_id,
             alphabet_size=alphabet_size,
             max_context_length=max_context_length,
             lambda_weight=lambda_weight,
             seed=seed,
+            
         )
+        if mcmc_iterations is not None:           
+            mcmc_iters = mcmc_iterations 
 
         self.synthesizer = BeamSearchSynthesizer(
             beam_width=beam_width,
