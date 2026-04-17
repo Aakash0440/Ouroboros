@@ -82,9 +82,9 @@ def run_one_modulus(mod: int) -> dict:
     mc = get_mod_config(mod)
 
     cfg = OuroborosConfig()
-    cfg.compression.beam_width = mc['beam_width']
-    cfg.compression.max_depth = 3
-    cfg.compression.const_range = mc['const_range']
+    cfg.synthesis.beam_width = mc['beam_width']
+    cfg.synthesis.max_depth = 3
+    cfg.synthesis.const_range = mc['const_range']
 
     slope = (mod // 2) + 1
     intercept = mod // 3 + 1

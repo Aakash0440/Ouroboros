@@ -167,13 +167,13 @@ class Phase1Runner:
     @classmethod
     def for_noise_baseline(cls, num_agents: int = 4, **kwargs) -> 'Phase1Runner':
         env = NoiseEnv(4, seed=42)
-        return cls(env, "Noise", num_agents, 'synthesis',
-                   run_dir='experiments/phase1/runs/noise_baseline', **kwargs)
+        kwargs.setdefault('run_dir', 'experiments/phase1/runs/noise_baseline')
+        return cls(env, "Noise", num_agents, 'synthesis', **kwargs)
 
     # ─── Agent creation ───────────────────────────────────────────────────
 
     def _create_agents(self, alphabet_size: int) -> List[BaseAgent]:
-        cfg = self.config.compression
+        cfg = self.config.synthesis
         agents = []
         for i in range(self.num_agents):
             s = self.seed + i * 13
@@ -182,7 +182,7 @@ class Phase1Runner:
             elif self.agent_type == 'synthesis':
                 agent = SynthesisAgent(
                     i, alphabet_size,
-                    beam_width=cfg.beam_width,
+                    beam_width=cfg.beam_width,               # ← cfg IS already self.config.compression
                     max_depth=cfg.max_depth,
                     const_range=cfg.const_range,
                     seed=s
