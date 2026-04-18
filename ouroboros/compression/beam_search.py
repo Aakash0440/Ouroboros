@@ -71,14 +71,12 @@ class BeamSearchSynthesizer:
         return leaves
 
     def _score(self, expr: ExprNode, actuals: List[int]) -> float:
-        """
-        MDL cost of expression on actuals.
-
-        Lower is better.
-        = lambda * program_bytes + prediction_error_bits
-        """
         n = len(actuals)
-        preds = expr.predict_sequence(n, self.alphabet_size)
+        # Raw predictions — NO % alphabet_size clamping
+        # This forces the expression to explicitly handle range via mod
+        # (3t+1)+7 produces 8,11,7... which don't match stream → high error cost
+        # (3t+1) mod 7 produces 1,4,0... which match → near-zero error cost
+        preds = [expr.evaluate(t) for t in range(n)]
         prog_bytes = expr.to_bytes()
         return self.mdl.total_cost(prog_bytes, preds, actuals, self.alphabet_size)
 

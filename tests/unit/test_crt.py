@@ -74,7 +74,7 @@ class TestCheckBehavioralCRT:
             joint_exprs_preds.append(x)
 
         # A BeamSearch on this should find a good expression
-        from ouroboros.compression.program_synthesis import BeamSearchSynthesizer
+        from ouroboros.compression.beam_search import BeamSearchSynthesizer
         synth = BeamSearchSynthesizer(
             beam_width=20, max_depth=3,
             const_range=joint_mod*2, alphabet_size=joint_mod

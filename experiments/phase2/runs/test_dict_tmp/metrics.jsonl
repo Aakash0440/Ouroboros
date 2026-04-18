@@ -3,3 +3,8 @@
 {"step": 1, "ts": 1776455559.1105404, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
 {"step": 2, "ts": 1776455563.6845205, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
 {"step": 2, "ts": 1776455565.1907933, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"type": "run_metadata", "timestamp": "2026-04-18T22:53:47.288869", "run_dir": "experiments\\phase2\\runs\\test_dict_tmp"}
+{"step": 1, "ts": 1776534830.854944, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 1, "ts": 1776534834.0296738, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776534843.6148946, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776534845.9693747, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}

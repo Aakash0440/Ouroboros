@@ -25,7 +25,8 @@ CounterexampleResult carries everything needed for adjudication:
 import json
 from dataclasses import dataclass
 from typing import Optional, List
-from ouroboros.compression.program_synthesis import ExprNode, BeamSearchSynthesizer
+from ouroboros.compression.program_synthesis import ExprNode
+from ouroboros.compression.beam_search import BeamSearchSynthesizer
 from ouroboros.compression.mcmc_refiner import MCMCRefiner
 from ouroboros.compression.mdl import MDLCost, naive_bits
 

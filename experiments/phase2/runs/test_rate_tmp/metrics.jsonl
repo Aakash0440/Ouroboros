@@ -5,3 +5,10 @@
 {"step": 2, "ts": 1776455546.950919, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
 {"step": 3, "ts": 1776455551.4345937, "agent_id": 0, "compression_ratio": 0.1899771664576118, "approved_mods": 0}
 {"step": 3, "ts": 1776455552.9523036, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"type": "run_metadata", "timestamp": "2026-04-18T22:53:14.057834", "run_dir": "experiments\\phase2\\runs\\test_rate_tmp"}
+{"step": 1, "ts": 1776534795.9096434, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 1, "ts": 1776534797.6097956, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776534802.7674093, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776534804.7337627, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 3, "ts": 1776534815.0407467, "agent_id": 0, "compression_ratio": 0.1899771664576118, "approved_mods": 0}
+{"step": 3, "ts": 1776534818.214009, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
