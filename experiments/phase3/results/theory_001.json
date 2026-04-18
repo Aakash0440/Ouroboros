@@ -1,0 +1,182 @@
+{
+  "environment": "ModularArith(7,3,1)",
+  "num_agents": 5,
+  "num_rounds": 20,
+  "mean_final_richness": 0.19,
+  "best_final_richness": 0.19,
+  "converged": false,
+  "convergence_round": null,
+  "elapsed_seconds": 925.53,
+  "final_theories": [
+    {
+      "scales": [
+        1,
+        4,
+        16
+      ],
+      "axioms": {
+        "1": {
+          "expression": "(((t * 3) + 1) mod 7)",
+          "confidence": 0.8504,
+          "compression_ratio": 0.149607,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "4": {
+          "expression": "((t + 6) * 6)",
+          "confidence": 0.6295,
+          "compression_ratio": 0.370455,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "16": {
+          "expression": "t",
+          "confidence": 0.1,
+          "compression_ratio": 1.112837,
+          "times_survived": 0,
+          "times_challenged": 0
+        }
+      },
+      "mean_ratio": 0.5443,
+      "mean_confidence": 0.5266,
+      "consistency": 0.5833,
+      "richness": 0.19
+    },
+    {
+      "scales": [
+        1,
+        4,
+        16
+      ],
+      "axioms": {
+        "1": {
+          "expression": "(((t * 3) + 1) mod 7)",
+          "confidence": 0.8504,
+          "compression_ratio": 0.149607,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "4": {
+          "expression": "((t + 6) * 6)",
+          "confidence": 0.6295,
+          "compression_ratio": 0.370455,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "16": {
+          "expression": "t",
+          "confidence": 0.1,
+          "compression_ratio": 1.112837,
+          "times_survived": 0,
+          "times_challenged": 0
+        }
+      },
+      "mean_ratio": 0.5443,
+      "mean_confidence": 0.5266,
+      "consistency": 0.5833,
+      "richness": 0.19
+    },
+    {
+      "scales": [
+        1,
+        4,
+        16
+      ],
+      "axioms": {
+        "1": {
+          "expression": "(((t * 3) + 1) mod 7)",
+          "confidence": 0.8504,
+          "compression_ratio": 0.149607,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "4": {
+          "expression": "((t + 6) * 6)",
+          "confidence": 0.6295,
+          "compression_ratio": 0.370455,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "16": {
+          "expression": "t",
+          "confidence": 0.1,
+          "compression_ratio": 1.112837,
+          "times_survived": 0,
+          "times_challenged": 0
+        }
+      },
+      "mean_ratio": 0.5443,
+      "mean_confidence": 0.5266,
+      "consistency": 0.5833,
+      "richness": 0.19
+    },
+    {
+      "scales": [
+        1,
+        4,
+        16
+      ],
+      "axioms": {
+        "1": {
+          "expression": "(((t * 3) + 1) mod 7)",
+          "confidence": 0.8504,
+          "compression_ratio": 0.149607,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "4": {
+          "expression": "((t + 6) * 6)",
+          "confidence": 0.6295,
+          "compression_ratio": 0.370455,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "16": {
+          "expression": "t",
+          "confidence": 0.1,
+          "compression_ratio": 1.112837,
+          "times_survived": 0,
+          "times_challenged": 0
+        }
+      },
+      "mean_ratio": 0.5443,
+      "mean_confidence": 0.5266,
+      "consistency": 0.5833,
+      "richness": 0.19
+    },
+    {
+      "scales": [
+        1,
+        4,
+        16
+      ],
+      "axioms": {
+        "1": {
+          "expression": "(((t * 3) + 1) mod 7)",
+          "confidence": 0.8504,
+          "compression_ratio": 0.149607,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "4": {
+          "expression": "((t + 6) * 6)",
+          "confidence": 0.6295,
+          "compression_ratio": 0.370455,
+          "times_survived": 0,
+          "times_challenged": 0
+        },
+        "16": {
+          "expression": "t",
+          "confidence": 0.1,
+          "compression_ratio": 1.112837,
+          "times_survived": 0,
+          "times_challenged": 0
+        }
+      },
+      "mean_ratio": 0.5443,
+      "mean_confidence": 0.5266,
+      "consistency": 0.5833,
+      "richness": 0.19
+    }
+  ]
+}
