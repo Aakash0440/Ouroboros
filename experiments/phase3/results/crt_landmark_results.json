@@ -1,0 +1,47 @@
+{
+  "phase1": {
+    "env1": {
+      "modulus": 7,
+      "slope": 3,
+      "intercept": 1,
+      "best_ratio": 0.0309,
+      "discovery_expression": "(((t * 3) + 1) + 7)",
+      "axioms": [
+        {
+          "axiom_id": "AX_00001",
+          "expression": "(((t * 3) + 1) + 7)",
+          "step": 300,
+          "confidence": 0.8195,
+          "support": 6
+        }
+      ]
+    },
+    "env2": {
+      "modulus": 11,
+      "slope": 5,
+      "intercept": 2,
+      "best_ratio": 0.0251,
+      "discovery_expression": "(0 + (2 + (t * 5)))",
+      "axioms": [
+        {
+          "axiom_id": "AX_00001",
+          "expression": "(0 + (2 + (t * 5)))",
+          "step": 300,
+          "confidence": 0.8535,
+          "support": 6
+        }
+      ]
+    }
+  },
+  "phase2": {
+    "found_crt": false,
+    "best_crt_accuracy": 0.0,
+    "best_agent_id": -1,
+    "best_expression": null,
+    "joint_mod": 77
+  },
+  "elapsed_seconds": 388.75,
+  "mod1": 7,
+  "mod2": 11,
+  "joint_mod": 77
+}

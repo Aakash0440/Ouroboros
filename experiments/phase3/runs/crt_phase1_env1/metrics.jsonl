@@ -1,0 +1,25 @@
+{"type": "run_metadata", "timestamp": "2026-04-18T22:09:58.900830", "run_dir": "experiments\\phase3\\runs\\crt_phase1_env1"}
+{"step": 300, "ts": 1776532201.3605015, "agent_id": 0, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 300, "ts": 1776532203.696975, "agent_id": 1, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 300, "ts": 1776532206.109883, "agent_id": 2, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 300, "ts": 1776532208.4275134, "agent_id": 3, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 300, "ts": 1776532210.8284178, "agent_id": 4, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(7 + (1 + (t * 3)))"}
+{"step": 300, "ts": 1776532213.0271192, "agent_id": 5, "compression_ratio": 0.18047830813473123, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}
+{"step": 600, "ts": 1776532216.3635514, "agent_id": 0, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776532219.6145492, "agent_id": 1, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776532222.9945102, "agent_id": 2, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776532226.292095, "agent_id": 3, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776532229.5600889, "agent_id": 4, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 600, "ts": 1776532232.866574, "agent_id": 5, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776532236.1513853, "agent_id": 0, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776532239.423553, "agent_id": 1, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776532242.6891274, "agent_id": 2, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776532245.9647143, "agent_id": 3, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776532249.232476, "agent_id": 4, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 900, "ts": 1776532252.472157, "agent_id": 5, "compression_ratio": 0.04116171939914923, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776532255.7670772, "agent_id": 0, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776532259.0220273, "agent_id": 1, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776532262.3149874, "agent_id": 2, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776532265.6328523, "agent_id": 3, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776532268.9842193, "agent_id": 4, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"step": 1200, "ts": 1776532272.3689592, "agent_id": 5, "compression_ratio": 0.03087128954936192, "context_length": 1, "expression": "((t + 5) * 3)"}
