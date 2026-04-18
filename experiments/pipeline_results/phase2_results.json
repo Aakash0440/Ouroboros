@@ -1,0 +1,19 @@
+{
+  "environment": "ModularArith(7,3,1)",
+  "num_agents": 3,
+  "num_rounds": 5,
+  "total_proposals": 1,
+  "total_approved": 1,
+  "total_rejected": 0,
+  "total_ood_failed": 0,
+  "approval_rate": 1.0,
+  "mean_final_ratio": 0.1805,
+  "converged": false,
+  "convergence_round": null,
+  "elapsed_seconds": 45.25,
+  "final_compression_ratios": {
+    "0": 0.1805,
+    "1": 0.1805,
+    "2": 0.1805
+  }
+}

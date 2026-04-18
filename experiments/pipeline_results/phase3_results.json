@@ -1,0 +1,8 @@
+{
+  "mod1": 7,
+  "mod2": 11,
+  "joint_mod": 77,
+  "found_crt": false,
+  "best_crt_accuracy": 0.125,
+  "best_expression": "(((t * 5) + 1) mod 7)"
+}

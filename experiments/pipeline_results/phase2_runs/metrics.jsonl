@@ -1,0 +1,16 @@
+{"type": "run_metadata", "timestamp": "2026-04-18T22:26:56.383389", "run_dir": "experiments\\pipeline_results\\phase2_runs"}
+{"step": 1, "ts": 1776533217.9237611, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 1, "ts": 1776533219.4033713, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 1, "ts": 1776533220.9537032, "agent_id": 2, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776533227.253615, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776533228.7527666, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 2, "ts": 1776533230.2357266, "agent_id": 2, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 3, "ts": 1776533236.2478683, "agent_id": 0, "compression_ratio": 0.1899771664576118, "approved_mods": 0}
+{"step": 3, "ts": 1776533237.754639, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 3, "ts": 1776533239.2287445, "agent_id": 2, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 4, "ts": 1776533245.2803562, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 1}
+{"step": 4, "ts": 1776533246.7688787, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 4, "ts": 1776533248.256821, "agent_id": 2, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 5, "ts": 1776533254.239249, "agent_id": 0, "compression_ratio": 0.18047830813473123, "approved_mods": 1}
+{"step": 5, "ts": 1776533255.7352843, "agent_id": 1, "compression_ratio": 0.18047830813473123, "approved_mods": 0}
+{"step": 5, "ts": 1776533257.2060854, "agent_id": 2, "compression_ratio": 0.18047830813473123, "approved_mods": 0}

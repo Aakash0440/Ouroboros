@@ -1,0 +1,57 @@
+{
+  "phase1": {
+    "environment": "ModularArith(7,3,1)",
+    "stream_length": 600,
+    "num_agents": 4,
+    "agent_type": "synthesis",
+    "final_ratios": {
+      "0": 0.0617,
+      "1": 0.0617,
+      "2": 0.0617,
+      "3": 0.0617
+    },
+    "mean_ratio": 0.0617,
+    "best_ratio": 0.0617,
+    "axioms_promoted": [
+      {
+        "axiom_id": "AX_00001",
+        "expression": "(((t * 3) + 1) + 7)",
+        "step": 200,
+        "confidence": 0.7293,
+        "support": 4
+      }
+    ],
+    "discovery_step": 200,
+    "discovery_expression": "(((t * 3) + 1) + 7)",
+    "elapsed_seconds": 30.53,
+    "run_dir": "experiments\\pipeline_results\\phase1_runs"
+  },
+  "phase2": {
+    "environment": "ModularArith(7,3,1)",
+    "num_agents": 3,
+    "num_rounds": 5,
+    "total_proposals": 1,
+    "total_approved": 1,
+    "total_rejected": 0,
+    "total_ood_failed": 0,
+    "approval_rate": 1.0,
+    "mean_final_ratio": 0.1805,
+    "converged": false,
+    "convergence_round": null,
+    "elapsed_seconds": 45.25,
+    "final_compression_ratios": {
+      "0": 0.1805,
+      "1": 0.1805,
+      "2": 0.1805
+    }
+  },
+  "phase3": {
+    "mod1": 7,
+    "mod2": 11,
+    "joint_mod": 77,
+    "found_crt": false,
+    "best_crt_accuracy": 0.125,
+    "best_expression": "(((t * 5) + 1) mod 7)"
+  },
+  "elapsed_seconds": 115.78
+}

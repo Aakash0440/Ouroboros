@@ -1,0 +1,27 @@
+{
+  "environment": "ModularArith(7,3,1)",
+  "stream_length": 600,
+  "num_agents": 4,
+  "agent_type": "synthesis",
+  "final_ratios": {
+    "0": 0.0617,
+    "1": 0.0617,
+    "2": 0.0617,
+    "3": 0.0617
+  },
+  "mean_ratio": 0.0617,
+  "best_ratio": 0.0617,
+  "axioms_promoted": [
+    {
+      "axiom_id": "AX_00001",
+      "expression": "(((t * 3) + 1) + 7)",
+      "step": 200,
+      "confidence": 0.7293,
+      "support": 4
+    }
+  ],
+  "discovery_step": 200,
+  "discovery_expression": "(((t * 3) + 1) + 7)",
+  "elapsed_seconds": 30.53,
+  "run_dir": "experiments\\pipeline_results\\phase1_runs"
+}
