@@ -301,11 +301,12 @@ def build_linear_modular(slope: int, intercept: int, modulus: int) -> ExprNode:
 
 def build_fibonacci_mod(modulus: int) -> ExprNode:
     """
-    Build the Fibonacci recurrence mod modulus.
-    F(t) = (prev(1) + prev(2)) mod modulus
-    Requires initial_history=[0, 1] when calling predict_sequence.
+    F(0)=0, F(1)=1, F(t)=(prev(1)+prev(2)) mod modulus
+    Seeds are baked in via IF guards.
     """
-    return MOD(ADD(PREV(1), PREV(2)), C(modulus))
+    recurrence = MOD(ADD(PREV(1), PREV(2)), C(modulus))
+    with_seed1 = IF(EQ(T(), C(0)), C(0), IF(EQ(T(), C(1)), C(1), recurrence))
+    return with_seed1
 
 
 def predict_fibonacci_mod(modulus: int, length: int) -> list:
