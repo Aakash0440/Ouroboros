@@ -406,6 +406,11 @@ class BeamSearchSynthesizer:
             return []
 
         leaves = self._leaves()[:8]
+        # Always include T in expansion leaves so time-dependent
+        # combinations (MUL(3,t), ADD(t,1)) are always attempted
+        # regardless of T's individual MDL score.
+        if not any(l.to_string() == 't' for l in leaves):
+            leaves = [T()] + leaves[:7]
         expansions = []
 
         for op in self._binary_ops():
@@ -445,7 +450,12 @@ class BeamSearchSynthesizer:
 
         beam.sort(key=lambda x: x[0])
         beam = beam[:self.beam_width]
-
+        # Force T into beam — without it, time-dependent expressions like
+        # MOD(MUL(T,3),7) can never be constructed at deeper depths.
+        if not any(n.to_string() == 't' for _, n in beam):
+            t_node = T()
+            t_cost = self._score(t_node, actuals)
+            beam[-1] = (t_cost, t_node)
         if verbose:
             print(f"  Depth 0: best={beam[0][1].to_string()!r} cost={beam[0][0]:.1f}")
 
@@ -463,6 +473,25 @@ class BeamSearchSynthesizer:
             all_candidates = beam + new_candidates
             all_candidates.sort(key=lambda x: x[0])
             beam = all_candidates[:self.beam_width]
+            t_in_beam = [(c,n) for c,n in all_candidates if 't' in n.to_string()]
+            non_t = [(c,n) for c,n in all_candidates if 't' not in n.to_string()]
+            # Reserve 3 slots for best T-containing expressions
+            reserved = t_in_beam[:3]
+            rest = non_t[:self.beam_width - len(reserved)]
+            beam = sorted(reserved + rest, key=lambda x: x[0])
+
+            # Diversity: keep the best T-containing candidate even if it scores poorly.
+            # Without this, MUL(3,t) is pruned at depth-1 before ADD(MUL(3,t),1)
+            # can be formed at depth-2.
+            # Always keep the best T-containing candidate from new expansions,
+            # even if it scores poorly — MUL(3,t) must survive depth-1
+            # so ADD(MUL(3,t),1) can be formed at depth-2.
+            t_candidates = [(c, n) for c, n in new_candidates if 't' in n.to_string()]
+            if t_candidates:
+                t_candidates.sort(key=lambda x: x[0])
+                best_t = t_candidates[0]
+                if not any(n.to_string() == best_t[1].to_string() for _, n in beam):
+                    beam[-1] = best_t
 
             if verbose:
                 print(f"  Depth {depth}: best={beam[0][1].to_string()!r} cost={beam[0][0]:.1f}")
@@ -476,5 +505,20 @@ class BeamSearchSynthesizer:
                 break
 
         best_cost, best_expr = beam[0]
+
+        # Targeted rescue: beam cannot find depth-2 T-expressions because
+        # MUL(3,t) scores poorly at depth-1 and gets pruned. Directly try
+        # all OP2(OP1(c1,t), c2) combinations to find e.g. ADD(MUL(3,t),1).
+        for c1 in range(0, self.const_range + 1):
+            for op1 in [NodeType.MUL, NodeType.ADD, NodeType.SUB]:
+                mid = ExprNode(op1, left=C(c1), right=T())
+                for c2 in range(0, self.const_range + 1):
+                    for op2 in [NodeType.ADD, NodeType.MOD, NodeType.MUL, NodeType.SUB]:
+                        candidate = ExprNode(op2, left=mid, right=C(c2))
+                        cost = self._score(candidate, actuals)
+                        if cost < best_cost:
+                            best_cost = cost
+                            best_expr = candidate
+
         return best_expr, best_cost
 

@@ -1,0 +1,57 @@
+{
+  "environment": "ModularArith(7,3,1)",
+  "num_agents": 5,
+  "num_rounds": 25,
+  "total_expr_proposals": 0,
+  "total_expr_approved": 0,
+  "total_hp_proposals": 0,
+  "total_hp_approved": 0,
+  "hp_improvement_rate": 0.0,
+  "converged": false,
+  "convergence_round": null,
+  "elapsed_seconds": 2780.48,
+  "final_compression_ratios": {
+    "0": 0.2954,
+    "1": 0.2954,
+    "2": 0.2954,
+    "3": 0.2954,
+    "4": 0.2954
+  },
+  "final_hyperparameters": {
+    "0": {
+      "beam_width": 20,
+      "mcmc_iterations": 150,
+      "const_range": 14,
+      "max_depth": 3,
+      "max_lag": 2
+    },
+    "1": {
+      "beam_width": 23,
+      "mcmc_iterations": 150,
+      "const_range": 16,
+      "max_depth": 3,
+      "max_lag": 2
+    },
+    "2": {
+      "beam_width": 26,
+      "mcmc_iterations": 150,
+      "const_range": 18,
+      "max_depth": 3,
+      "max_lag": 2
+    },
+    "3": {
+      "beam_width": 20,
+      "mcmc_iterations": 150,
+      "const_range": 20,
+      "max_depth": 3,
+      "max_lag": 2
+    },
+    "4": {
+      "beam_width": 23,
+      "mcmc_iterations": 150,
+      "const_range": 22,
+      "max_depth": 3,
+      "max_lag": 2
+    }
+  }
+}

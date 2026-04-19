@@ -38,8 +38,7 @@ from ouroboros.agents.hyperparameter_agent import (
 )
 from ouroboros.proof_market.hp_market import HyperparameterMarket
 from ouroboros.proof_market.ood_pressure import OODPressureModule
-from ouroboros.proof_market.market import ProofMarket
-from ouroboros.proof_market.counterexample import CounterexampleSearcher
+
 from ouroboros.utils.logger import MetricsWriter, get_logger
 
 
@@ -174,13 +173,8 @@ class Phase2HyperRunner:
         alpha = self.environment.alphabet_size
 
         self._agents = self._create_agents()
-        expr_market = ProofMarket(num_agents=self.num_agents, starting_credit=150.0)
         hp_market = HyperparameterMarket(self._agents, starting_credit=100.0)
         ood_module = OODPressureModule.default_suite(base_alphabet_size=alpha)
-        ce_searcher = CounterexampleSearcher(
-            alphabet_size=alpha, beam_width=15, max_depth=3,
-            mcmc_iterations=80, validity_threshold=0.90
-        )
 
         results = Phase2HyperResults(
             environment_name=self.environment_name,
@@ -209,48 +203,8 @@ class Phase2HyperRunner:
                         mcmc_iterations=agent.current_hp.mcmc_iterations,
                         const_range=agent.current_hp.const_range,
                         hp_approved=agent.hp_approved,
-                        expr_approved=agent.approved_modifications,
+                        expr_approved=getattr(agent, 'approved_modifications', 0),
                     )
-
-                # ── Expression self-modification ──────────────────────────
-                for agent in self._agents:
-                    if expr_market.current_round is not None:
-                        break
-                    proposal = agent.generate_proposal(stream)
-                    if proposal is None or not proposal.is_improvement():
-                        continue
-
-                    results.total_expr_proposals += 1
-                    other_ids = [a.agent_id for a in self._agents
-                                 if a.agent_id != agent.agent_id]
-                    ce_results = {
-                        oid: ce_searcher.search(
-                            oid, proposal.proposed_expr, proposal.test_sequence
-                        )
-                        for oid in other_ids
-                    }
-
-                    try:
-                        approved = expr_market.run_full_round(
-                            proposer_id=agent.agent_id,
-                            current_expr=proposal.current_expr,
-                            proposed_expr=proposal.proposed_expr,
-                            test_sequence=proposal.test_sequence,
-                            alphabet_size=alpha,
-                            adversarial_agents=other_ids,
-                            ce_results=ce_results,
-                            bounty=8.0
-                        )
-                        if approved:
-                            ood_r = ood_module.test_modification(
-                                f"expr_r{round_num}", proposal.current_expr,
-                                proposal.proposed_expr
-                            )
-                            if not ood_r.revoked:
-                                agent.apply_approved_modification(proposal, round_num)
-                                results.total_expr_approved += 1
-                    except Exception as e:
-                        self.logger.warning(f"Expr market error: {e}")
 
                 # ── Hyperparameter self-modification ──────────────────────
                 for agent in self._agents:
@@ -418,4 +372,3 @@ class Phase2HyperRunner:
                 f"{score:.1f}bits"
             )
         console.print(table)
-        
