@@ -347,3 +347,103 @@ class Phase1Runner:
             plots.append(p2)
 
         return plots
+    
+    # ─── Knowledge Base Integration ──────────────────────────────────────────────
+
+def run_with_kb(
+    self,
+    stream_length: int = 2000,
+    eval_interval: int = 200,
+    consensus_threshold: float = 0.5,
+    kb_path: str = 'ouroboros_knowledge.db',
+    verbose: bool = True
+) -> 'Phase1Results':
+    """
+    Run Phase 1 experiment WITH knowledge base integration.
+
+    Differences from run():
+    1. Loads prior seed expressions from KB before search
+    2. Saves all promoted axioms to KB after the run
+    3. Logs the run to KB run_history
+    4. Returns the same Phase1Results (fully backward compatible)
+
+    Args:
+        stream_length: Total symbols
+        eval_interval: Checkpoint interval
+        consensus_threshold: Axiom promotion threshold
+        kb_path: Path to SQLite knowledge base file
+        verbose: Print progress
+
+    Returns:
+        Phase1Results
+    """
+    from ouroboros.core.knowledge_base import KnowledgeBase
+    import uuid
+
+    kb = KnowledgeBase(kb_path)
+
+    # Load seed expressions from previous runs
+    seeds = kb.get_seed_expressions_for_search(
+        alphabet_size=self.environment.alphabet_size,
+        top_k=10
+    )
+    if seeds and verbose:
+        print(f"  Loading {len(seeds)} seed expressions from KB:")
+        for s in seeds[:3]:
+            print(f"    {s!r}")
+
+    # Run normally
+    results = self.run(
+        stream_length=stream_length,
+        eval_interval=eval_interval,
+        consensus_threshold=consensus_threshold,
+        verbose=verbose
+    )
+
+    # Save promoted axioms to KB
+    if results.axioms_promoted:
+        # Reconstruct axioms from results (simplified)
+        from ouroboros.emergence.proto_axiom_pool import ProtoAxiomPool
+        # Re-run pool to get actual ProtoAxiom objects with fingerprints
+        alpha = self.environment.alphabet_size
+        self.environment.reset(stream_length)
+        stream = self.environment.peek_all()
+        from ouroboros.compression.mdl import naive_bits as nb_fn
+        nb = nb_fn(stream, alpha)
+
+        pool = ProtoAxiomPool(
+            self.num_agents, consensus_threshold, alpha
+        )
+        if self._agents:
+            for agent in self._agents:
+                if hasattr(agent, 'best_expression') and agent.best_expression:
+                    ratio = (agent.compression_ratios[-1]
+                             if agent.compression_ratios else 1.0)
+                    pool.submit(agent.agent_id, agent.best_expression,
+                                ratio * nb, step=stream_length)
+            pool.detect_consensus(stream_length, self.environment_name, nb)
+
+            for ax in pool.axioms:
+                kb.save_axiom(ax, self.environment_name, alpha)
+                if verbose:
+                    print(f"  Saved to KB: {ax.axiom_id} "
+                          f"{ax.expression.to_string()!r}")
+
+    # Log run to KB
+    run_id = str(uuid.uuid4())[:8]
+    kb.save_run(
+        run_id=run_id,
+        environment=self.environment_name,
+        results=results.to_dict(),
+        phase=1
+    )
+
+    if verbose:
+        print(f"\n  KB stats: {kb.summary()}")
+
+    kb.close()
+    return results
+
+
+# Monkey-patch the method onto Phase1Runner
+Phase1Runner.run_with_kb = run_with_kb
