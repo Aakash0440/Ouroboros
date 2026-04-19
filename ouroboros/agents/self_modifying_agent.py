@@ -1,24 +1,24 @@
 """
 SelfModifyingAgent — agent that can propose modifications to its own program.
 
-This is the Gödel Machine component of OUROBOROS.
+This is the Godel Machine component of OUROBOROS.
 
 How self-modification works:
     1. Agent has a current best expression (from Phase 1 synthesis)
-    2. Agent runs beam search + MCMC on new data → finds candidate improvement
-    3. If candidate has lower MDL cost → propose to proof market
-    4. If market approves AND OOD test passes → agent permanently upgrades
-    5. Agent's program is now richer → reveals more structure → better search
+    2. Agent runs beam search + MCMC on new data -> finds candidate improvement
+    3. If candidate has lower MDL cost -> propose to proof market
+    4. If market approves AND OOD test passes -> agent permanently upgrades
+    5. Agent's program is now richer -> reveals more structure -> better search
     6. GOTO 1 (recursive ascent)
 
-What makes this a Gödel Machine improvement:
+What makes this a Godel Machine improvement:
     - Original GM: agent verifies its own modification (circular)
     - OUROBOROS: external society verifies modification (non-circular)
     - Original GM: single agent, no external consistency check
     - OUROBOROS: OOD pressure ensures generalization, not overfitting
 
 The recursive improvement is measurable:
-    Each approved round → compression ratio decreases
+    Each approved round -> compression ratio decreases
     The compression curve over rounds is the "recursive ascent" signal
 
 Args:
@@ -65,8 +65,8 @@ class ModificationProposal:
 
     def __repr__(self) -> str:
         return (f"ModProposal(agent={self.agent_id}, "
-                f"Δ={self.improvement_bits:.1f}bits, "
-                f"{self.current_expr.to_string()!r} → "
+                f"delta={self.improvement_bits:.1f}bits, "
+                f"{self.current_expr.to_string()!r} -> "
                 f"{self.proposed_expr.to_string()!r})")
 
 
@@ -100,11 +100,25 @@ class SelfModifyingAgent(SynthesisAgent):
         self.max_proposals_per_round = max_proposals_per_round
         self.logger = get_logger(f'SelfModAgent_{agent_id}')
 
+        # Stores expression BEFORE search_and_update() runs each round.
+        # generate_proposal() compares best_expression (post-search) against this.
+        self._pre_search_expression: Optional[ExprNode] = None
+        self._pre_search_cost: Optional[float] = None
+
         # Modification history: list of (step, old_expr, new_expr, improvement, outcome)
         self.modification_history: List[Tuple] = []
         self.approved_modifications: int = 0
         self.rejected_modifications: int = 0
         self.revoked_modifications: int = 0
+
+    def search_and_update(self) -> None:
+        """
+        Override to snapshot pre-search expression before parent updates it.
+        generate_proposal() uses this snapshot as the 'current' baseline.
+        """
+        # Snapshot BEFORE search so generate_proposal can diff pre vs post
+        self._pre_search_expression = self.best_expression
+        super().search_and_update()
 
     def generate_proposal(
         self,
@@ -112,16 +126,13 @@ class SelfModifyingAgent(SynthesisAgent):
         min_improvement_bits: Optional[float] = None
     ) -> Optional[ModificationProposal]:
         """
-        Search for an improvement on new_data and generate a proposal.
+        Generate a proposal using the expression already found by search_and_update().
 
-        Process:
-        1. Run beam + MCMC search on new_data
-        2. Compare to current program under MDL
-        3. If improvement > threshold, create proposal
-        4. Return None if no significant improvement found
+        Compares self.best_expression (post-search) against self._pre_search_expression
+        (pre-search snapshot). Does NOT run a second search — that was already done.
 
         Args:
-            new_data: New observations to search on
+            new_data: Stream to evaluate costs on
             min_improvement_bits: Override threshold (optional)
 
         Returns:
@@ -130,39 +141,42 @@ class SelfModifyingAgent(SynthesisAgent):
         if not self.best_expression:
             return None
 
+        # Need a pre-search baseline to compare against
+        if self._pre_search_expression is None:
+            return None
+
         threshold = min_improvement_bits or self.modification_threshold
 
-        # Run synthesis on new data
-        candidate_expr, candidate_cost = self.synthesizer.search(
-            new_data[:min(500, len(new_data))]
-        )
-        if self.refiner is not None:
-            refined_expr, refined_cost = self.refiner.refine(candidate_expr, new_data)
-            if refined_cost < candidate_cost:
-                candidate_expr = refined_expr
-                candidate_cost = refined_cost
+        candidate_expr = self.best_expression
+        current_expr = self._pre_search_expression
 
-        # Compute current program's cost on new data
+        # No change found by search
+        if candidate_expr.to_string() == current_expr.to_string():
+            return None
+
+        # Evaluate both on new_data
         mdl = MDLCost()
-        n = len(new_data)
-        current_preds = self.best_expression.predict_sequence(n, self.alphabet_size)
+        n = min(200, len(new_data))
+        data = new_data[:n]
+
+        current_preds = current_expr.predict_sequence(n, self.alphabet_size)
         current_cost = mdl.total_cost(
-            self.best_expression.to_bytes(),
-            current_preds, new_data, self.alphabet_size
+            current_expr.to_bytes(), current_preds, data, self.alphabet_size
+        )
+
+        candidate_preds = candidate_expr.predict_sequence(n, self.alphabet_size)
+        candidate_cost = mdl.total_cost(
+            candidate_expr.to_bytes(), candidate_preds, data, self.alphabet_size
         )
 
         improvement_bits = current_cost - candidate_cost
 
         if improvement_bits < threshold:
-            return None  # Not worth proposing
-
-        # Check it's not already the same expression
-        if (candidate_expr.to_string() == self.best_expression.to_string()):
             return None
 
         proposal = ModificationProposal(
             agent_id=self.agent_id,
-            current_expr=self.best_expression,
+            current_expr=current_expr,
             proposed_expr=candidate_expr,
             current_cost=current_cost,
             proposed_cost=candidate_cost,
@@ -208,7 +222,7 @@ class SelfModifyingAgent(SynthesisAgent):
 
         self.logger.info(
             f"Agent {self.agent_id}: self-modification APPLIED at step {step}. "
-            f"Program: {old_expr.to_string() if old_expr else 'None'!r} → "
+            f"Program: {old_expr.to_string() if old_expr else 'None'!r} -> "
             f"{proposal.proposed_expr.to_string()!r}"
         )
 
@@ -244,7 +258,6 @@ class SelfModifyingAgent(SynthesisAgent):
         if not approved:
             return 0.0
         total_improvement = sum(imp for _, imp in approved)
-        # Normalize by naive bits of a typical 200-symbol stream
         return total_improvement / max(
             naive_bits(list(range(self.alphabet_size)) * 30, self.alphabet_size),
             1.0
@@ -254,8 +267,8 @@ class SelfModifyingAgent(SynthesisAgent):
         lines = [f"Agent {self.agent_id} modification history:"]
         for step, old, new, imp, outcome in self.modification_history:
             lines.append(
-                f"  step={step}: {old!r} → {new!r}  "
-                f"Δ={imp:.1f}bits  [{outcome}]"
+                f"  step={step}: {old!r} -> {new!r}  "
+                f"delta={imp:.1f}bits  [{outcome}]"
             )
         lines.append(
             f"  Approved={self.approved_modifications}  "

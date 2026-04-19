@@ -1,0 +1,24 @@
+{
+  "group_a": {
+    "group": "No Communication",
+    "discovery_round": null,
+    "convergence_round": null,
+    "final_mean_ratio": 0.29544943947421237,
+    "final_best_ratio": 0.29544943947421237
+  },
+  "group_b": {
+    "group": "With Communication",
+    "discovery_round": null,
+    "convergence_round": null,
+    "final_mean_ratio": 0.29544943947421237,
+    "final_best_ratio": 0.29544943947421237
+  },
+  "bus_stats": {
+    "current_round": 20,
+    "total_sent": 120,
+    "total_delivered": 114,
+    "by_type": {
+      "AXIOM_HINT": 120
+    }
+  }
+}
