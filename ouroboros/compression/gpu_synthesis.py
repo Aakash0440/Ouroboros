@@ -114,7 +114,8 @@ class GPUExprEvaluator:
             if node.node_type == NodeType.MUL:
                 return lv * rv
             if node.node_type == NodeType.MOD:
-                return torch.where(rv != 0, lv % rv, torch.zeros_like(lv))
+                safe_rv = torch.where(rv != 0, rv, torch.ones_like(rv))
+                return torch.where(rv != 0, lv % safe_rv, torch.zeros_like(lv))
             if node.node_type == NodeType.DIV:
                 return torch.where(rv != 0, lv // rv, torch.zeros_like(lv))
             if node.node_type == NodeType.POW:
