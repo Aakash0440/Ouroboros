@@ -281,7 +281,8 @@ class Lean4Runner:
         try:
             result = subprocess.run(
                 [self.lean_executable, '--version'],
-                capture_output=True, text=True, timeout=10
+                capture_output=True, text=True, timeout=10,
+                encoding='utf-8'   # add this
             )
             self._lean4_available = (result.returncode == 0)
             if self._lean4_available:
@@ -319,7 +320,7 @@ class Lean4Runner:
 
         with tempfile.NamedTemporaryFile(
             mode='w', suffix='.lean', delete=False,
-            dir=self.work_dir
+            dir=self.work_dir, encoding='utf-8'
         ) as f:
             f.write(script)
             temp_path = f.name
@@ -329,7 +330,8 @@ class Lean4Runner:
                 [self.lean_executable, temp_path],
                 capture_output=True,
                 text=True,
-                timeout=self.timeout_seconds
+                timeout=self.timeout_seconds,
+                encoding='utf-8'
             )
             elapsed = time.time() - start
             output = result.stdout + result.stderr
