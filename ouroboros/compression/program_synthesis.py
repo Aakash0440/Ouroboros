@@ -165,8 +165,9 @@ class ExprNode:
         full_history = list(seeds)
         predictions = list(seeds)
 
-        for _ in range(length - len(seeds)):
-            t = len(full_history)
+        remaining = length - len(seeds)
+        for _ in range(remaining):
+            t = len(full_history)  # absolute timestep
             raw = self.evaluate(t, full_history, alphabet_size)
             clamped = raw % alphabet_size if alphabet_size > 0 else raw
             predictions.append(clamped)
@@ -232,6 +233,16 @@ class ExprNode:
             if child is not None
         )
 
+    def contains_time(self) -> bool:
+        """Check if expression tree contains any TIME nodes."""
+        if self.node_type == NodeType.TIME:
+            return True
+        return any(
+            child.contains_time()
+            for child in [self.left, self.right, self.extra]
+            if child is not None
+        )
+
     def __eq__(self, other) -> bool:
         if not isinstance(other, ExprNode):
             return False
@@ -292,9 +303,15 @@ def build_fibonacci_mod(modulus: int) -> ExprNode:
     """
     Build the Fibonacci recurrence mod modulus.
     F(t) = (prev(1) + prev(2)) mod modulus
-    This is the expression agents should DISCOVER on FibonacciModEnv.
+    Requires initial_history=[0, 1] when calling predict_sequence.
     """
     return MOD(ADD(PREV(1), PREV(2)), C(modulus))
+
+
+def predict_fibonacci_mod(modulus: int, length: int) -> list:
+    """Predict Fibonacci mod modulus with correct [0,1] seeds."""
+    expr = build_fibonacci_mod(modulus)
+    return expr.predict_sequence(length, modulus, initial_history=[0, 1])
 
 def build_piecewise(
     period: int,

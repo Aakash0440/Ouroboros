@@ -30,7 +30,7 @@ Each evaluation on 500 symbols takes ~0.1ms → total search: ~0.5 seconds.
 from typing import List, Tuple, Optional
 import numpy as np
 from ouroboros.compression.program_synthesis import (
-    ExprNode, NodeType, C, T, ADD, MUL, MOD
+    ExprNode, NodeType, C, T, ADD, MUL, MOD, PREV
 )
 from ouroboros.compression.mdl import MDLCost, naive_bits
 
@@ -68,6 +68,9 @@ class BeamSearchSynthesizer:
         leaves = [T()]  # TIME variable
         for c in range(self.const_range + 1):
             leaves.append(C(c))
+        # PREV nodes for recurrence relations (lag 1..3)
+        for lag in range(1, 4):
+            leaves.append(PREV(lag))
         return leaves
 
     def _score(self, expr: ExprNode, actuals: List[int]) -> float:
@@ -76,6 +79,15 @@ class BeamSearchSynthesizer:
         # This forces the expression to explicitly handle range via mod
         # (3t+1)+7 produces 8,11,7... which don't match stream → high error cost
         # (3t+1) mod 7 produces 1,4,0... which match → near-zero error cost
+        if expr.has_prev():
+            # Seed with first few actuals so PREV scores correctly
+            seeds = actuals[:3]
+            preds = expr.predict_sequence(n, self.alphabet_size, initial_history=seeds)
+            # Lower lambda for PREV: program length penalty is too harsh
+            from ouroboros.compression.mdl import MDLCost as _M
+            prev_mdl = _M(lambda_weight=self.mdl.lambda_weight * 0.1)
+            prog_bytes = expr.to_bytes()
+            return prev_mdl.total_cost(prog_bytes, preds, actuals, self.alphabet_size)
         preds = [expr.evaluate(t) for t in range(n)]
         prog_bytes = expr.to_bytes()
         return self.mdl.total_cost(prog_bytes, preds, actuals, self.alphabet_size)

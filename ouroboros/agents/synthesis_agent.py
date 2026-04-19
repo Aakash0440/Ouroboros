@@ -134,8 +134,8 @@ class SynthesisAgent(BaseAgent):
                 sym_expr, search_data, verbose=False
             )
             n_prefix = len(search_data)
-            beam_preds = [sym_expr.evaluate(t) for t in range(n_prefix)]
-            refined_preds = [refined_expr.evaluate(t) for t in range(n_prefix)]
+            beam_preds = sym_expr.predict_sequence(n_prefix, self.alphabet_size)
+            refined_preds = refined_expr.predict_sequence(n_prefix, self.alphabet_size)
             beam_cost_check = mdl.total_cost(
                 sym_expr.to_bytes(), beam_preds, search_data, self.alphabet_size
             )
@@ -145,12 +145,23 @@ class SynthesisAgent(BaseAgent):
             if refined_cost_check < beam_cost_check:
                 sym_expr = refined_expr
 
-        # Raw predictions for scoring — forces mod expressions to win
-        n = len(history)  # FIX: was missing, caused NameError
-        sym_preds_raw = [sym_expr.evaluate(t) for t in range(n)]
-        sym_cost_full = mdl.total_cost(
-            sym_expr.to_bytes(), sym_preds_raw, history, self.alphabet_size
-        )
+        # Use predict_sequence with seeds for PREV nodes
+        n = len(history)
+        if sym_expr.has_prev():
+            max_lag = getattr(self.synthesizer, "max_lag", 3)
+            seeds = history[:max_lag]  # use observed initial conditions
+            sym_preds_raw = sym_expr.predict_sequence(n, self.alphabet_size, initial_history=seeds)
+            # Lower lambda for PREV: recurrence expressions penalized unfairly for length
+            from ouroboros.compression.mdl import MDLCost as _MDL
+            prev_mdl = _MDL(lambda_weight=mdl.lambda_weight * 0.15)
+            sym_cost_full = prev_mdl.total_cost(
+                sym_expr.to_bytes(), sym_preds_raw, history, self.alphabet_size
+            )
+        else:
+            sym_preds_raw = sym_expr.predict_sequence(n, self.alphabet_size)
+            sym_cost_full = mdl.total_cost(
+                sym_expr.to_bytes(), sym_preds_raw, history, self.alphabet_size
+            )
 
         # ── Path 2: N-gram search (parent class) ──────────────────────────────
         ngram_cost = super().search_and_update()
@@ -172,7 +183,9 @@ class SynthesisAgent(BaseAgent):
         """Predict next symbol (symbolic or n-gram depending on last search)."""
         if self._using_symbolic and self.best_expression is not None:
             t = len(self.observation_history)
-            return self.best_expression.evaluate(t) % self.alphabet_size
+            # predict_sequence handles PREV correctly
+            preds = self.best_expression.predict_sequence(t + 1, self.alphabet_size)
+            return preds[t] if preds else 0
         return super().predict()
 
     def measure_compression_ratio(self) -> float:
@@ -185,7 +198,7 @@ class SynthesisAgent(BaseAgent):
             return 1.0
 
         n = len(history)
-        preds = [self.best_expression.evaluate(t) % self.alphabet_size for t in range(n)]
+        preds = self.best_expression.predict_sequence(n, self.alphabet_size)
         prog_bytes = self.best_expression.to_bytes()
 
         cost = self.mdl.total_cost(prog_bytes, preds, history, self.alphabet_size)
