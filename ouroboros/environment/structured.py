@@ -267,3 +267,98 @@ class MultiScaleEnv(ObservationEnvironment):
             f"+ (t mod {self.fast_period}) mod 2"
             f"  [+ {self.noise_fraction*100:.0f}% noise]"
         )
+
+
+class PiecewiseModEnv(ObservationEnvironment):
+    """
+    Stream alternating between two modular rules every `switch_period` steps.
+
+    Pattern:
+        if (t // switch_period) % 2 == 0: obs[t] = (s1*t + i1) mod mod1
+        else:                              obs[t] = (s2*t + i2) mod mod2
+
+    Requires IF node to discover. Without IF, best compression ~0.50.
+    With IF correctly found, compression ~0.005.
+
+    This environment verifies that IF-containing expressions work.
+
+    Args:
+        switch_period: How many steps before switching rules
+        mod1, slope1, intercept1: First rule parameters
+        mod2, slope2, intercept2: Second rule parameters
+    """
+
+    def __init__(
+        self,
+        switch_period: int = 10,
+        mod1: int = 5, slope1: int = 2, intercept1: int = 1,
+        mod2: int = 7, slope2: int = 3, intercept2: int = 2,
+        seed: int = 42
+    ):
+        alphabet = max(mod1, mod2)
+        super().__init__(alphabet_size=alphabet, seed=seed)
+        self.switch_period = switch_period
+        self.mod1, self.slope1, self.intercept1 = mod1, slope1, intercept1
+        self.mod2, self.slope2, self.intercept2 = mod2, slope2, intercept2
+
+    def _generate_stream(self, length: int) -> List[int]:
+        stream = []
+        for t in range(length):
+            phase = (t // self.switch_period) % 2
+            if phase == 0:
+                val = (self.slope1 * t + self.intercept1) % self.mod1
+            else:
+                val = (self.slope2 * t + self.intercept2) % self.mod2
+            stream.append(val % self.alphabet_size)
+        return stream
+
+
+class RecurrenceEnv(ObservationEnvironment):
+    """
+    General linear recurrence environment.
+
+    obs[t] = (sum(coeff[k] * obs[t-k-1] for k in 0..order-1) + const) mod modulus
+
+    Fibonacci: coefficients=[1,1], const=0, modulus=N
+    Tribonacci: coefficients=[1,1,1], const=0, modulus=N
+    With PREV(1), PREV(2) etc., agents can discover these.
+
+    Args:
+        coefficients: List of coefficients for obs[t-1], obs[t-2], ...
+        const: Additive constant
+        modulus: Modulus for reduction
+        seed_values: Initial values (default: [0, 1, 1, ...])
+    """
+
+    def __init__(
+        self,
+        coefficients: List[int] = None,
+        const: int = 0,
+        modulus: int = 11,
+        seed_values: List[int] = None,
+        seed: int = 42
+    ):
+        super().__init__(alphabet_size=modulus, seed=seed)
+        self.coefficients = coefficients or [1, 1]
+        self.const = const
+        self.modulus = modulus
+        self.seed_values = seed_values or [0, 1]
+
+    def _generate_stream(self, length: int) -> List[int]:
+        order = len(self.coefficients)
+        # Pad seed to at least order length
+        history = list(self.seed_values[:order])
+        while len(history) < order:
+            history.append(0)
+
+        stream = list(history[:length])
+
+        while len(stream) < length:
+            t = len(stream)
+            val = self.const
+            for k, coeff in enumerate(self.coefficients):
+                if t - k - 1 >= 0:
+                    val += coeff * stream[t - k - 1]
+            stream.append(val % self.modulus)
+
+        return stream[:length]
