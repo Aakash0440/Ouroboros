@@ -191,6 +191,56 @@ def run_phase3(quick: bool = False) -> dict:
     return results
 
 
+
+
+def run_phase3_gpu(quick: bool = False) -> dict:
+    """Phase 3 CRT with GPU acceleration + CRTSolver."""
+    console.print("\n[bold cyan]═══ PHASE 3: RELIABLE CRT (GPU) ═══[/bold cyan]")
+
+    from ouroboros.emergence.crt_solver import CRTSolver
+    from ouroboros.compression.multi_start_synthesis import TargetedCRTSearcher
+    from ouroboros.compression.gpu_synthesis import get_device
+    import torch
+
+    device = get_device()
+    console.print(f"  Device: {device}")
+
+    MOD1, SLOPE1, INT1 = 7, 3, 1
+    MOD2, SLOPE2, INT2 = 11, 5, 2
+
+    solver = CRTSolver(MOD1, SLOPE1, INT1, MOD2, SLOPE2, INT2)
+    stream = solver.generate_joint_stream(1000 if quick else 5000)
+
+    searcher = TargetedCRTSearcher(
+        mod1=MOD1, mod2=MOD2,
+        num_starts=2 if quick else 5,
+        beam_width=15 if quick else 40,
+        const_range_multiplier=2.0 if quick else 4.0,
+        mcmc_iterations=50 if quick else 400,
+    )
+
+    found_expr, acc_all, acc_m1, acc_m2 = searcher.search_for_crt(stream, verbose=True)
+    exact_expr = solver.exact_expression()
+
+    results = {
+        'mod1': MOD1, 'mod2': MOD2, 'joint_mod': solver.joint_mod,
+        'found_crt': acc_m1 >= 0.90 and acc_m2 >= 0.90,
+        'best_crt_accuracy': round(min(acc_m1, acc_m2), 4),
+        'mod1_accuracy': round(acc_m1, 4),
+        'mod2_accuracy': round(acc_m2, 4),
+        'found_expression': found_expr.to_string(),
+        'exact_expression': exact_expr.to_string(),
+        'device': str(device),
+    }
+
+    from pathlib import Path
+    import json
+    out = RESULTS_DIR / 'phase3_gpu_results.json'
+    with open(out, 'w') as f:
+        json.dump(results, f, indent=2)
+
+    return results
+    
 def main():
     parser = argparse.ArgumentParser(description='OUROBOROS full pipeline')
     parser.add_argument('--quick', action='store_true',

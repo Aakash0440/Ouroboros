@@ -1,0 +1,10 @@
+name = "OuroborosVerifier"
+version = "0.1.0"
+defaultTargets = ["ouroborosverifier"]
+
+[[lean_lib]]
+name = "OuroborosVerifier"
+
+[[lean_exe]]
+name = "ouroborosverifier"
+root = "Main"
