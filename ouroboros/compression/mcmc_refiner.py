@@ -1,147 +1,123 @@
-# ouroboros/compression/mcmc_refiner.py
-
 """
-MCMC refinement of symbolic expressions.
+MCMC refinement — updated for extended primitive set.
 
-WHY MCMC AFTER BEAM SEARCH:
-Beam search finds the RIGHT STRUCTURE but may miss exact constants.
-If the environment is (3t+1) mod 7 but beam search found (3t+2) mod 7,
-the structure is right but the intercept is off by 1.
-
-MCMC fixes this with small mutations:
-    - Change a constant by ±1
-    - Try a new random constant at a node
-    - Swap left/right children of a binary op
-    - Change an operation (+ → *, etc.)
-
-Accept if cost improves (always) or with probability exp(-delta/T) (Metropolis).
-Temperature decreases over iterations (simulated annealing).
-
-Result: typically 50–200 iterations are enough to zero in on exact constants.
-
-After beam + MCMC, the agent's expression is usually within ±1 of correct
-on all positions — which means ratio drops from 0.05 to 0.003 or lower.
+New mutation operations for new node types:
+    LAG_DELTA:    PREV(k) → PREV(k±1)
+    LAG_RANDOM:   PREV(k) → PREV(random lag in 1..max_lag)
+    IF_SWAP:      swap then/else branches of IF node
+    CONST_DELTA:  change CONST by ±1 (original)
+    CONST_RANDOM: replace CONST with random value (original)
+    SWAP_OP:      cycle through arithmetic ops (extended)
+    SWAP_CHILDREN: swap left/right (original)
 """
 
-import math
 import copy
+import math
 import numpy as np
 from typing import List, Tuple, Optional
-from ouroboros.compression.program_synthesis import ExprNode, NodeType, C, T
+from ouroboros.compression.program_synthesis import (
+    ExprNode, NodeType, LEAF_TYPES, BINARY_TYPES, TERNARY_TYPES,
+    C, PREV
+)
 from ouroboros.compression.mdl import MDLCost
 
 
 class MCMCRefiner:
     """
-    Simulated annealing refinement of a symbolic expression.
-
-    Starts from an initial expression (from beam search) and
-    applies small mutations, accepting improvements and occasionally
-    accepting worsening moves (with decreasing probability).
+    Simulated annealing refinement — extended for new primitives.
 
     Args:
-        num_iterations: MCMC steps (default 200)
-        temperature: Initial temperature (default 10.0)
-        cooling_rate: Per-step temperature decay (default 0.98)
-        alphabet_size: Symbol count for prediction clamping
+        num_iterations: Total MCMC steps
+        temperature: Initial temperature
+        cooling_rate: Decay per step
+        const_range: Max constant for CONST_RANDOM
+        max_lag: Max lag for LAG_RANDOM
+        alphabet_size: For prediction clamping
         seed: Random seed
     """
 
     def __init__(
         self,
-        num_iterations: int = 200,
-        temperature: float = 10.0,
-        cooling_rate: float = 0.98,
+        num_iterations: int = 300,
+        temperature: float = 20.0,
+        cooling_rate: float = 0.985,
+        const_range: int = 20,
+        max_lag: int = 3,
         alphabet_size: int = 10,
-        seed: int = 42,
+        seed: int = 42
     ):
         self.num_iterations = num_iterations
         self.temperature = temperature
         self.cooling_rate = cooling_rate
+        self.const_range = const_range
+        self.max_lag = max_lag
         self.alphabet_size = alphabet_size
         self.rng = np.random.default_rng(seed)
         self.mdl = MDLCost()
 
     def _score(self, expr: ExprNode, actuals: List[int]) -> float:
-        """MDL cost of expression."""
         n = len(actuals)
         preds = expr.predict_sequence(n, self.alphabet_size)
-        return self.mdl.total_cost(expr.to_bytes(), preds, actuals, self.alphabet_size)
+        return self.mdl.total_cost(
+            expr.to_bytes(), preds, actuals, self.alphabet_size
+        )
 
     def _collect_nodes(self, expr: ExprNode) -> List[ExprNode]:
-        """Return all nodes in the expression tree (depth-first)."""
         nodes = [expr]
-        if expr.left is not None:
-            nodes.extend(self._collect_nodes(expr.left))
-        if expr.right is not None:
-            nodes.extend(self._collect_nodes(expr.right))
+        if expr.left:  nodes.extend(self._collect_nodes(expr.left))
+        if expr.right: nodes.extend(self._collect_nodes(expr.right))
+        if expr.extra: nodes.extend(self._collect_nodes(expr.extra))
         return nodes
 
     def _mutate(self, expr: ExprNode) -> ExprNode:
-        """
-        Create a mutated copy of the expression.
-
-        Four mutation types (chosen uniformly at random):
-        0: SHIFT_CONST    — change a CONST node's value by ±1
-        1: RANDOM_CONST   — set a CONST node to a new random value
-        2: SWAP_CHILDREN  — swap left/right of a binary node
-        3: SWAP_OP        — change ADD → MUL, MUL → ADD, etc.
-        """
+        """One of 7 mutation types chosen uniformly."""
         expr_copy = copy.deepcopy(expr)
         nodes = self._collect_nodes(expr_copy)
+        target = nodes[int(self.rng.integers(0, len(nodes)))]
+        mutation = int(self.rng.integers(0, 7))
 
-        mutation = int(self.rng.integers(0, 4))
+        if mutation == 0 and target.node_type == NodeType.CONST:
+            # CONST_DELTA: ±1
+            target.value = max(0, target.value + int(self.rng.choice([-1, 1])))
 
-        # Filter nodes by type for targeted mutations
-        const_nodes = [n for n in nodes if n.node_type == NodeType.CONST]
-        binary_nodes = [n for n in nodes
-                        if n.node_type in (NodeType.ADD, NodeType.MUL, NodeType.MOD)]
+        elif mutation == 1 and target.node_type == NodeType.CONST:
+            # CONST_RANDOM
+            target.value = int(self.rng.integers(0, self.const_range + 1))
 
-        if mutation == 0 and const_nodes:
-            # Shift a constant by ±1
-            target = const_nodes[int(self.rng.integers(0, len(const_nodes)))]
+        elif mutation == 2 and target.node_type == NodeType.PREV:
+            # LAG_DELTA: lag ±1
+            current_lag = target.lag or 1
             delta = int(self.rng.choice([-1, 1]))
-            target.value = max(0, target.value + delta)
+            target.lag = max(1, min(current_lag + delta, self.max_lag))
 
-        elif mutation == 1 and const_nodes:
-            # Replace with new random constant 0..19
-            target = const_nodes[int(self.rng.integers(0, len(const_nodes)))]
-            target.value = int(self.rng.integers(0, 20))
+        elif mutation == 3 and target.node_type == NodeType.PREV:
+            # LAG_RANDOM
+            target.lag = int(self.rng.integers(1, self.max_lag + 1))
 
-        elif mutation == 2 and binary_nodes:
-            # Swap children of a binary node
-            target = binary_nodes[int(self.rng.integers(0, len(binary_nodes)))]
+        elif mutation == 4 and target.node_type in BINARY_TYPES:
+            # SWAP_CHILDREN
             target.left, target.right = target.right, target.left
 
-        elif mutation == 3 and binary_nodes:
-            # Change operation: ADD↔MUL or keep MOD
-            target = binary_nodes[int(self.rng.integers(0, len(binary_nodes)))]
-            ops = [NodeType.ADD, NodeType.MUL, NodeType.MOD]
-            other_ops = [o for o in ops if o != target.node_type]
-            if other_ops:
-                target.node_type = other_ops[int(self.rng.integers(0, len(other_ops)))]
+        elif mutation == 5 and target.node_type in BINARY_TYPES - {NodeType.EQ, NodeType.LT}:
+            # SWAP_OP: cycle through arithmetic ops
+            arith_ops = [NodeType.ADD, NodeType.SUB, NodeType.MUL,
+                         NodeType.MOD, NodeType.DIV]
+            idx = arith_ops.index(target.node_type) if target.node_type in arith_ops else 0
+            target.node_type = arith_ops[(idx + 1) % len(arith_ops)]
 
-        # If no mutation applied (e.g., no CONST nodes), do a random constant shift
-        # on any node by replacing it with C(0)
+        elif mutation == 6 and target.node_type == NodeType.IF:
+            # IF_SWAP: swap then/else branches
+            target.right, target.extra = target.extra, target.right
+
         return expr_copy
 
     def refine(
         self,
         initial_expr: ExprNode,
         actuals: List[int],
-        verbose: bool = False,
+        verbose: bool = False
     ) -> Tuple[ExprNode, float]:
-        """
-        Run MCMC refinement starting from initial_expr.
-
-        Args:
-            initial_expr: Starting expression (from beam search)
-            actuals: Target observation sequence
-            verbose: If True, print progress every 50 steps
-
-        Returns:
-            (best_expression, best_mdl_cost)
-        """
+        """Refine initial_expr by MCMC simulated annealing."""
         current = copy.deepcopy(initial_expr)
         current_cost = self._score(current, actuals)
         best = copy.deepcopy(current)
@@ -154,8 +130,7 @@ class MCMCRefiner:
             mutated_cost = self._score(mutated, actuals)
             delta = mutated_cost - current_cost
 
-            # Accept if better, or with Metropolis probability if worse
-            if delta < 0 or (T > 0 and self.rng.random() < math.exp(-delta / T)):
+            if delta < 0 or self.rng.random() < math.exp(-delta / max(T, 1e-9)):
                 current = mutated
                 current_cost = mutated_cost
 
@@ -163,10 +138,16 @@ class MCMCRefiner:
                 best = copy.deepcopy(current)
                 best_cost = current_cost
 
+                # Early exit: perfect
+                preds = best.predict_sequence(len(actuals), self.alphabet_size)
+                if all(p == a for p, a in zip(preds, actuals)):
+                    if verbose:
+                        print(f"  MCMC early exit at step {i}")
+                    break
+
             T *= self.cooling_rate
 
             if verbose and i % 50 == 0:
-                print(f"  MCMC i={i}: {best.to_string()!r}  cost={best_cost:.2f}")
+                print(f"  MCMC {i:3d}: {best.to_string()!r}  cost={best_cost:.1f}")
 
         return best, best_cost
-        
