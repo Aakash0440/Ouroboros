@@ -50,17 +50,10 @@ class FormalAxiom:
 
     @property
     def combined_confidence(self) -> float:
-        """
-        Combined confidence score.
-
-        0.7 * formal_component + 0.3 * empirical_component
-        where formal_component = 1.0 if lean4_verified else 0.0
-        """
-        formal = 1.0 if self.lean4_verified else (
-            0.5 if self.empirical_verified else 0.0
-        )
-        empirical = self.stored.confidence
-        return 0.7 * formal + 0.3 * empirical
+        if not self.lean4_verified and not self.empirical_verified:
+            return 0.0
+        formal = 1.0 if self.lean4_verified else 0.5
+        return 0.7 * formal + 0.3 * self.stored.confidence
 
     @property
     def is_fully_verified(self) -> bool:
