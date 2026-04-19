@@ -270,10 +270,13 @@ class Phase1Runner:
 
                     # Submit to axiom pool
                     if hasattr(agent, 'best_expression') and agent.best_expression:
-                        pool.submit(agent.agent_id, agent.best_expression, ratio * nb, step)
+                        sym_cost = getattr(agent, 'best_expression_cost', ratio * nb)
+                        pool.submit(agent.agent_id, agent.best_expression, sym_cost, step)
 
                 # Detect consensus
                 new_axioms = pool.detect_consensus(step, self.environment_name, nb)
+                print(f"  DEBUG step={step}: submissions={len(pool.submissions)}, "
+                      f"new_axioms={len(new_axioms)}, pool_total={len(pool.axioms)}")
                 for ax in new_axioms:
                     if results.discovery_step is None:
                         results.discovery_step = step
@@ -401,33 +404,13 @@ def run_with_kb(
     )
 
     # Save promoted axioms to KB
-    if results.axioms_promoted:
-        # Reconstruct axioms from results (simplified)
-        from ouroboros.emergence.proto_axiom_pool import ProtoAxiomPool
-        # Re-run pool to get actual ProtoAxiom objects with fingerprints
-        alpha = self.environment.alphabet_size
-        self.environment.reset(stream_length)
-        stream = self.environment.peek_all()
-        from ouroboros.compression.mdl import naive_bits as nb_fn
-        nb = nb_fn(stream, alpha)
-
-        pool = ProtoAxiomPool(
-            self.num_agents, consensus_threshold, alpha
-        )
-        if self._agents:
-            for agent in self._agents:
-                if hasattr(agent, 'best_expression') and agent.best_expression:
-                    ratio = (agent.compression_ratios[-1]
-                             if agent.compression_ratios else 1.0)
-                    pool.submit(agent.agent_id, agent.best_expression,
-                                ratio * nb, step=stream_length)
-            pool.detect_consensus(stream_length, self.environment_name, nb)
-
-            for ax in pool.axioms:
-                kb.save_axiom(ax, self.environment_name, alpha)
-                if verbose:
-                    print(f"  Saved to KB: {ax.axiom_id} "
-                          f"{ax.expression.to_string()!r}")
+    alpha = self.environment.alphabet_size
+    for ax_dict in results.axioms_promoted:
+        # Build a minimal StoredAxiom-compatible save using expression string + confidence
+        kb.save_axiom_from_dict(ax_dict, self.environment_name, alpha)
+        if verbose:
+            print(f"  Saved to KB: {ax_dict['axiom_id']} {ax_dict['expression']!r}")
+                    
 
     # Log run to KB
     run_id = str(uuid.uuid4())[:8]

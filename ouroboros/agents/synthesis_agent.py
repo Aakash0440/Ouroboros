@@ -168,9 +168,11 @@ class SynthesisAgent(BaseAgent):
 
         # ── Choose best ───────────────────────────────────────────────────────
         
-        if sym_cost_full < ngram_cost:
+        if sym_expr is not None:
             self.best_expression = sym_expr
             self.best_expression_cost = sym_cost_full
+
+        if sym_cost_full < ngram_cost:
             self._using_symbolic = True
             self.symbolic_wins += 1
             return sym_cost_full

@@ -35,27 +35,16 @@ def behavioral_fingerprint(
     alphabet_size: int,
     length: int = 200
 ) -> Tuple[int, ...]:
-    """
-    Compute the behavioral fingerprint of an expression.
-
-    The fingerprint is the tuple of predictions on t=0..length-1,
-    clamped to 0..alphabet_size-1.
-
-    Two expressions are behaviorally equivalent iff their fingerprints
-    are identical.
-
-    Args:
-        expr: The symbolic expression
-        alphabet_size: Clamp predictions to 0..alphabet_size-1
-        length: Number of timesteps to evaluate (default 200)
-
-    Returns:
-        Tuple of length `length` with integer predictions
-    """
-    return tuple(
-        expr.evaluate(t) % alphabet_size
-        for t in range(length)
-    )
+    if expr.has_prev():
+        # PREV nodes need rolling history — use predict_sequence
+        preds = expr.predict_sequence(length, alphabet_size)
+        return tuple(preds[:length])
+    else:
+        # No PREV — fast path, evaluate independently
+        return tuple(
+            expr.evaluate(t) % alphabet_size
+            for t in range(length)
+        )
 
 
 def expressions_equivalent(

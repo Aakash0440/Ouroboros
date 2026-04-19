@@ -418,3 +418,44 @@ class KnowledgeBase:
 
     def __exit__(self, *args):
         self.close()
+
+    def save_axiom_from_dict(
+        self,
+        ax_dict: dict,
+        environment_name: str,
+        alphabet_size: int
+    ) -> int:
+        """Save an axiom from a results dict (no ProtoAxiom object needed)."""
+        expr_str = ax_dict['expression']
+        confidence = ax_dict.get('confidence', 0.5)
+        compression_ratio = ax_dict.get('compression_ratio', 1.0)
+        
+        # Use expression string as fingerprint (good enough for dedup)
+        fp_hash = hashlib.sha256(expr_str.encode()).hexdigest()
+        now = time.time()
+
+        c = self._conn.cursor()
+        existing = c.execute(
+            "SELECT axiom_id, confidence, times_confirmed FROM axioms "
+            "WHERE fingerprint_hash = ?", (fp_hash,)
+        ).fetchone()
+
+        if existing:
+            new_conf = max(existing['confidence'], confidence)
+            new_confirmed = existing['times_confirmed'] + 1
+            c.execute("""
+                UPDATE axioms SET confidence=?, times_confirmed=?, last_seen=?
+                WHERE axiom_id=?
+            """, (new_conf, new_confirmed, now, existing['axiom_id']))
+            self._conn.commit()
+            return existing['axiom_id']
+        else:
+            c.execute("""
+                INSERT INTO axioms
+                (expression_str, fingerprint_hash, confidence, compression_ratio,
+                environment_name, alphabet_size, times_confirmed, first_seen, last_seen)
+                VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)
+            """, (expr_str, fp_hash, confidence, compression_ratio,
+                environment_name, alphabet_size, now, now))
+            self._conn.commit()
+        return c.lastrowid
