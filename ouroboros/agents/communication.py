@@ -211,24 +211,23 @@ class MessageBus:
         Get all messages available to this agent in the current round.
 
         Returns messages sent in previous rounds (round < current_round)
-        that are not from this agent.
-
-        This enforces the delayed delivery rule.
+        that are not from this agent and not already delivered to this agent.
         """
         messages = []
         for sent_round, round_msgs in self._queue.items():
             if sent_round >= current_round:
-                continue  # Not yet delivered
+                continue
             for msg in round_msgs:
                 if msg.sender_id == agent_id:
-                    continue  # Don't receive own messages
-                if not msg.delivered:
-                    messages.append(msg)
-                    self.total_delivered += 1
-
-        # Mark delivered
-        for msg in messages:
-            msg.delivered = True
+                    continue
+                if agent_id in msg.payload.get('_delivered_to', set()):
+                    continue
+                messages.append(msg)
+                self.total_delivered += 1
+                # Track per-agent delivery inside payload
+                if '_delivered_to' not in msg.payload:
+                    msg.payload['_delivered_to'] = set()
+                msg.payload['_delivered_to'].add(agent_id)
 
         return messages
 
