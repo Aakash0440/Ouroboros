@@ -54,7 +54,7 @@ def create_agents(num: int) -> list:
             max_depth=3,
             const_range=MODULUS * 2,
             mcmc_iterations=100,
-            modification_threshold=5.0,
+            modification_threshold=1.0,
             seed=42 + i * 11
         )
         for i in range(num)

@@ -11,3 +11,302 @@
 {"step": 600, "ts": 1776533208.312817, "agent_id": 1, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
 {"step": 600, "ts": 1776533211.5352476, "agent_id": 2, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
 {"step": 600, "ts": 1776533214.8842165, "agent_id": 3, "compression_ratio": 0.06174257909872384, "context_length": 1, "expression": "((t + 5) * 3)"}
+{"type": "run_metadata", "timestamp": "2026-04-18T23:14:42.351536", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776536083.8767412, "agent_id": 0, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 200, "ts": 1776536085.3199906, "agent_id": 1, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 200, "ts": 1776536086.754686, "agent_id": 2, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 200, "ts": 1776536088.2298014, "agent_id": 3, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536092.7088885, "agent_id": 0, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536097.046567, "agent_id": 1, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}
+{"step": 400, "ts": 1776536101.2426772, "agent_id": 2, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536105.4475634, "agent_id": 3, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"step": 600, "ts": 1776536110.7253604, "agent_id": 0, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"step": 600, "ts": 1776536115.981753, "agent_id": 1, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "((1 + (3 * t)) + 7)"}
+{"step": 600, "ts": 1776536121.4678485, "agent_id": 2, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 600, "ts": 1776536126.86195, "agent_id": 3, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-18T23:20:48.068702", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776536449.6182735, "agent_id": 0, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 200, "ts": 1776536451.0442717, "agent_id": 1, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 200, "ts": 1776536452.4801066, "agent_id": 2, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 200, "ts": 1776536453.8834221, "agent_id": 3, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536458.0100472, "agent_id": 0, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536462.0526035, "agent_id": 1, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}
+{"step": 400, "ts": 1776536466.1101723, "agent_id": 2, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536470.1593337, "agent_id": 3, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"step": 600, "ts": 1776536475.281985, "agent_id": 0, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"step": 600, "ts": 1776536480.3171346, "agent_id": 1, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "((1 + (3 * t)) + 7)"}
+{"step": 600, "ts": 1776536485.3935187, "agent_id": 2, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 600, "ts": 1776536490.4288332, "agent_id": 3, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-18T23:25:46.665795", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776536748.1304266, "agent_id": 0, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 200, "ts": 1776536749.5403936, "agent_id": 1, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 200, "ts": 1776536750.9804895, "agent_id": 2, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 200, "ts": 1776536752.3924618, "agent_id": 3, "compression_ratio": 0.27071746220209686, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536756.4850025, "agent_id": 0, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536760.5432558, "agent_id": 1, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 8) + 7)"}
+{"step": 400, "ts": 1776536764.644719, "agent_id": 2, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((t * 3) + 1) + 7)"}
+{"step": 400, "ts": 1776536768.793815, "agent_id": 3, "compression_ratio": 0.13535873110104843, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"step": 600, "ts": 1776536773.9292667, "agent_id": 0, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"step": 600, "ts": 1776536778.9746878, "agent_id": 1, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "((1 + (3 * t)) + 7)"}
+{"step": 600, "ts": 1776536783.941426, "agent_id": 2, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "((1 + (t * 3)) + 7)"}
+{"step": 600, "ts": 1776536788.972466, "agent_id": 3, "compression_ratio": 0.09023915406736562, "context_length": 1, "expression": "(((3 * t) + 1) + 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-18T23:36:45.338486", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"type": "run_metadata", "timestamp": "2026-04-18T23:42:06.375393", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776537727.879958, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776537729.3647022, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776537730.7983525, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776537732.2028832, "agent_id": 3, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776537736.4826844, "agent_id": 0, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776537740.497916, "agent_id": 1, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776537744.561236, "agent_id": 2, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776537748.5694003, "agent_id": 3, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776537753.7423995, "agent_id": 0, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776537758.7790596, "agent_id": 1, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776537763.7951167, "agent_id": 2, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776537768.847897, "agent_id": 3, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T00:45:30.573907", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776541532.0980942, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776541533.553945, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776541534.994912, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776541536.4195986, "agent_id": 3, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541540.658345, "agent_id": 0, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541544.7078855, "agent_id": 1, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541548.8290448, "agent_id": 2, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541552.8867354, "agent_id": 3, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541557.9616947, "agent_id": 0, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541563.0305803, "agent_id": 1, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541568.12198, "agent_id": 2, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541573.2368908, "agent_id": 3, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T00:52:23.447510", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776541944.3702927, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776541945.2497077, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776541946.1660328, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776541947.0606515, "agent_id": 3, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541949.3152595, "agent_id": 0, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541951.6444986, "agent_id": 1, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541953.8733044, "agent_id": 2, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776541956.1811972, "agent_id": 3, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541958.9353313, "agent_id": 0, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541961.6656208, "agent_id": 1, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541964.413111, "agent_id": 2, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776541967.150303, "agent_id": 3, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T09:26:19.177369", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776572779.670659, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776572780.124118, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776572780.572274, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T09:31:54.360173", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776573115.2802904, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573116.1394162, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573117.020283, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573117.8809452, "agent_id": 3, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573120.0989838, "agent_id": 0, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573122.2721233, "agent_id": 1, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573124.5393841, "agent_id": 2, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573126.7194417, "agent_id": 3, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573129.575135, "agent_id": 0, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573132.3273377, "agent_id": 1, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573135.0332265, "agent_id": 2, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573137.76864, "agent_id": 3, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T09:41:17.561543", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776573678.5319023, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573679.5110466, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573680.4219449, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573681.3297513, "agent_id": 3, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573683.7317028, "agent_id": 0, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573685.920863, "agent_id": 1, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573688.1097329, "agent_id": 2, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573690.3526213, "agent_id": 3, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573693.11839, "agent_id": 0, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573695.8175833, "agent_id": 1, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573698.6259472, "agent_id": 2, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573701.3304143, "agent_id": 3, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T09:45:27.512836", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776573928.5280716, "agent_id": 0, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573929.4534798, "agent_id": 1, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573930.343114, "agent_id": 2, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 200, "ts": 1776573931.263842, "agent_id": 3, "compression_ratio": 0.4439164944863794, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573933.5612175, "agent_id": 0, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573935.822477, "agent_id": 1, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573938.0823305, "agent_id": 2, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 400, "ts": 1776573940.3336523, "agent_id": 3, "compression_ratio": 0.22140196090924685, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573943.1418748, "agent_id": 0, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573946.529294, "agent_id": 1, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573949.3939767, "agent_id": 2, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"step": 600, "ts": 1776573952.165052, "agent_id": 3, "compression_ratio": 0.14747810083938145, "context_length": 1, "expression": "n-gram(k=1)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T09:52:35.743734", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 200, "ts": 1776574356.6935086, "agent_id": 0, "compression_ratio": 0.29921403717073863, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 200, "ts": 1776574357.619912, "agent_id": 1, "compression_ratio": 0.29921403717073863, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 200, "ts": 1776574358.5342243, "agent_id": 2, "compression_ratio": 0.29921403717073863, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 200, "ts": 1776574359.4439526, "agent_id": 3, "compression_ratio": 0.29921403717073863, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 400, "ts": 1776574361.7345734, "agent_id": 0, "compression_ratio": 0.14960701858536932, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 400, "ts": 1776574363.9928246, "agent_id": 1, "compression_ratio": 0.14960701858536932, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 400, "ts": 1776574366.2953033, "agent_id": 2, "compression_ratio": 0.14960701858536932, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 400, "ts": 1776574368.5763307, "agent_id": 3, "compression_ratio": 0.14960701858536932, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574371.3781567, "agent_id": 0, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574374.1452477, "agent_id": 1, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574376.8511395, "agent_id": 2, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574379.5796902, "agent_id": 3, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T09:57:09.374574", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 300, "ts": 1776574632.4652753, "agent_id": 0, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574635.4841106, "agent_id": 1, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574638.3970082, "agent_id": 2, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574641.324904, "agent_id": 3, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574644.3016653, "agent_id": 4, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574647.2230172, "agent_id": 5, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574650.2275658, "agent_id": 6, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776574653.145168, "agent_id": 7, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574659.0402656, "agent_id": 0, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574664.9061775, "agent_id": 1, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574670.865472, "agent_id": 2, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574676.6528523, "agent_id": 3, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574682.5169103, "agent_id": 4, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574688.3986907, "agent_id": 5, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574694.2193935, "agent_id": 6, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776574699.9739387, "agent_id": 7, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574705.843263, "agent_id": 0, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574711.6460319, "agent_id": 1, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574717.4607506, "agent_id": 2, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574723.3126404, "agent_id": 3, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574729.2171886, "agent_id": 4, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574735.2738848, "agent_id": 5, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574741.3630338, "agent_id": 6, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776574747.2254646, "agent_id": 7, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574753.182135, "agent_id": 0, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574759.097481, "agent_id": 1, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574764.9440615, "agent_id": 2, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574770.7494519, "agent_id": 3, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574776.7042713, "agent_id": 4, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574782.61103, "agent_id": 5, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574788.484896, "agent_id": 6, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776574794.3494732, "agent_id": 7, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574800.1661224, "agent_id": 0, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574806.064641, "agent_id": 1, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574811.9286277, "agent_id": 2, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574817.757419, "agent_id": 3, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574823.6959898, "agent_id": 4, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574829.5343332, "agent_id": 5, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574835.3496683, "agent_id": 6, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776574841.2217846, "agent_id": 7, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T10:25:43.148176", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 300, "ts": 1776576346.845663, "agent_id": 0, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576350.0242176, "agent_id": 1, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576353.032597, "agent_id": 2, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576355.955132, "agent_id": 3, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576358.9111302, "agent_id": 4, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576361.8602185, "agent_id": 5, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576364.7717605, "agent_id": 6, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776576367.690033, "agent_id": 7, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576373.5217247, "agent_id": 0, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576379.3405163, "agent_id": 1, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576385.2158914, "agent_id": 2, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576390.9832993, "agent_id": 3, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576396.750397, "agent_id": 4, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576402.5332096, "agent_id": 5, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576408.422883, "agent_id": 6, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776576414.3237226, "agent_id": 7, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576420.2915323, "agent_id": 0, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576426.227088, "agent_id": 1, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576432.119736, "agent_id": 2, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576438.070151, "agent_id": 3, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576444.0929654, "agent_id": 4, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576450.042158, "agent_id": 5, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576455.9311194, "agent_id": 6, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776576461.820922, "agent_id": 7, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576467.8163488, "agent_id": 0, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576473.6954982, "agent_id": 1, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576479.4410775, "agent_id": 2, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576485.270016, "agent_id": 3, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576491.1282532, "agent_id": 4, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576496.8811867, "agent_id": 5, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576502.7140174, "agent_id": 6, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776576508.4714956, "agent_id": 7, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576514.2662976, "agent_id": 0, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576520.1411967, "agent_id": 1, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576526.0089908, "agent_id": 2, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576531.9502075, "agent_id": 3, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576537.8308492, "agent_id": 4, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576543.72256, "agent_id": 5, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576549.6417835, "agent_id": 6, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776576555.5200064, "agent_id": 7, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T11:43:47.375633", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 300, "ts": 1776581028.9756577, "agent_id": 0, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581032.393292, "agent_id": 1, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581037.6156104, "agent_id": 2, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581041.8245754, "agent_id": 3, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581045.7979074, "agent_id": 4, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581049.8091931, "agent_id": 5, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581053.704899, "agent_id": 6, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776581058.27583, "agent_id": 7, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581067.9084542, "agent_id": 0, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581075.7702477, "agent_id": 1, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581083.6920142, "agent_id": 2, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581091.4405298, "agent_id": 3, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581099.0553272, "agent_id": 4, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581106.7798326, "agent_id": 5, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581114.0436757, "agent_id": 6, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776581121.597354, "agent_id": 7, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581128.333463, "agent_id": 0, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581136.0318508, "agent_id": 1, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581143.6233687, "agent_id": 2, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581151.6729352, "agent_id": 3, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581159.2786262, "agent_id": 4, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581166.2477438, "agent_id": 5, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581173.9000611, "agent_id": 6, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776581181.6251776, "agent_id": 7, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581188.9787195, "agent_id": 0, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581196.382224, "agent_id": 1, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581204.5170014, "agent_id": 2, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581211.853136, "agent_id": 3, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581219.986166, "agent_id": 4, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581227.3103971, "agent_id": 5, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581234.81105, "agent_id": 6, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776581242.162401, "agent_id": 7, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581248.9731863, "agent_id": 0, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581256.067703, "agent_id": 1, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581262.556067, "agent_id": 2, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581270.4233553, "agent_id": 3, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581277.9234443, "agent_id": 4, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581285.639533, "agent_id": 5, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581293.6951904, "agent_id": 6, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776581301.4671566, "agent_id": 7, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"type": "run_metadata", "timestamp": "2026-04-19T12:08:41.022917", "run_dir": "experiments\\pipeline_results\\phase1_runs"}
+{"step": 300, "ts": 1776582522.490518, "agent_id": 0, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582523.9567978, "agent_id": 1, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582525.419444, "agent_id": 2, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582526.8495593, "agent_id": 3, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582528.331363, "agent_id": 4, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582529.760484, "agent_id": 5, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582531.2017531, "agent_id": 6, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 300, "ts": 1776582532.7633524, "agent_id": 7, "compression_ratio": 0.1994760247804924, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582536.9611626, "agent_id": 0, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582541.103233, "agent_id": 1, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582545.1797144, "agent_id": 2, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582549.3517668, "agent_id": 3, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582553.6096933, "agent_id": 4, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582557.7171655, "agent_id": 5, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582561.8005106, "agent_id": 6, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 600, "ts": 1776582565.8881204, "agent_id": 7, "compression_ratio": 0.0997380123902462, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582570.0374403, "agent_id": 0, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582574.1256986, "agent_id": 1, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582578.2635314, "agent_id": 2, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582582.3305569, "agent_id": 3, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582586.4444435, "agent_id": 4, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582590.559779, "agent_id": 5, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582594.7135668, "agent_id": 6, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 900, "ts": 1776582598.8844576, "agent_id": 7, "compression_ratio": 0.06649200826016413, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582603.0516787, "agent_id": 0, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582611.8161113, "agent_id": 1, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582623.0585065, "agent_id": 2, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582633.6123393, "agent_id": 3, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582643.8671806, "agent_id": 4, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582654.2145262, "agent_id": 5, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582664.9409535, "agent_id": 6, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1200, "ts": 1776582678.392551, "agent_id": 7, "compression_ratio": 0.0498690061951231, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582701.859886, "agent_id": 0, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582723.9302964, "agent_id": 1, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582744.7311373, "agent_id": 2, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582765.9583294, "agent_id": 3, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582787.394405, "agent_id": 4, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582808.0527694, "agent_id": 5, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582827.623065, "agent_id": 6, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}
+{"step": 1500, "ts": 1776582848.6499698, "agent_id": 7, "compression_ratio": 0.03989520495609848, "context_length": 1, "expression": "(((t * 3) + 1) mod 7)"}

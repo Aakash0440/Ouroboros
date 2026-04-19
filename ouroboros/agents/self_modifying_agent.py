@@ -136,10 +136,11 @@ class SelfModifyingAgent(SynthesisAgent):
         candidate_expr, candidate_cost = self.synthesizer.search(
             new_data[:min(500, len(new_data))]
         )
-        refined_expr, refined_cost = self.refiner.refine(candidate_expr, new_data)
-        if refined_cost < candidate_cost:
-            candidate_expr = refined_expr
-            candidate_cost = refined_cost
+        if self.refiner is not None:
+            refined_expr, refined_cost = self.refiner.refine(candidate_expr, new_data)
+            if refined_cost < candidate_cost:
+                candidate_expr = refined_expr
+                candidate_cost = refined_cost
 
         # Compute current program's cost on new data
         mdl = MDLCost()

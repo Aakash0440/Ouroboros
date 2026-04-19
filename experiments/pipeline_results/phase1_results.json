@@ -1,27 +1,31 @@
 {
   "environment": "ModularArith(7,3,1)",
-  "stream_length": 600,
-  "num_agents": 4,
+  "stream_length": 1500,
+  "num_agents": 8,
   "agent_type": "synthesis",
   "final_ratios": {
-    "0": 0.0617,
-    "1": 0.0617,
-    "2": 0.0617,
-    "3": 0.0617
+    "0": 0.0399,
+    "1": 0.0399,
+    "2": 0.0399,
+    "3": 0.0399,
+    "4": 0.0399,
+    "5": 0.0399,
+    "6": 0.0399,
+    "7": 0.0399
   },
-  "mean_ratio": 0.0617,
-  "best_ratio": 0.0617,
+  "mean_ratio": 0.0399,
+  "best_ratio": 0.0399,
   "axioms_promoted": [
     {
       "axiom_id": "AX_00001",
-      "expression": "(((t * 3) + 1) + 7)",
-      "step": 200,
-      "confidence": 0.7293,
-      "support": 4
+      "expression": "(((t * 3) + 1) mod 7)",
+      "step": 300,
+      "confidence": 0.8005,
+      "support": 8
     }
   ],
-  "discovery_step": 200,
-  "discovery_expression": "(((t * 3) + 1) + 7)",
-  "elapsed_seconds": 30.53,
+  "discovery_step": 300,
+  "discovery_expression": "(((t * 3) + 1) mod 7)",
+  "elapsed_seconds": 327.74,
   "run_dir": "experiments\\pipeline_results\\phase1_runs"
 }

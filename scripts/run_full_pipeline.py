@@ -49,8 +49,8 @@ def run_phase1(quick: bool = False) -> dict:
     from ouroboros.core.config import OuroborosConfig
 
     cfg = OuroborosConfig()
-    cfg.compression.beam_width = 15 if quick else 28
-    cfg.compression.const_range = 14 if quick else 21
+    cfg.synthesis.beam_width = 15 if quick else 28
+    cfg.synthesis.const_range = 14 if quick else 21
 
     runner = Phase1Runner.for_modular_arithmetic(
         7, 3, 1,
@@ -123,8 +123,9 @@ def run_phase3(quick: bool = False) -> dict:
         check_behavioral_crt, gcd, crt_solution
     )
     from ouroboros.compression.program_synthesis import (
-        build_linear_modular, BeamSearchSynthesizer
+        build_linear_modular
     )
+    from ouroboros.compression.beam_search import BeamSearchSynthesizer
 
     MOD1, SLOPE1, INT1 = 7, 3, 1
     MOD2, SLOPE2, INT2 = 11, 5, 2
@@ -134,7 +135,7 @@ def run_phase3(quick: bool = False) -> dict:
     e1 = ModularArithmeticEnv(MOD1, SLOPE1, INT1, seed=42)
     e2 = ModularArithmeticEnv(MOD2, SLOPE2, INT2, seed=42)
     joint_env = JointEnvironment(e1, e2)
-    joint_env.reset(800 if quick else 2000)
+    joint_env.reset(400 if quick else 800)
     joint_stream = joint_env.peek_all()
 
     console.print(f"  Searching joint stream (alphabet={JOINT_MOD})...")
@@ -143,10 +144,10 @@ def run_phase3(quick: bool = False) -> dict:
     agents = [
         SynthesisAgent(
             i, JOINT_MOD,
-            beam_width=15 if quick else 25,
+            beam_width=10 if quick else 15,
             max_depth=3,
-            const_range=JOINT_MOD * 2,
-            mcmc_iterations=50 if quick else 150,
+            const_range=20,
+            mcmc_iterations=30 if quick else 80,
             seed=42 + i * 11
         )
         for i in range(num_agents)
@@ -160,10 +161,10 @@ def run_phase3(quick: bool = False) -> dict:
     ref_e2 = build_linear_modular(SLOPE2, INT2, MOD2)
 
     for agent in agents:
-        agent.observe(joint_stream)
+        agent.observation_history = list(joint_stream)
         agent.search_and_update()
         ratio = agent.measure_compression_ratio()
-        if agent.best_expression:
+        if agent.best_expression is not None:
             is_crt, acc = check_behavioral_crt(
                 ref_e1, ref_e2, agent.best_expression, MOD1, MOD2, 100
             )

@@ -13,3 +13,8 @@
 {"step": 50, "ts": 1776534762.4099855, "agent_id": 1, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
 {"step": 100, "ts": 1776534763.4946234, "agent_id": 0, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
 {"step": 100, "ts": 1776534764.659191, "agent_id": 1, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"type": "run_metadata", "timestamp": "2026-04-18T23:02:00.977377", "run_dir": "experiments\\phase1\\runs\\test_synthesis_tmp"}
+{"step": 50, "ts": 1776535321.5147188, "agent_id": 0, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 50, "ts": 1776535322.0174215, "agent_id": 1, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776535323.1543229, "agent_id": 0, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776535324.3794003, "agent_id": 1, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}

@@ -130,7 +130,7 @@ class BeamSearchSynthesizer:
         # Keep this bounded to avoid a combinatorial blowup.
         max_a = min(max_c, 8)
         max_b = min(max_c, 8)
-        max_m = min(max_c, 12)
+        max_m = min(max_c, self.alphabet_size)
         for a in range(1, max_a + 1):
             for b in range(0, max_b + 1):
                 inner = ADD(MUL(T(), C(a)), C(b))

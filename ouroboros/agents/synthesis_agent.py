@@ -117,7 +117,7 @@ class SynthesisAgent(BaseAgent):
         if len(history) < 8:
             return float('inf')
 
-        mdl = MDLCost(lambda_weight=self.mdl.lambda_weight)
+        mdl = MDLCost(lambda_weight=self.synthesizer.mdl.lambda_weight)
 
         # ── Path 1: Symbolic beam search ──────────────────────────────────────
         # Use prefix of up to 500 symbols for speed
@@ -128,23 +128,35 @@ class SynthesisAgent(BaseAgent):
             verbose=False,
         )
 
-        # Optionally refine with MCMC
+        # Optionally refine with MCMC — re-score both with same MDL to compare
         if self.refiner is not None:
-            sym_expr, sym_cost_on_prefix = self.refiner.refine(
+            refined_expr, _ = self.refiner.refine(
                 sym_expr, search_data, verbose=False
             )
+            n_prefix = len(search_data)
+            beam_preds = [sym_expr.evaluate(t) for t in range(n_prefix)]
+            refined_preds = [refined_expr.evaluate(t) for t in range(n_prefix)]
+            beam_cost_check = mdl.total_cost(
+                sym_expr.to_bytes(), beam_preds, search_data, self.alphabet_size
+            )
+            refined_cost_check = mdl.total_cost(
+                refined_expr.to_bytes(), refined_preds, search_data, self.alphabet_size
+            )
+            if refined_cost_check < beam_cost_check:
+                sym_expr = refined_expr
 
-        # Evaluate the symbolic expression on the FULL history
-        n = len(history)
-        sym_preds = sym_expr.predict_sequence(n, self.alphabet_size)
+        # Raw predictions for scoring — forces mod expressions to win
+        n = len(history)  # FIX: was missing, caused NameError
+        sym_preds_raw = [sym_expr.evaluate(t) for t in range(n)]
         sym_cost_full = mdl.total_cost(
-            sym_expr.to_bytes(), sym_preds, history, self.alphabet_size
+            sym_expr.to_bytes(), sym_preds_raw, history, self.alphabet_size
         )
 
         # ── Path 2: N-gram search (parent class) ──────────────────────────────
         ngram_cost = super().search_and_update()
 
         # ── Choose best ───────────────────────────────────────────────────────
+        
         if sym_cost_full < ngram_cost:
             self.best_expression = sym_expr
             self.best_expression_cost = sym_cost_full
@@ -173,7 +185,7 @@ class SynthesisAgent(BaseAgent):
             return 1.0
 
         n = len(history)
-        preds = self.best_expression.predict_sequence(n, self.alphabet_size)
+        preds = [self.best_expression.evaluate(t) % self.alphabet_size for t in range(n)]
         prog_bytes = self.best_expression.to_bytes()
 
         cost = self.mdl.total_cost(prog_bytes, preds, history, self.alphabet_size)

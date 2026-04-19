@@ -218,7 +218,9 @@ class Phase2Runner:
             for round_num in range(1, num_rounds + 1):
                 self.environment.reset(self.stream_length)
                 stream = self.environment.peek_all()
+                market.current_round = None
 
+                market.current_round = None
                 round_stats = {
                     'round': round_num, 'proposals': 0,
                     'approved': 0, 'rejected': 0, 'ood_failed': 0
