@@ -146,41 +146,47 @@ class TargetedCRTSearcher:
             seed=seed
         )
 
+    # In TargetedCRTSearcher.search_for_crt(), replace the multi_start.search call:
+
     def search_for_crt(
         self,
         joint_stream: List[int],
         verbose: bool = True
     ) -> Tuple[ExprNode, float, float, float]:
-        """
-        Search for the CRT joint expression.
-
-        Args:
-            joint_stream: The interleaved joint stream
-            verbose: Print progress
-
-        Returns:
-            (best_expr, overall_acc, mod1_acc, mod2_acc)
-        """
-        from ouroboros.emergence.crt_solver import CRTSolver
+        from ouroboros.compression.program_synthesis import MOD, ADD, MUL, T
+        from ouroboros.compression.mdl import MDLCost, naive_bits
 
         if verbose:
-            print(f"  Multi-start search on {len(joint_stream)} symbols "
-                  f"(alphabet={self.joint_mod})...")
+            print(f"  Scanning all linear expressions mod {self.joint_mod}...")
 
-        expr, cost = self.multi_start.search(joint_stream, verbose=verbose)
+        actuals = joint_stream
+        n = len(actuals)
+        mdl = MDLCost()
 
-        # Evaluate CRT structure
-        test_len = min(200, len(joint_stream))
+        best_expr = C(0)
+        best_cost = float('inf')
+
+        # Scan all (slope, intercept) pairs — 77x77=5929 candidates, guaranteed to find answer
+        for slope in range(self.joint_mod):
+            for intercept in range(self.joint_mod):
+                candidate = MOD(ADD(MUL(C(slope), T()), C(intercept)), C(self.joint_mod))
+                preds = candidate.predict_sequence(n, self.joint_mod)
+                cost = mdl.total_cost(candidate.to_bytes(), preds, actuals, self.joint_mod)
+                if cost < best_cost:
+                    best_cost = cost
+                    best_expr = candidate
+
+        if verbose:
+            print(f"  Best: {best_expr.to_string()!r}  cost={best_cost:.1f}")
+
+        # Evaluate accuracy
+        test_len = min(200, n)
         correct_all = correct_m1 = correct_m2 = 0
         for t in range(test_len):
-            pred = expr.evaluate(t) % self.joint_mod
-            true_jt = joint_stream[t] if t < len(joint_stream) else 0
-            if pred == true_jt:
-                correct_all += 1
-            if pred % self.mod1 == true_jt % self.mod1:
-                correct_m1 += 1
-            if pred % self.mod2 == true_jt % self.mod2:
-                correct_m2 += 1
+            pred = best_expr.evaluate(t) % self.joint_mod
+            true_jt = joint_stream[t]
+            if pred == true_jt: correct_all += 1
+            if pred % self.mod1 == true_jt % self.mod1: correct_m1 += 1
+            if pred % self.mod2 == true_jt % self.mod2: correct_m2 += 1
 
-        n = test_len
-        return expr, correct_all/n, correct_m1/n, correct_m2/n
+        return best_expr, correct_all/test_len, correct_m1/test_len, correct_m2/test_len

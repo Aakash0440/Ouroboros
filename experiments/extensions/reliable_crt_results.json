@@ -1,0 +1,14 @@
+{
+  "exact_expression": "(((38 * t) + 57) mod 77)",
+  "found_expression": "(((38 * t) + 57) mod 77)",
+  "exact_matches_found": true,
+  "overall_accuracy": 1.0,
+  "mod1_accuracy": 1.0,
+  "mod2_accuracy": 1.0,
+  "success": true,
+  "mod1": 7,
+  "mod2": 11,
+  "joint_mod": 77,
+  "exact_slope": 38,
+  "exact_intercept": 57
+}
