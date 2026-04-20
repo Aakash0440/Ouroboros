@@ -101,9 +101,16 @@ def program_description_bits(node_count: int, constant_count: int) -> float:
 def compute_gaussian_mdl(
     predictions: List[float],
     actuals: List[float],
-    program_node_count: int,
-    program_constant_count: int,
+    program_node_count: int = 0,
+    program_constant_count: int = 0,
+    node_count: Optional[int] = None,
+    constant_count: Optional[int] = None,
 ) -> GaussianMDLResult:
+    # Support both naming conventions
+    if node_count is not None:
+        program_node_count = node_count
+    if constant_count is not None:
+        program_constant_count = constant_count
     """
     Compute the full Gaussian MDL cost for a continuous program.
     
