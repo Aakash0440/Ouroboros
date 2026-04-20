@@ -5,51 +5,51 @@
     "num_agents": 8,
     "agent_type": "synthesis",
     "final_ratios": {
-      "0": 0.0399,
-      "1": 0.0399,
-      "2": 0.0399,
-      "3": 0.0399,
-      "4": 0.0399,
-      "5": 0.0399,
-      "6": 0.0399,
-      "7": 0.0399
+      "0": 0.0589,
+      "1": 0.0589,
+      "2": 0.0589,
+      "3": 0.0589,
+      "4": 0.0589,
+      "5": 0.0589,
+      "6": 0.0589,
+      "7": 0.0589
     },
-    "mean_ratio": 0.0399,
-    "best_ratio": 0.0399,
+    "mean_ratio": 0.0589,
+    "best_ratio": 0.0589,
     "axioms_promoted": [
       {
         "axiom_id": "AX_00001",
-        "expression": "(((t * 3) + 1) mod 7)",
-        "step": 300,
-        "confidence": 0.8005,
-        "support": 8
+        "expression": "(prev(2) + 3)",
+        "step": 600,
+        "confidence": 0.2981,
+        "support": 4
       }
     ],
-    "discovery_step": 300,
-    "discovery_expression": "(((t * 3) + 1) mod 7)",
-    "elapsed_seconds": 327.74,
+    "discovery_step": 600,
+    "discovery_expression": "(prev(2) + 3)",
+    "elapsed_seconds": 441.15,
     "run_dir": "experiments\\pipeline_results\\phase1_runs"
   },
   "phase2": {
     "environment": "ModularArith(7,3,1)",
     "num_agents": 6,
     "num_rounds": 15,
-    "total_proposals": 89,
+    "total_proposals": 0,
     "total_approved": 0,
-    "total_rejected": 89,
+    "total_rejected": 0,
     "total_ood_failed": 0,
     "approval_rate": 0.0,
-    "mean_final_ratio": 0.1995,
+    "mean_final_ratio": 0.4334,
     "converged": false,
     "convergence_round": null,
-    "elapsed_seconds": 1695.76,
+    "elapsed_seconds": 315.73,
     "final_compression_ratios": {
-      "0": 0.1995,
-      "1": 0.1995,
-      "2": 0.1995,
-      "3": 0.1995,
-      "4": 0.1995,
-      "5": 0.1995
+      "0": 0.2954,
+      "1": 0.2954,
+      "2": 1.1235,
+      "3": 0.2954,
+      "4": 0.2954,
+      "5": 0.2954
     }
   },
   "phase3": {
@@ -60,5 +60,5 @@
     "best_crt_accuracy": 0.125,
     "best_expression": "(((t * 5) + 1) mod 7)"
   },
-  "elapsed_seconds": 2038.91
+  "elapsed_seconds": 804.21
 }

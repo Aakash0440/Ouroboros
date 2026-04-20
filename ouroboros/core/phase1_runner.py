@@ -227,7 +227,6 @@ class Phase1Runner:
         alpha = self.environment.alphabet_size
         self.environment.reset(stream_length)
         stream = self.environment.peek_all()
-        nb = naive_bits(stream, alpha)
 
         self._agents = self._create_agents(alpha)
 
@@ -249,6 +248,7 @@ class Phase1Runner:
         with MetricsWriter(self.run_dir) as writer:
             for step in checkpoints:
                 data = stream[:min(step, stream_length)]
+                nb = naive_bits(data, alpha)
                 pool.clear_submissions()
 
                 if verbose:

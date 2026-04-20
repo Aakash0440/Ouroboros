@@ -85,7 +85,7 @@ class SynthesisAgent(BaseAgent):
             max_depth=max_depth,
             const_range=const_range,
             alphabet_size=alphabet_size,
-            lambda_weight=lambda_weight,
+            lambda_weight=min(lambda_weight, 0.1),
         )
 
         self.refiner: Optional[MCMCRefiner] = None
@@ -117,7 +117,7 @@ class SynthesisAgent(BaseAgent):
         if len(history) < 8:
             return float('inf')
 
-        mdl = MDLCost(lambda_weight=self.synthesizer.mdl.lambda_weight)
+        mdl = MDLCost(lambda_weight=0.1)
 
         # ── Path 1: Symbolic beam search ──────────────────────────────────────
         # Use prefix of up to 500 symbols for speed
@@ -134,8 +134,15 @@ class SynthesisAgent(BaseAgent):
                 sym_expr, search_data, verbose=False
             )
             n_prefix = len(search_data)
-            beam_preds = sym_expr.predict_sequence(n_prefix, self.alphabet_size)
-            refined_preds = refined_expr.predict_sequence(n_prefix, self.alphabet_size)
+            seeds = search_data[:3]
+            beam_preds = sym_expr.predict_sequence(
+                n_prefix, self.alphabet_size,
+                initial_history=seeds if sym_expr.has_prev() else None
+            )
+            refined_preds = refined_expr.predict_sequence(
+                n_prefix, self.alphabet_size,
+                initial_history=seeds if refined_expr.has_prev() else None
+            )
             beam_cost_check = mdl.total_cost(
                 sym_expr.to_bytes(), beam_preds, search_data, self.alphabet_size
             )
@@ -200,8 +207,16 @@ class SynthesisAgent(BaseAgent):
             return 1.0
 
         n = len(history)
-        preds = self.best_expression.predict_sequence(n, self.alphabet_size)
         prog_bytes = self.best_expression.to_bytes()
+
+        if self.best_expression.has_prev():
+            max_lag = getattr(self.synthesizer, "max_lag", 3)
+            seeds = history[:max_lag]
+            preds = self.best_expression.predict_sequence(
+                n, self.alphabet_size, initial_history=seeds
+            )
+        else:
+            preds = self.best_expression.predict_sequence(n, self.alphabet_size)
 
         cost = self.mdl.total_cost(prog_bytes, preds, history, self.alphabet_size)
         nb = naive_bits(history, self.alphabet_size)

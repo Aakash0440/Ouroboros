@@ -4,28 +4,28 @@
   "num_agents": 8,
   "agent_type": "synthesis",
   "final_ratios": {
-    "0": 0.0399,
-    "1": 0.0399,
-    "2": 0.0399,
-    "3": 0.0399,
-    "4": 0.0399,
-    "5": 0.0399,
-    "6": 0.0399,
-    "7": 0.0399
+    "0": 0.0589,
+    "1": 0.0589,
+    "2": 0.0589,
+    "3": 0.0589,
+    "4": 0.0589,
+    "5": 0.0589,
+    "6": 0.0589,
+    "7": 0.0589
   },
-  "mean_ratio": 0.0399,
-  "best_ratio": 0.0399,
+  "mean_ratio": 0.0589,
+  "best_ratio": 0.0589,
   "axioms_promoted": [
     {
       "axiom_id": "AX_00001",
-      "expression": "(((t * 3) + 1) mod 7)",
-      "step": 300,
-      "confidence": 0.8005,
-      "support": 8
+      "expression": "(prev(2) + 3)",
+      "step": 600,
+      "confidence": 0.2981,
+      "support": 4
     }
   ],
-  "discovery_step": 300,
-  "discovery_expression": "(((t * 3) + 1) mod 7)",
-  "elapsed_seconds": 327.74,
+  "discovery_step": 600,
+  "discovery_expression": "(prev(2) + 3)",
+  "elapsed_seconds": 441.15,
   "run_dir": "experiments\\pipeline_results\\phase1_runs"
 }
