@@ -24,7 +24,7 @@ environment has discovered modular arithmetic from compression alone.
 
 import numpy as np
 from typing import List
-from ouroboros.environment.base import ObservationEnvironment
+from ouroboros.environments.base import ObservationEnvironment
 
 
 class BinaryRepeatEnv(ObservationEnvironment):

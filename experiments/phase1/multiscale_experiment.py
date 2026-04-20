@@ -23,7 +23,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, '.')
 
-from ouroboros.environment.structured import MultiScaleEnv, ModularArithmeticEnv
+from ouroboros.environments.structured import MultiScaleEnv, ModularArithmeticEnv
 from ouroboros.agents.hierarchical_agent import HierarchicalAgent
 from ouroboros.compression.hierarchical_mdl import HierarchicalMDL
 from ouroboros.utils.logger import MetricsWriter

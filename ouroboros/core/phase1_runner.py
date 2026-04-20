@@ -25,8 +25,8 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from ouroboros.core.config import OuroborosConfig
-from ouroboros.environment.base import ObservationEnvironment
-from ouroboros.environment.structured import (
+from ouroboros.environments.base import ObservationEnvironment
+from ouroboros.environments.structured import (
     BinaryRepeatEnv, ModularArithmeticEnv, FibonacciModEnv,
     PrimeSequenceEnv, MultiScaleEnv, NoiseEnv
 )

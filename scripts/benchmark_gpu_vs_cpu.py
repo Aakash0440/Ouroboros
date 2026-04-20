@@ -25,8 +25,8 @@ from ouroboros.compression.program_synthesis import BeamSearchSynthesizer
 from ouroboros.compression.gpu_synthesis import (
     GPUBeamSearchSynthesizer, get_device
 )
-from ouroboros.environment.structured import ModularArithmeticEnv
-from ouroboros.environment.joint_environment import JointEnvironment
+from ouroboros.environments.structured import ModularArithmeticEnv
+from ouroboros.environments.joint_environment import JointEnvironment
 from rich.console import Console
 from rich.table import Table
 

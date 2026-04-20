@@ -21,7 +21,7 @@ The Modular Arith row is the headline result.
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 
-from ouroboros.environment import (
+from ouroboros.environmentss import (
     BinaryRepeatEnv, ModularArithmeticEnv, FibonacciModEnv,
     PrimeSequenceEnv, NoiseEnv,
 )

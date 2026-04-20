@@ -4,7 +4,7 @@
 
 import pytest
 import numpy as np
-from ouroboros.environment import (
+from ouroboros.environments import (
     BinaryRepeatEnv, ModularArithmeticEnv, FibonacciModEnv,
     PrimeSequenceEnv, NoiseEnv
 )

@@ -1,7 +1,7 @@
 """Unit tests for Phase1Runner."""
 import pytest
 from ouroboros.core.phase1_runner import Phase1Runner, Phase1Results
-from ouroboros.environment.structured import BinaryRepeatEnv
+from ouroboros.environmentss.structured import BinaryRepeatEnv
 
 
 class TestPhase1Runner:

@@ -116,8 +116,8 @@ def run_phase3(quick: bool = False) -> dict:
     """Phase 3: CRT from joint compression."""
     console.print("\n[bold cyan]═══ PHASE 3: CRT LANDMARK ═══[/bold cyan]")
 
-    from ouroboros.environment.structured import ModularArithmeticEnv
-    from ouroboros.environment.joint_environment import JointEnvironment
+    from ouroboros.environments.structured import ModularArithmeticEnv
+    from ouroboros.environments.joint_environment import JointEnvironment
     from ouroboros.agents.synthesis_agent import SynthesisAgent
     from ouroboros.emergence.crt_detector import (
         check_behavioral_crt, gcd, crt_solution

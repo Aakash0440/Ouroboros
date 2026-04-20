@@ -22,7 +22,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 
-from ouroboros.environment import ModularArithmeticEnv
+from ouroboros.environmentss import ModularArithmeticEnv
 from ouroboros.agents.synthesis_agent import SynthesisAgent
 from ouroboros.compression.program_synthesis import build_linear_modular
 from ouroboros.utils.logger import MetricsWriter, make_run_dir

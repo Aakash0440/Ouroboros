@@ -17,7 +17,7 @@ from rich.table import Table
 from rich.console import Console
 
 from ouroboros.agents.base_agent import BaseAgent
-from ouroboros.environment.base import ObservationEnvironment
+from ouroboros.environmentss.base import ObservationEnvironment
 from ouroboros.utils.logger import MetricsWriter, get_logger
 
 console = Console()

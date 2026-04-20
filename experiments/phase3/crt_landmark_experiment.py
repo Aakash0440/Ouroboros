@@ -51,8 +51,8 @@ import sys, json, time
 from pathlib import Path
 sys.path.insert(0, '.')
 
-from ouroboros.environment.structured import ModularArithmeticEnv
-from ouroboros.environment.joint_environment import JointEnvironment
+from ouroboros.environments.structured import ModularArithmeticEnv
+from ouroboros.environments.joint_environment import JointEnvironment
 from ouroboros.core.phase1_runner import Phase1Runner
 from ouroboros.core.phase3_runner import Phase3Runner
 from ouroboros.agents.synthesis_agent import SynthesisAgent

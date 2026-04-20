@@ -125,7 +125,7 @@ class TestBeamSearchWithPREV:
     def test_finds_fibonacci_structure(self):
         """Beam search should find something better than random on Fibonacci."""
         from ouroboros.compression.program_synthesis import BeamSearchSynthesizer
-        from ouroboros.environment.structured import FibonacciModEnv
+        from ouroboros.environments.structured import FibonacciModEnv
 
         env = FibonacciModEnv(11, seed=42)
         env.reset(200)

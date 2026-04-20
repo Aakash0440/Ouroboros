@@ -4,8 +4,8 @@ from ouroboros.emergence.crt_detector import (
     gcd, extended_gcd, crt_solution, check_behavioral_crt,
     verify_crt_structure
 )
-from ouroboros.environment.joint_environment import JointEnvironment
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environments.joint_environment import JointEnvironment
+from ouroboros.environments.structured import ModularArithmeticEnv
 from ouroboros.compression.program_synthesis import build_linear_modular, C
 
 

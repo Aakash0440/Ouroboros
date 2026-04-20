@@ -33,7 +33,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from ouroboros.environment import (
+from ouroboros.environments import (
     BinaryRepeatEnv,
     ModularArithmeticEnv,
     FibonacciModEnv,

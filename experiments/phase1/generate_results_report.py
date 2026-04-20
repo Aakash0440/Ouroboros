@@ -25,7 +25,7 @@ sys.path.insert(0, '.')
 
 from ouroboros.core.phase1_runner import Phase1Runner
 from ouroboros.core.config import OuroborosConfig
-from ouroboros.environment.structured import (
+from ouroboros.environments.structured import (
     BinaryRepeatEnv, FibonacciModEnv, PrimeSequenceEnv
 )
 from rich.console import Console

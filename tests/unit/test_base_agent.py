@@ -4,7 +4,7 @@
 
 import pytest
 from ouroboros.agents.base_agent import BaseAgent, NGramProgram, build_ngram_table
-from ouroboros.environment import ModularArithmeticEnv, NoiseEnv
+from ouroboros.environments import ModularArithmeticEnv, NoiseEnv
 
 
 class TestNGramProgram:

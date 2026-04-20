@@ -25,8 +25,8 @@ Args:
 
 from typing import List, Tuple
 import numpy as np
-from ouroboros.environment.base import ObservationEnvironment
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environments.base import ObservationEnvironment
+from ouroboros.environments.structured import ModularArithmeticEnv
 
 
 class JointEnvironment(ObservationEnvironment):

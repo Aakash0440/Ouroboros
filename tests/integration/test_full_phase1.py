@@ -12,7 +12,7 @@ import pytest
 import json
 from pathlib import Path
 from ouroboros.core.phase1_runner import Phase1Runner
-from ouroboros.environment.structured import (
+from ouroboros.environments.structured import (
     ModularArithmeticEnv, BinaryRepeatEnv,
     FibonacciModEnv, NoiseEnv, MultiScaleEnv
 )

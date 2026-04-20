@@ -31,7 +31,7 @@ from ouroboros.agents.mdl_objective import (
     DEFAULT_OBJECTIVE,
 )
 from ouroboros.compression.mdl_engine import MDLEngine, MDLResult
-from ouroboros.environments.base import Environment
+from ouroboros.environments.base import ObservationEnvironment
 
 
 @dataclass

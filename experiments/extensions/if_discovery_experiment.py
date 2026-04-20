@@ -10,7 +10,7 @@ Run:
 
 import sys
 sys.path.insert(0, '.')
-from ouroboros.environment.structured import PiecewiseModEnv
+from ouroboros.environmentss.structured import PiecewiseModEnv
 from ouroboros.agents.synthesis_agent import SynthesisAgent
 from rich.console import Console
 

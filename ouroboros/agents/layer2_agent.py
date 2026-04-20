@@ -28,7 +28,7 @@ from ouroboros.agents.mdl_objective import (
     MDLObjective, ObjectiveProposal, DEFAULT_OBJECTIVE,
 )
 from ouroboros.agents.objective_market import ObjectiveProofMarket
-from ouroboros.environments.base import Environment
+from ouroboros.environments.base import ObservationEnvironment
 
 
 @dataclass

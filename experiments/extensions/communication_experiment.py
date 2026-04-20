@@ -6,7 +6,7 @@ import sys, json
 from pathlib import Path
 sys.path.insert(0, '.')
 
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environmentssssss.structured import ModularArithmeticEnv
 from ouroboros.agents.self_modifying_agent import SelfModifyingAgent
 from ouroboros.agents.communicating_agent import CommunicatingAgent
 from ouroboros.agents.communication import MessageBus

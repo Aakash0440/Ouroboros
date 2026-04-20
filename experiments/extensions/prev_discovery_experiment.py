@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, '.')
 
-from ouroboros.environment.structured import FibonacciModEnv, RecurrenceEnv
+from ouroboros.environmentss.structured import FibonacciModEnv, RecurrenceEnv
 from ouroboros.agents.synthesis_agent import SynthesisAgent
 from ouroboros.compression.program_synthesis import build_fibonacci_mod
 from ouroboros.compression.mdl import naive_bits

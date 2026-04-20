@@ -21,8 +21,8 @@ from ouroboros.compression.program_synthesis import (
     build_linear_modular, BeamSearchSynthesizer
 )
 from ouroboros.compression.mdl import compression_ratio, naive_bits
-from ouroboros.environment.structured import ModularArithmeticEnv
-from ouroboros.environment.joint_environment import JointEnvironment
+from ouroboros.environments.structured import ModularArithmeticEnv
+from ouroboros.environments.joint_environment import JointEnvironment
 from rich.console import Console
 from rich.panel import Panel
 

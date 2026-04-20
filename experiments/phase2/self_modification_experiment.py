@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, '.')
 
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environments.structured import ModularArithmeticEnv
 from ouroboros.agents.self_modifying_agent import SelfModifyingAgent
 from ouroboros.proof_market.market import ProofMarket
 from ouroboros.proof_market.counterexample import CounterexampleSearcher

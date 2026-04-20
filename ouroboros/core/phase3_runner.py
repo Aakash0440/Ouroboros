@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 import numpy as np
 
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environments.structured import ModularArithmeticEnv
 from ouroboros.agents.theory_agent import TheoryAgent
 from ouroboros.proof_market.market import ProofMarket
 from ouroboros.proof_market.counterexample import CounterexampleSearcher

@@ -96,7 +96,7 @@ class TestTheoryAgent:
 
     def test_update_theory_from_search(self):
         from ouroboros.agents.theory_agent import TheoryAgent
-        from ouroboros.environment.structured import ModularArithmeticEnv
+        from ouroboros.environments.structured import ModularArithmeticEnv
         env = ModularArithmeticEnv(7, 3, 1)
         env.reset(300)
         agent = TheoryAgent(0, 7, scales=[1, 4],

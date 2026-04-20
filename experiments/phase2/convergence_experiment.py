@@ -29,7 +29,7 @@ from pathlib import Path
 sys.path.insert(0, '.')
 
 from ouroboros.core.phase2_runner import Phase2Runner
-from ouroboros.environment.structured import FibonacciModEnv
+from ouroboros.environments.structured import FibonacciModEnv
 from rich.console import Console
 from rich.table import Table
 
@@ -114,5 +114,5 @@ def main():
 
 
 if __name__ == '__main__':
-    from ouroboros.environment.structured import ModularArithmeticEnv
+    from ouroboros.environments.structured import ModularArithmeticEnv
     main()

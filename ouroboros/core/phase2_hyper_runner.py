@@ -32,7 +32,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import numpy as np
 
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environments.structured import ModularArithmeticEnv
 from ouroboros.agents.hyperparameter_agent import (
     HyperparameterAgent, HyperparameterSet, HyperparameterProposal
 )

@@ -1,5 +1,5 @@
 # ouroboros/environment/__init__.py
-from ouroboros.environment.structured import (
+from ouroboros.environments.structured import (
     BinaryRepeatEnv,
     ModularArithmeticEnv,
     FibonacciModEnv,

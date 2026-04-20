@@ -34,8 +34,8 @@ from typing import List, Dict, Optional, Tuple
 import numpy as np
 from ouroboros.compression.program_synthesis import ExprNode
 from ouroboros.compression.mdl import compression_ratio, naive_bits
-from ouroboros.environment.base import ObservationEnvironment
-from ouroboros.environment.structured import (
+from ouroboros.environments.base import ObservationEnvironment
+from ouroboros.environments.structured import (
     ModularArithmeticEnv, FibonacciModEnv, MultiScaleEnv, NoiseEnv
 )
 from ouroboros.utils.logger import get_logger

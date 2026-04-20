@@ -35,7 +35,7 @@ Run:
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 
-from ouroboros.environment import ModularArithmeticEnv
+from ouroboros.environments import ModularArithmeticEnv
 from ouroboros.agents.synthesis_agent import SynthesisAgent
 from ouroboros.emergence.proto_axiom_pool import ProtoAxiomPool
 from ouroboros.compression.mdl import naive_bits

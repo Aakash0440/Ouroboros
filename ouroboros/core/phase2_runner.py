@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import numpy as np
 
-from ouroboros.environment.structured import ModularArithmeticEnv
+from ouroboros.environments.structured import ModularArithmeticEnv
 from ouroboros.agents.self_modifying_agent import SelfModifyingAgent
 from ouroboros.proof_market.market import ProofMarket
 from ouroboros.proof_market.counterexample import CounterexampleSearcher

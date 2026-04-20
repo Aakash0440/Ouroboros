@@ -72,7 +72,7 @@ class Phase2FormalRunner(Phase2Runner):
     @classmethod
     def for_modular_arithmetic(cls, modulus=7, slope=3, intercept=1,
                                 num_agents=6, run_dir=None, **kwargs):
-        from ouroboros.environment.structured import ModularArithmeticEnv
+        from ouroboros.environments.structured import ModularArithmeticEnv
         env = ModularArithmeticEnv(modulus, slope, intercept, seed=42)
         name = f"ModularArith({modulus},{slope},{intercept})"
         rdir = run_dir or f"experiments/phase2/runs/formal_{modulus}"
