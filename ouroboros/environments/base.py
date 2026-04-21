@@ -118,3 +118,6 @@ class ObservationEnvironment(ABC):
             f"len={len(self._stream)}, "
             f"pos={self._position})"
         )
+
+# Alias for backwards compatibility
+Environment = ObservationEnvironment
