@@ -1,7 +1,7 @@
 from .base import ObservationEnvironment
 import random
 
-class NoiseEnv(ObservationEnvironment):
+class NoiseEnv:
     def __init__(self, modulus=12, alphabet_size=12, seed=42):
         self.modulus = modulus or alphabet_size
         self.seed = seed

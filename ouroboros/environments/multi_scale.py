@@ -1,7 +1,7 @@
 from .base import ObservationEnvironment
 import math
 
-class MultiScaleEnv(ObservationEnvironment):
+class MultiScaleEnv:
     def __init__(self, scales=None, modulus=12):
         self.scales = scales or [1, 4, 16]
         self.modulus = modulus

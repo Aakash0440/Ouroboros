@@ -1,7 +1,7 @@
 from .base import ObservationEnvironment
 import random
 
-class ModularArithmeticEnv(ObservationEnvironment):
+class ModularArithmeticEnv:
 
     def __init__(self, modulus=7, slope=1, intercept=0):
         self.modulus = modulus

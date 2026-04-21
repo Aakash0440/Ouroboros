@@ -47,7 +47,11 @@ class TribonacciModEnv(LongRangeEnvironment):
         name: str = None,
         seed: int = 42,
     ):
-        super().__init__(name=name or f"TribonacciMod({modulus})", seed=seed)
+        super().__init__(
+            alphabet_size=modulus,
+            seed=seed,
+            name=name or f"TribonacciMod({modulus})",
+        )
         self.modulus = modulus
         self.seeds = seeds
         self._cache: List[int] = list(seeds)
@@ -71,10 +75,6 @@ class TribonacciModEnv(LongRangeEnvironment):
     def max_lag(self) -> int:
         return 3
 
-    @property
-    def alphabet_size(self) -> int:
-        return self.modulus
-
     def ground_truth_rule(self) -> str:
         return f"(PREV(1) + PREV(2) + PREV(3)) % {self.modulus}"
 
@@ -90,7 +90,11 @@ class LucasSequenceEnv(LongRangeEnvironment):
     """
 
     def __init__(self, modulus: int = 7, name: str = None, seed: int = 42):
-        super().__init__(name=name or f"LucasMod({modulus})", seed=seed)
+        super().__init__(
+            alphabet_size=modulus,
+            seed=seed,
+            name=name or f"LucasMod({modulus})",
+        )
         self.modulus = modulus
         self._cache: List[int] = [2 % modulus, 1 % modulus]
         self._extend_cache(2000)
@@ -108,10 +112,6 @@ class LucasSequenceEnv(LongRangeEnvironment):
     @property
     def max_lag(self) -> int:
         return 2
-
-    @property
-    def alphabet_size(self) -> int:
-        return self.modulus
 
     def ground_truth_rule(self) -> str:
         return f"(PREV(1) + PREV(2)) % {self.modulus}  [seeds: 2, 1]"
@@ -135,7 +135,11 @@ class LinearRecurrenceEnv(LongRangeEnvironment):
         seed: int = 42,
     ):
         k = len(coefficients)
-        super().__init__(name=name or f"LinearRec(order={k},mod={modulus})", seed=seed)
+        super().__init__(
+            alphabet_size=modulus,
+            seed=seed,
+            name=name or f"LinearRec(order={k},mod={modulus})",
+        )
 
         self.coefficients = coefficients
         self.modulus = modulus
@@ -164,17 +168,13 @@ class LinearRecurrenceEnv(LongRangeEnvironment):
     def max_lag(self) -> int:
         return len(self.coefficients)
 
-    @property
-    def alphabet_size(self) -> int:
-        return self.modulus
-
     def ground_truth_rule(self) -> str:
         terms = [f"{c}*PREV({l})" for l, c in self._nonzero]
         return f"({' + '.join(terms)}) % {self.modulus}"
 
 
 # ============================================================
-# Sliding Window (FIXED: true recurrence)
+# Sliding Window
 # ============================================================
 
 class SlidingWindowEnv(LongRangeEnvironment):
@@ -191,8 +191,9 @@ class SlidingWindowEnv(LongRangeEnvironment):
         seed: int = 42,
     ):
         super().__init__(
+            alphabet_size=modulus,
+            seed=seed,
             name=name or f"SlidingWindow(W={window_size},mod={modulus})",
-            seed=seed
         )
         self.window_size = window_size
         self.modulus = modulus
@@ -227,10 +228,6 @@ class SlidingWindowEnv(LongRangeEnvironment):
     def max_lag(self) -> int:
         return self.window_size
 
-    @property
-    def alphabet_size(self) -> int:
-        return self.modulus
-
     def ground_truth_rule(self) -> str:
         terms = [f"PREV({i+1})" for i in range(self.window_size)]
         return f"({' + '.join(terms)}) % {self.modulus}"
@@ -255,8 +252,9 @@ class AutoregressiveEnv(LongRangeEnvironment):
         max_l = max(lag for lag, _ in nonzero_lags)
 
         super().__init__(
-            name=name or f"AR({','.join(str(l) for l,_ in nonzero_lags)},mod={modulus})",
-            seed=seed
+            alphabet_size=modulus,
+            seed=seed,
+            name=name or f"AR({','.join(str(l) for l, _ in nonzero_lags)},mod={modulus})",
         )
 
         self.nonzero_lags = sorted(nonzero_lags)
@@ -288,10 +286,6 @@ class AutoregressiveEnv(LongRangeEnvironment):
     @property
     def max_lag(self) -> int:
         return self._max_lag
-
-    @property
-    def alphabet_size(self) -> int:
-        return self.modulus
 
     def ground_truth_rule(self) -> str:
         terms = [f"{c}*PREV({l})" for l, c in self.nonzero_lags]

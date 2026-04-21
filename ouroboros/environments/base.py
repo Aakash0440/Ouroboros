@@ -1,5 +1,3 @@
-# ouroboros/environment/base.py
-
 """
 Observation environment base class.
 
@@ -19,8 +17,8 @@ Environment contract:
     env.naive_description_length() → bits needed with no compression
 """
 
-from abc import ABC, abstractmethod
-from typing import List
+from abc import ABC
+from typing import List, Optional
 import numpy as np
 
 
@@ -34,18 +32,19 @@ class ObservationEnvironment(ABC):
     Args:
         alphabet_size: Number of distinct symbols (e.g. 7 for mod-7 env)
         seed: Random seed for reproducible streams
+        name: Human-readable name for the environment (defaults to class name)
     """
 
-    def __init__(self, alphabet_size: int, seed: int = 42):
+    def __init__(self, alphabet_size: int = 256, seed: int = 42, name: Optional[str] = None):
         self.alphabet_size = alphabet_size
+        self.name = name or self.__class__.__name__
         self.rng = np.random.default_rng(seed)
         self._stream: List[int] = []
         self._position: int = 0
 
-    @abstractmethod
-    def _generate_stream(self, length: int) -> List[int]:
+    def _generate_stream(self, length: int = 1000) -> List[int]:
         """Generate observation stream of given length."""
-        ...
+        return []
 
     def reset(self, stream_length: int = 10_000) -> None:
         """
@@ -113,11 +112,12 @@ class ObservationEnvironment(ABC):
 
     def __repr__(self) -> str:
         return (
-            f"{self.__class__.__name__}("
+            f"{self.name}("
             f"alphabet={self.alphabet_size}, "
             f"len={len(self._stream)}, "
             f"pos={self._position})"
         )
+
 
 # Alias for backwards compatibility
 Environment = ObservationEnvironment
