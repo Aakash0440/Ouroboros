@@ -3,13 +3,9 @@ Long-range observation environments requiring PREV(k) for k > 3.
 
 These environments emit integer sequences whose structure can only
 be captured by expressions referencing observations from many steps back.
-
-The existing FibonacciModEnv (Day 1) uses lag=2 (PREV(1)+PREV(2)).
-These environments require lag 3..20.
 """
 
 from __future__ import annotations
-import math
 from typing import List, Tuple, Optional
 from ouroboros.environments.base import Environment
 
@@ -17,30 +13,31 @@ from ouroboros.environments.base import Environment
 class LongRangeEnvironment(Environment):
     """
     Base class for environments requiring long-range dependencies.
-    
-    Generates sequences where obs[t] depends on obs[t-1]..obs[t-max_lag].
-    The max_lag property tells the search engine how far back to look.
     """
-    
+
+    def generate(self, length: int, start: int = 0) -> List[int]:
+        raise NotImplementedError
+
     @property
     def max_lag(self) -> int:
-        """Maximum lag required to express this environment's rule."""
         raise NotImplementedError
-    
+
     @property
     def recurrence_order(self) -> int:
-        """Order of the linear recurrence (same as max_lag for linear recurrences)."""
         return self.max_lag
 
+    @property
+    def is_linear(self) -> bool:
+        return True
+
+
+# ============================================================
+# Tribonacci
+# ============================================================
 
 class TribonacciModEnv(LongRangeEnvironment):
     """
     obs[t] = (obs[t-1] + obs[t-2] + obs[t-3]) % modulus
-    
-    Generalizes Fibonacci (order 2) to order 3.
-    Requires PREV(1) + PREV(2) + PREV(3) expression.
-    
-    Default: modulus=7, seeds=(0, 1, 1)
     """
 
     def __init__(
@@ -58,7 +55,11 @@ class TribonacciModEnv(LongRangeEnvironment):
 
     def _extend_cache(self, length: int) -> None:
         while len(self._cache) < length:
-            nxt = (self._cache[-1] + self._cache[-2] + self._cache[-3]) % self.modulus
+            nxt = (
+                self._cache[-1]
+                + self._cache[-2]
+                + self._cache[-3]
+            ) % self.modulus
             self._cache.append(nxt)
 
     def generate(self, length: int, start: int = 0) -> List[int]:
@@ -78,15 +79,14 @@ class TribonacciModEnv(LongRangeEnvironment):
         return f"(PREV(1) + PREV(2) + PREV(3)) % {self.modulus}"
 
 
+# ============================================================
+# Lucas Sequence
+# ============================================================
+
 class LucasSequenceEnv(LongRangeEnvironment):
     """
-    Lucas sequence: L(n) = L(n-1) + L(n-2) with L(0)=2, L(1)=1
-    taken modulo a prime.
-    
-    Structurally identical to Fibonacci but with different initial conditions.
-    Agents must discover the recurrence rule AND the seed values independently.
-    
-    Default: modulus=7
+    Lucas sequence:
+    L(n) = L(n-1) + L(n-2), with seeds (2, 1)
     """
 
     def __init__(self, modulus: int = 7, name: str = None, seed: int = 42):
@@ -117,14 +117,13 @@ class LucasSequenceEnv(LongRangeEnvironment):
         return f"(PREV(1) + PREV(2)) % {self.modulus}  [seeds: 2, 1]"
 
 
+# ============================================================
+# General Linear Recurrence
+# ============================================================
+
 class LinearRecurrenceEnv(LongRangeEnvironment):
     """
-    General linear recurrence: obs[t] = (c1*obs[t-1] + c2*obs[t-2] + ... + ck*obs[t-k]) % N
-    
-    The most general order-k linear recurrence over Z/NZ.
-    
-    Example: coefficients=[1, 0, 1], modulus=7 → Tribonacci with c3=0 → same as Fibonacci
-    Example: coefficients=[2, 1], modulus=7 → obs[t] = (2*obs[t-1] + obs[t-2]) % 7
+    obs[t] = (c1*obs[t-1] + ... + ck*obs[t-k]) % N
     """
 
     def __init__(
@@ -137,18 +136,22 @@ class LinearRecurrenceEnv(LongRangeEnvironment):
     ):
         k = len(coefficients)
         super().__init__(name=name or f"LinearRec(order={k},mod={modulus})", seed=seed)
+
         self.coefficients = coefficients
         self.modulus = modulus
+
+        self._nonzero = [(i + 1, c) for i, c in enumerate(coefficients) if c != 0]
+
         self._seeds = seeds if seeds is not None else list(range(k))
         self._cache: List[int] = [s % modulus for s in self._seeds]
+
         self._extend_cache(2000)
 
     def _extend_cache(self, length: int) -> None:
-        k = len(self.coefficients)
         while len(self._cache) < length:
             nxt = sum(
-                self.coefficients[i] * self._cache[-i - 1]
-                for i in range(k)
+                c * self._cache[-lag]
+                for lag, c in self._nonzero
             ) % self.modulus
             self._cache.append(nxt)
 
@@ -166,55 +169,58 @@ class LinearRecurrenceEnv(LongRangeEnvironment):
         return self.modulus
 
     def ground_truth_rule(self) -> str:
-        terms = [f"{c}*PREV({i+1})" for i, c in enumerate(self.coefficients) if c != 0]
+        terms = [f"{c}*PREV({l})" for l, c in self._nonzero]
         return f"({' + '.join(terms)}) % {self.modulus}"
 
 
+# ============================================================
+# Sliding Window (FIXED: true recurrence)
+# ============================================================
+
 class SlidingWindowEnv(LongRangeEnvironment):
     """
-    obs[t] = (sum of last W observations) % modulus
-    
-    Requires knowing observations from the last W steps.
-    Default: W=7 (weekly pattern), modulus=7
-    
-    This models weekly seasonality: the current value is the moving
-    sum of the past week, taken modulo 7.
+    obs[t] = (PREV(1) + PREV(2) + ... + PREV(W)) % modulus
     """
 
     def __init__(
         self,
         window_size: int = 7,
         modulus: int = 7,
-        base_sequence: Optional[List[int]] = None,
+        seeds: Optional[List[int]] = None,
         name: str = None,
         seed: int = 42,
     ):
-        super().__init__(name=name or f"SlidingWindow(W={window_size},mod={modulus})", seed=seed)
+        super().__init__(
+            name=name or f"SlidingWindow(W={window_size},mod={modulus})",
+            seed=seed
+        )
         self.window_size = window_size
         self.modulus = modulus
-        
-        # Generate a base sequence to sum over
-        if base_sequence is None:
+
+        if seeds is None:
             import random
             rng = random.Random(seed)
-            self._base = [rng.randint(0, modulus - 1) for _ in range(2000)]
+            self._cache: List[int] = [
+                rng.randint(0, modulus - 1)
+                for _ in range(window_size)
+            ]
         else:
-            self._base = base_sequence * (2000 // len(base_sequence) + 1)
-        
-        self._cache: List[int] = []
-        self._build_cache(2000)
+            self._cache = [s % modulus for s in seeds]
 
-    def _build_cache(self, length: int) -> None:
-        for t in range(length):
-            window_sum = sum(
-                self._base[max(0, t - self.window_size + 1 + i]
-                for i in range(min(self.window_size, t + 1))
+        self._extend_cache(2000)
+
+    def _extend_cache(self, length: int) -> None:
+        while len(self._cache) < length:
+            k = min(self.window_size, len(self._cache))
+            nxt = sum(
+                self._cache[-i - 1]
+                for i in range(k)
             ) % self.modulus
-            self._cache.append(window_sum)
+            self._cache.append(nxt)
 
     def generate(self, length: int, start: int = 0) -> List[int]:
         if start + length > len(self._cache):
-            self._build_cache(start + length + 100)
+            self._extend_cache(start + length + 100)
         return self._cache[start:start + length]
 
     @property
@@ -230,39 +236,40 @@ class SlidingWindowEnv(LongRangeEnvironment):
         return f"({' + '.join(terms)}) % {self.modulus}"
 
 
+# ============================================================
+# Sparse Autoregressive
+# ============================================================
+
 class AutoregressiveEnv(LongRangeEnvironment):
     """
-    AR(p) process over integers modulo N.
-    
-    obs[t] = (a1*obs[t-1] + a2*obs[t-p] + noise_term) % N
-    
-    Where the non-zero lags are far apart — e.g., AR(1,7) with
-    coefficients at lag 1 and lag 7. This models "same time last week"
-    patterns in weekly data.
-    
-    Default: AR(1,7) with coefficients [1, 0, 0, 0, 0, 0, 1], modulus=7
+    obs[t] = sum(ai * obs[t - lag_i]) % N
     """
 
     def __init__(
         self,
-        nonzero_lags: List[Tuple[int, int]],  # [(lag, coefficient), ...]
+        nonzero_lags: List[Tuple[int, int]],
         modulus: int = 7,
         name: str = None,
         seed: int = 42,
     ):
         max_l = max(lag for lag, _ in nonzero_lags)
+
         super().__init__(
             name=name or f"AR({','.join(str(l) for l,_ in nonzero_lags)},mod={modulus})",
             seed=seed
         )
+
         self.nonzero_lags = sorted(nonzero_lags)
         self.modulus = modulus
         self._max_lag = max_l
 
-        # Build cache
         import random
         rng = random.Random(seed)
-        self._cache: List[int] = [rng.randint(0, modulus - 1) for _ in range(max_l)]
+        self._cache: List[int] = [
+            rng.randint(0, modulus - 1)
+            for _ in range(max_l)
+        ]
+
         self._extend_cache(2000)
 
     def _extend_cache(self, length: int) -> None:
