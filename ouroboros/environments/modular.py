@@ -16,3 +16,7 @@ class ModularArithmeticEnv(ObservationEnvironment):
             a = random.randint(0, self.modulus - 1)
             b = random.randint(0, self.modulus - 1)
             yield (a, b, (a + b) % self.modulus)
+
+    @property
+    def name(self):
+        return f'ModularArithmetic({self.modulus})'
