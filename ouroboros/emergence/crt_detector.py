@@ -141,3 +141,38 @@ def check_behavioral_crt(
     is_crt = accuracy >= 0.85
 
     return is_crt, accuracy
+
+"""check_behavioral_crt — verifies whether an expression captures CRT structure."""
+from typing import List, Any
+
+
+def check_behavioral_crt(
+    expr: Any,
+    obs: List[int],
+    mod1: int = 7,
+    mod2: int = 11,
+    accuracy_threshold: float = 0.85,
+) -> bool:
+    """
+    Returns True if `expr` predicts `obs` (a CRT-joint sequence) with
+    accuracy >= accuracy_threshold.
+
+    Uses expr.evaluate(t, history) to generate predictions.
+    """
+    if expr is None or not obs:
+        return False
+
+    correct = 0
+    history: List[int] = []
+    for t, actual in enumerate(obs):
+        try:
+            pred = expr.evaluate(t, history, mod1 * mod2)
+            pred_int = int(round(pred)) % (mod1 * mod2)
+            if pred_int == actual:
+                correct += 1
+        except Exception:
+            pass
+        history.append(actual)
+
+    accuracy = correct / len(obs)
+    return accuracy >= accuracy_threshold

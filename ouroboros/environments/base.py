@@ -42,6 +42,17 @@ class ObservationEnvironment(ABC):
         self._stream: List[int] = []
         self._position: int = 0
 
+    def generate(self, length: int, start: int = 0) -> List[int]:
+        """Convenience method: generate a stream without affecting internal state."""
+        backup_rng = np.random.default_rng(int(self.rng.integers(0, 2**32)))
+        backup_stream = self._stream
+        backup_pos = self._position
+        self._stream = self._generate_stream(length)
+        result = list(self._stream)
+        self._stream = backup_stream
+        self._position = backup_pos
+        return result
+
     def _generate_stream(self, length: int = 1000) -> List[int]:
         """Generate observation stream of given length."""
         return []

@@ -2,18 +2,18 @@
 Symbolic program synthesis for OUROBOROS agents.
 
 Extended node types (v2):
-    CONST(n)       â€” integer constant n
-    TIME           â€” timestep variable t
-    ADD(l, r)      â€” l + r
-    MUL(l, r)      â€” l * r
-    MOD(l, r)      â€” l mod r  (r=0 â†’ 0)
-    SUB(l, r)      â€” l - r    (NEW: enables negative residues)
-    DIV(l, r)      â€” l // r   (NEW: integer floor division, r=0 â†’ 0)
-    POW(l, r)      â€” l ** r   (NEW: polynomial sequences, r clamped â‰¤5)
-    PREV(k)        â€” obs[t-k] (NEW: recurrence relations â€” k is lag)
-    IF(c, t, e)    â€” câ‰ 0 ? t : e (NEW: piecewise rules, 3-child node)
-    EQ(l, r)       â€” 1 if l==r else 0 (NEW: equality test, useful in IF)
-    LT(l, r)       â€” 1 if l<r  else 0 (NEW: less-than test)
+    CONST(n)       — integer constant n
+    TIME           — timestep variable t
+    ADD(l, r)      — l + r
+    MUL(l, r)      — l * r
+    MOD(l, r)      — l mod r  (r=0 → 0)
+    SUB(l, r)      — l - r    (NEW: enables negative residues)
+    DIV(l, r)      — l // r   (NEW: integer floor division, r=0 → 0)
+    POW(l, r)      — l ** r   (NEW: polynomial sequences, r clamped ≤5)
+    PREV(k)        — obs[t-k] (NEW: recurrence relations — k is lag)
+    IF(c, t, e)    — c≠0 ? t : e (NEW: piecewise rules, 3-child node)
+    EQ(l, r)       — 1 if l==r else 0 (NEW: equality test, useful in IF)
+    LT(l, r)       — 1 if l<r  else 0 (NEW: less-than test)
 
 Why these and not more?
     These cover: modular arithmetic (MOD), recurrence (PREV),
@@ -27,7 +27,7 @@ PREV semantics:
     If t-k < 0, returns 0 (boundary condition).
     The observation_history is passed as context to evaluate().
     For prediction (no history), PREV uses the expression's own
-    previous predictions â€” this is the recurrence mode.
+    previous predictions — this is the recurrence mode.
 
 IF semantics:
     IF has THREE children: condition, then_branch, else_branch.
@@ -99,12 +99,12 @@ class ExprNode:
             t: Current timestep
             history: Observation history (needed for PREV nodes)
                      If None, PREV returns 0
-            alphabet_size: For clamping (not applied here â€” caller clamps)
+            alphabet_size: For clamping (not applied here — caller clamps)
 
         Returns:
             Integer value of expression at t
         """
-        # â”€â”€ Leaf nodes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # ── Leaf nodes ───────────────────────────────────────────────────
         if self.node_type == NodeType.CONST:
             return self.value
 
@@ -118,7 +118,7 @@ class ExprNode:
                 return 0
             return history[idx]
 
-        # â”€â”€ Binary nodes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # ── Binary nodes ─────────────────────────────────────────────────
         lv = self.left.evaluate(t, history, alphabet_size)
         rv = self.right.evaluate(t, history, alphabet_size)
 
@@ -145,7 +145,7 @@ class ExprNode:
         if self.node_type == NodeType.LT:
             return 1 if lv < rv else 0
 
-        # â”€â”€ Ternary node â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # ── Ternary node ─────────────────────────────────────────────────
         if self.node_type == NodeType.IF:
             condition_val = self.left.evaluate(t, history, alphabet_size)
             if condition_val != 0:
@@ -223,6 +223,16 @@ class ExprNode:
         if self.extra: n += self.extra.num_nodes()
         return n
 
+    def node_count(self) -> int:
+        return self.num_nodes()
+
+    def constant_count(self) -> int:
+        count = 1 if self.node_type == NodeType.CONST else 0
+        if self.left:  count += self.left.constant_count()
+        if self.right: count += self.right.constant_count()
+        if self.extra: count += self.extra.constant_count()
+        return count
+
     def has_prev(self) -> bool:
         """Check if expression tree contains any PREV nodes."""
         if self.node_type == NodeType.PREV:
@@ -255,7 +265,7 @@ class ExprNode:
         return f"ExprNode({self.to_string()!r})"
 
 
-# â”€â”€ Convenience constructors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Convenience constructors ──────────────────────────────────────────────────
 
 def C(n: int) -> ExprNode:
     return ExprNode(NodeType.CONST, value=n)
@@ -326,11 +336,17 @@ def build_piecewise(
     return IF(EQ(MOD(T(), C(period)), C(0)), expr1, expr2)
 
 
-# â”€â”€ Extended Beam Search â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# ── Extended Beam Search ──────────────────────────────────────────────────────
+
+# Rescue loop constant range — deliberately small to avoid O(n²) score calls.
+# The beam already covers small constants via const_range; the rescue loop
+# only needs to catch the handful of depth-2 T-expressions the beam misses.
+_RESCUE_CONST_RANGE = 16
+
 
 class BeamSearchSynthesizer:
     """
-    Beam search over expression trees â€” extended with new primitives.
+    Beam search over expression trees — extended with new primitives.
 
     New candidates at depth 0:
         All PREV(k) for k in 1..max_lag (alongside CONST and TIME)
@@ -340,7 +356,7 @@ class BeamSearchSynthesizer:
         IF constructions (condition from EQ/LT, then/else from beam)
 
     PREV-containing expressions are scored using predict_sequence()
-    in recurrence mode â€” the expression's own previous predictions
+    in recurrence mode — the expression's own previous predictions
     are fed back as history. This is how Fibonacci emerges.
 
     Args:
@@ -348,7 +364,7 @@ class BeamSearchSynthesizer:
         max_depth: Maximum tree depth
         const_range: Search constants 0..const_range
         max_lag: Maximum PREV lag to try (default 3)
-        alphabet_size: For prediction clamping
+        alphabet_size: For prediction clamping — MUST match env.alphabet_size
         mdl_lambda: MDL regularization weight
         enable_prev: Include PREV nodes (default True)
         enable_if: Include IF nodes (default True, slower)
@@ -361,7 +377,7 @@ class BeamSearchSynthesizer:
         max_depth: int = 3,
         const_range: int = 16,
         max_lag: int = 3,
-        alphabet_size: int = 10,
+        alphabet_size: int = 256,
         mdl_lambda: float = 1.0,
         enable_prev: bool = True,
         enable_if: bool = True,
@@ -406,9 +422,6 @@ class BeamSearchSynthesizer:
             return []
 
         leaves = self._leaves()[:8]
-        # Always include T in expansion leaves so time-dependent
-        # combinations (MUL(3,t), ADD(t,1)) are always attempted
-        # regardless of T's individual MDL score.
         if not any(l.to_string() == 't' for l in leaves):
             leaves = [T()] + leaves[:7]
         expansions = []
@@ -450,12 +463,12 @@ class BeamSearchSynthesizer:
 
         beam.sort(key=lambda x: x[0])
         beam = beam[:self.beam_width]
-        # Force T into beam — without it, time-dependent expressions like
-        # MOD(MUL(T,3),7) can never be constructed at deeper depths.
+        # Force T into beam so time-dependent expressions can be built deeper
         if not any(n.to_string() == 't' for _, n in beam):
             t_node = T()
             t_cost = self._score(t_node, actuals)
             beam[-1] = (t_cost, t_node)
+
         if verbose:
             print(f"  Depth 0: best={beam[0][1].to_string()!r} cost={beam[0][0]:.1f}")
 
@@ -472,20 +485,15 @@ class BeamSearchSynthesizer:
 
             all_candidates = beam + new_candidates
             all_candidates.sort(key=lambda x: x[0])
-            beam = all_candidates[:self.beam_width]
-            t_in_beam = [(c,n) for c,n in all_candidates if 't' in n.to_string()]
-            non_t = [(c,n) for c,n in all_candidates if 't' not in n.to_string()]
-            # Reserve 3 slots for best T-containing expressions
+
+            # Reserve 3 slots for best T-containing expressions for diversity
+            t_in_beam = [(c, n) for c, n in all_candidates if 't' in n.to_string()]
+            non_t = [(c, n) for c, n in all_candidates if 't' not in n.to_string()]
             reserved = t_in_beam[:3]
             rest = non_t[:self.beam_width - len(reserved)]
             beam = sorted(reserved + rest, key=lambda x: x[0])
 
-            # Diversity: keep the best T-containing candidate even if it scores poorly.
-            # Without this, MUL(3,t) is pruned at depth-1 before ADD(MUL(3,t),1)
-            # can be formed at depth-2.
-            # Always keep the best T-containing candidate from new expansions,
-            # even if it scores poorly — MUL(3,t) must survive depth-1
-            # so ADD(MUL(3,t),1) can be formed at depth-2.
+            # Always keep the best T-containing candidate from new expansions
             t_candidates = [(c, n) for c, n in new_candidates if 't' in n.to_string()]
             if t_candidates:
                 t_candidates.sort(key=lambda x: x[0])
@@ -506,13 +514,12 @@ class BeamSearchSynthesizer:
 
         best_cost, best_expr = beam[0]
 
-        # Targeted rescue: beam cannot find depth-2 T-expressions because
-        # MUL(3,t) scores poorly at depth-1 and gets pruned. Directly try
-        # all OP2(OP1(c1,t), c2) combinations to find e.g. ADD(MUL(3,t),1).
-        for c1 in range(0, self.const_range + 1):
+        # Targeted rescue: catch depth-2 T-expressions the beam may have missed
+        # (e.g. ADD(MUL(3,t), 1)). Uses a small fixed const range to stay fast.
+        for c1 in range(0, _RESCUE_CONST_RANGE + 1):
             for op1 in [NodeType.MUL, NodeType.ADD, NodeType.SUB]:
                 mid = ExprNode(op1, left=C(c1), right=T())
-                for c2 in range(0, self.const_range + 1):
+                for c2 in range(0, _RESCUE_CONST_RANGE + 1):
                     for op2 in [NodeType.ADD, NodeType.MOD, NodeType.MUL, NodeType.SUB]:
                         candidate = ExprNode(op2, left=mid, right=C(c2))
                         cost = self._score(candidate, actuals)
@@ -521,4 +528,3 @@ class BeamSearchSynthesizer:
                             best_expr = candidate
 
         return best_expr, best_cost
-

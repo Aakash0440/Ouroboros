@@ -134,20 +134,48 @@ class OODPressureModule:
 
     def __init__(
         self,
-        ood_environments: List[Tuple[str, ObservationEnvironment, int]],
+        ood_environments=None,
         pass_fraction_threshold: float = 0.60,
         stream_length: int = 300,
-        improvement_threshold: float = -0.05   # Allow up to 5% degradation
+        improvement_threshold: float = -0.05,
+        validation_environments=None,
+        n_tests: int = 5,
     ):
-        self.ood_environments = ood_environments
+        if ood_environments is None and validation_environments is not None:
+            ood_environments = []
+            for env in validation_environments[:n_tests]:
+                name = getattr(env, 'name', type(env).__name__)
+                alpha = getattr(env, 'alphabet_size', getattr(env, 'modulus', 10))
+                ood_environments.append((name, env, alpha))
+        self.ood_environments = ood_environments or []
         self.pass_fraction_threshold = pass_fraction_threshold
         self.stream_length = stream_length
         self.improvement_threshold = improvement_threshold
         self.logger = get_logger('OODPressure')
         self.reports: List[OODPressureReport] = []
 
-    @classmethod
-    def default_suite(cls, base_alphabet_size: int = 7) -> 'OODPressureModule':
+    def test(self, predict_fn, stream_length: int = 200):
+        from dataclasses import dataclass as _dc
+        @_dc
+        class _R:
+            pass_fraction: float
+            n_passed: int
+            n_total: int
+        passed = 0
+        total = len(self.ood_environments)
+        for env_name, env, alpha_size in self.ood_environments:
+            try:
+                obs = env.generate(stream_length)
+                preds = predict_fn(obs)
+                if not preds or len(preds) == 0:
+                    continue
+                accuracy = sum(p == a for p, a in zip(preds, obs)) / len(obs)
+                if accuracy > 0.5:
+                    passed += 1
+            except Exception:
+                pass
+        frac = passed / total if total > 0 else 0.0
+        return _R(pass_fraction=frac, n_passed=passed, n_total=total)
         """
         Create a default OOD test suite.
 

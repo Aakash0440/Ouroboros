@@ -45,7 +45,10 @@ class BeamSearchSynthesizer:
         beam_width: Number of candidates to keep at each depth (default 25)
         max_depth: Maximum expression tree depth (default 3)
         const_range: Search constants 0..const_range (default 20)
-        alphabet_size: Symbol count for prediction clamping
+        alphabet_size: Symbol count for prediction clamping.
+                       MUST be set to env.alphabet_size — wrong values
+                       cause predict_sequence to clamp incorrectly and
+                       produce all-zero scores.
         lambda_weight: MDL regularization weight
     """
 
@@ -54,7 +57,7 @@ class BeamSearchSynthesizer:
         beam_width: int = 50,
         max_depth: int = 3,
         const_range: int = 20,
-        alphabet_size: int = 10,
+        alphabet_size: int = 256,   # was 10 — callers must pass env.alphabet_size
         lambda_weight: float = 0.1,
     ):
         self.beam_width = beam_width
@@ -79,7 +82,7 @@ class BeamSearchSynthesizer:
             seeds = actuals[:3]
             preds = expr.predict_sequence(n, self.alphabet_size, initial_history=seeds)
         else:
-            preds = [expr.evaluate(t) for t in range(n)]
+            preds = [expr.evaluate(t) % self.alphabet_size for t in range(n)]
         prog_bytes = expr.to_bytes()
         return self.mdl.total_cost(prog_bytes, preds, actuals, self.alphabet_size)
 
@@ -97,7 +100,7 @@ class BeamSearchSynthesizer:
         if node.depth() >= self.max_depth:
             return []
 
-        leaves = self._leaf_nodes()[:self.const_range + 1] 
+        leaves = self._leaf_nodes()[:self.const_range + 1]
         expansions = []
 
         for leaf in leaves:
@@ -113,6 +116,7 @@ class BeamSearchSynthesizer:
                 expansions.append(MOD(leaf, node))
 
         return expansions
+
     def _structural_seeds(self) -> List[ExprNode]:
         """
         Hand-crafted templates that preserve arithmetic structure candidates.
@@ -128,12 +132,11 @@ class BeamSearchSynthesizer:
             seeds.append(ADD(T(), C(c)))
             seeds.append(MOD(T(), C(c)))
 
-        # Include linear-modular templates directly:
-        # (a*t + b) mod m
-        # Keep this bounded to avoid a combinatorial blowup.
+        # Include linear-modular templates directly: (a*t + b) mod m
+        # Clamp to alphabet_size so the modulus is always meaningful.
         max_a = min(max_c, 8)
         max_b = min(max_c, 8)
-        max_m = min(max_c, self.alphabet_size)
+        max_m = min(max_c, self.alphabet_size)  # was: min(max_c, 10) — wrong for small alphabets
         for a in range(1, max_a + 1):
             for b in range(0, max_b + 1):
                 inner = ADD(MUL(T(), C(a)), C(b))

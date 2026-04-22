@@ -1,0 +1,52 @@
+% Table 1: Compression Ratio across Prime Moduli
+\begin{table}[h]
+\centering
+\caption{Compression ratio achieved by OUROBOROS agents on ModularArithmetic
+environments with different prime moduli. Lower = better. Values are
+mean $\pm$ 95\% CI over 10 random seeds.}
+\label{tab:compression}
+\begin{tabular}{lrrrr}
+\toprule
+Modulus & Compression Ratio & Success Rate & Mean Rounds & CI (95\%) \\
+\midrule
+    5 & 0.0000 & $\pm$ 0.0000 \\
+    7 & 0.0000 & $\pm$ 0.0000 \\
+    11 & 0.0000 & $\pm$ 0.0000 \\
+    13 & 0.0000 & $\pm$ 0.0000 \\
+\midrule
+    \textbf{Landmark (mod=7)} & \textbf{1.0889} & $\pm$ 0.0000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Table 2: Convergence Statistics
+\begin{table}[h]
+\centering
+\caption{Rounds to consensus promotion across agents.
+N=8 agents, ModularArithmetic(7). Mean $\pm$ 95\% CI over 10 seeds.}
+\label{tab:convergence}
+\begin{tabular}{lrrr}
+\toprule
+Metric & Mean & Std & 95\% CI \\
+\midrule
+    Rounds to convergence & 10.00 & 0.00 & $\pm$ 0.00 \\
+    Minimum & 10 & — & — \\
+    Maximum & 10 & — & — \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Table 3: CRT Accuracy
+\begin{table}[h]
+\centering
+\caption{CRT joint expression discovery rate.
+JointEnvironment(mod1=7, mod2=11). Mean $\pm$ 95\% CI over 10 seeds.}
+\label{tab:crt}
+\begin{tabular}{lr}
+\toprule
+Method & CRT Success Rate \\
+\midrule
+    SparseBeamSearch & 0.000 $\pm$ 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

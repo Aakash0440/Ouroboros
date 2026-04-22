@@ -20,12 +20,12 @@ from ouroboros.compression.program_synthesis import (
 @dataclass
 class BeamConfig:
     beam_width: int = 25
-    const_range: int = 30
+    const_range: int = 16          # reduced from 30 — kills the O(n²) rescue loop
     max_depth: int = 4
     max_lag: int = 3
-    mcmc_iterations: int = 150   # accepted but not used by core synthesizer
+    mcmc_iterations: int = 150     # accepted but not used by core synthesizer
     random_seed: int = 42
-    alphabet_size: int = 13
+    alphabet_size: int = 256       # MUST be overridden by caller with env.alphabet_size
     enable_prev: bool = True
     enable_if: bool = True
     enable_pow: bool = True
@@ -35,10 +35,14 @@ class BeamSearchSynthesizer:
     """
     Thin wrapper that accepts a BeamConfig and delegates to the
     core BeamSearchSynthesizer in compression.program_synthesis.
-    
+
     search() returns an ExprNode (not a tuple) so callers don't
     have to unpack — search_strategy.py does:
         best_expr = synthesizer.search(observations)
+
+    IMPORTANT: Always set cfg.alphabet_size = env.alphabet_size before
+    constructing this. The default 256 will produce wrong predictions
+    for small-modulus environments.
     """
 
     def __init__(self, config: BeamConfig = None):

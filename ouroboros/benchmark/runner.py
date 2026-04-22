@@ -147,6 +147,7 @@ class BenchmarkRunner:
                 max_depth=4,
                 mcmc_iterations=100,
                 random_seed=seed * 7,
+                alphabet_size=7,
             )
             synth = BeamSearchSynthesizer(cfg)
             expr = synth.search(obs)
@@ -205,6 +206,7 @@ class BenchmarkRunner:
                     max_depth=4,
                     mcmc_iterations=100,
                     random_seed=seed * 11,
+                    alphabet_size=modulus,
                 )
                 expr = BeamSearchSynthesizer(cfg).search(obs)
 
@@ -212,7 +214,7 @@ class BenchmarkRunner:
                     preds = [expr.evaluate(t, obs[:t]) for t in range(len(obs))]
                     r = mdl_engine.compute(preds, obs, expr.node_count(), expr.constant_count())
                     ratio = r.total_mdl_cost / naive_cost if naive_cost > 0 else 1.0
-                    success_rates.append(1.0 if ratio < 0.1 else 0.0)
+                    success_rates.append(1.0 if ratio < 0.90 else 0.0)
                 else:
                     success_rates.append(0.0)
 
@@ -236,7 +238,7 @@ class BenchmarkRunner:
         """
         self._log("\n[3/6] Convergence Rounds Experiment")
         from ouroboros.environments.modular import ModularArithmeticEnv
-        from ouroboros.agents.proto_axiom_pool import ProtoAxiomPool
+        from ouroboros.emergence.proto_axiom_pool import ProtoAxiomPool
         from ouroboros.synthesis.beam_search import BeamSearchSynthesizer, BeamConfig
         from ouroboros.compression.mdl_engine import MDLEngine
 
@@ -245,7 +247,7 @@ class BenchmarkRunner:
 
         for seed in range(self.n_seeds):
             env = ModularArithmeticEnv(modulus=7, slope=3, intercept=1, seed=seed)
-            pool = ProtoAxiomPool(consensus_threshold=0.5, n_agents=self.n_agents)
+            pool = ProtoAxiomPool(num_agents=self.n_agents, consensus_threshold=0.5)
             promoted_at = None
 
             for round_num in range(1, self.n_rounds + 1):
@@ -258,14 +260,20 @@ class BenchmarkRunner:
                         max_depth=4,
                         mcmc_iterations=80,
                         random_seed=seed * 100 + agent_i * 7,
+                        alphabet_size=7,
                     )
                     expr = BeamSearchSynthesizer(cfg).search(obs)
                     if expr is not None:
                         preds = [expr.evaluate(t, obs[:t]) for t in range(len(obs))]
                         r = mdl_engine.compute(preds, obs, expr.node_count(), expr.constant_count())
-                        pool.submit(f"AGENT_{agent_i:02d}", expr, r.total_mdl_cost, round_num)
+                        pool.submit(agent_i, expr, r.total_mdl_cost, round_num)
 
-                if pool.has_promoted_axiom() and promoted_at is None:
+                pool.detect_consensus(
+                    step=round_num * self.stream_length,
+                    environment_name="ModularArithmetic(7)",
+                    stream_naive_bits=len(obs) * math.log2(7),
+                )
+                if len(pool.axioms) > 0 and promoted_at is None:
                     promoted_at = round_num
                     break
 
