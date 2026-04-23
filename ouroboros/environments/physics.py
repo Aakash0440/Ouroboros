@@ -37,7 +37,8 @@ class SpringMassEnv(Environment):
         as_integer: bool = True,
         seed: int = 42,
     ):
-        super().__init__(name=f"SpringMass(A={amplitude},ω={omega:.2f})", seed=seed)
+        self.seed = seed
+        super().__init__(alphabet_size=int(2 * amplitude) + 2, name=f"SpringMass(A={amplitude},ω={omega:.2f})", seed=seed)
         self.amplitude = amplitude
         self.omega = omega
         self.phi = phi
@@ -57,10 +58,6 @@ class SpringMassEnv(Environment):
             else:
                 result.append(v)
         return result
-
-    @property
-    def alphabet_size(self) -> int:
-        return int(2 * self.amplitude) + 2
 
     def ground_truth_rule(self) -> str:
         return f"x[t] = {self.amplitude}*cos({self.omega:.3f}*t)"
@@ -82,7 +79,7 @@ class RadioactiveDecayEnv(Environment):
         decay_rate: float = 0.05,
         seed: int = 42,
     ):
-        super().__init__(name=f"RadioactiveDecay(λ={decay_rate})", seed=seed)
+        super().__init__(alphabet_size=n0 + 1, name=f"RadioactiveDecay(λ={decay_rate})", seed=seed)
         self.n0 = n0
         self.decay_rate = decay_rate
 
@@ -91,10 +88,6 @@ class RadioactiveDecayEnv(Environment):
             max(0, int(self.n0 * math.exp(-self.decay_rate * t)))
             for t in range(start, start + length)
         ]
-
-    @property
-    def alphabet_size(self) -> int:
-        return self.n0 + 1
 
     def ground_truth_rule(self) -> str:
         return f"count[t] = {self.n0}*exp(-{self.decay_rate}*t)"
@@ -116,7 +109,7 @@ class FreeFallEnv(Environment):
         scale: float = 0.1,
         seed: int = 42,
     ):
-        super().__init__(name=f"FreeFall(h={h0},g={g})", seed=seed)
+        super().__init__(alphabet_size=int(h0) + 2, name=f"FreeFall(h={h0},g={g})", seed=seed)
         self.h0 = h0
         self.g = g
         self.scale = scale  # scale factor to keep values in integer range
@@ -128,9 +121,6 @@ class FreeFallEnv(Environment):
             result.append(max(0, int(round(y))))
         return result
 
-    @property
-    def alphabet_size(self) -> int:
-        return int(self.h0) + 2
 
     def ground_truth_rule(self) -> str:
         return f"y[t] = {self.h0:.1f} - {0.5*self.g*self.scale**2:.4f}*t²"
