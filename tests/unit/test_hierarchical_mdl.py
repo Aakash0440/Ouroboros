@@ -69,7 +69,7 @@ class TestHierarchicalMDL:
         assert isinstance(ratio, float)
 
     def test_noise_all_ratios_above_threshold(self):
-        from ouroboros.environmentss.structured import NoiseEnv
+        from ouroboros.environments.structured import NoiseEnv
         env = NoiseEnv(4, seed=0)
         env.reset(2000)
         stream = env.peek_all()

@@ -192,6 +192,17 @@ class OODPressureModule:
             ("MultiScale(14,7)", MultiScaleEnv(14, 7, 0.03, seed=99), 4),
         ]
         return cls(ood_envs, pass_fraction_threshold=0.50)
+        
+    @classmethod
+    def default_suite(cls, base_alphabet_size: int = 7):
+        ood_envs = [
+            ("ModArith(5,2,3)", ModularArithmeticEnv(5, 2, 3, seed=99), 5),
+            ("ModArith(11,4,2)", ModularArithmeticEnv(11, 4, 2, seed=99), 11),
+            ("ModArith(13,5,4)", ModularArithmeticEnv(13, 5, 4, seed=99), 13),
+            ("FibonacciMod(7)", FibonacciModEnv(7, seed=99), 7),
+            ("MultiScale(14,7)", MultiScaleEnv(14, 7, 0.03, seed=99), 4),
+        ]
+        return cls(ood_envs, pass_fraction_threshold=0.50)
 
     def test_modification(
         self,

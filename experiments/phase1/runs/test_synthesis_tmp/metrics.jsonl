@@ -38,3 +38,18 @@
 {"step": 50, "ts": 1776662116.3943071, "agent_id": 1, "compression_ratio": 1.12, "context_length": 1, "expression": "prev(2)"}
 {"step": 100, "ts": 1776662118.4214733, "agent_id": 0, "compression_ratio": 0.56, "context_length": 1, "expression": "prev(2)"}
 {"step": 100, "ts": 1776662120.432031, "agent_id": 1, "compression_ratio": 0.56, "context_length": 1, "expression": "prev(2)"}
+{"type": "run_metadata", "timestamp": "2026-04-23T09:36:17.506918", "run_dir": "experiments\\phase1\\runs\\test_synthesis_tmp"}
+{"step": 50, "ts": 1776918978.188956, "agent_id": 0, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 50, "ts": 1776918979.0001838, "agent_id": 1, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776918980.282172, "agent_id": 0, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776918981.5023334, "agent_id": 1, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"type": "run_metadata", "timestamp": "2026-04-23T09:52:40.331013", "run_dir": "experiments\\phase1\\runs\\test_synthesis_tmp"}
+{"step": 50, "ts": 1776919960.8674555, "agent_id": 0, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 50, "ts": 1776919961.3527265, "agent_id": 1, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776919962.278915, "agent_id": 0, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776919963.1584957, "agent_id": 1, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"type": "run_metadata", "timestamp": "2026-04-23T10:02:09.513700", "run_dir": "experiments\\phase1\\runs\\test_synthesis_tmp"}
+{"step": 50, "ts": 1776920529.9711757, "agent_id": 0, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 50, "ts": 1776920530.3856163, "agent_id": 1, "compression_ratio": 0.16, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776920531.2356534, "agent_id": 0, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}
+{"step": 100, "ts": 1776920532.1240735, "agent_id": 1, "compression_ratio": 0.08, "context_length": 1, "expression": "t"}

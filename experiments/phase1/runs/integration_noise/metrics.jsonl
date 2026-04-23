@@ -114,3 +114,30 @@
 {"step": 400, "ts": 1776661836.8458297, "agent_id": 1, "compression_ratio": 1.0680227536350286, "context_length": 1, "expression": "(7 + t)"}
 {"step": 400, "ts": 1776661842.078698, "agent_id": 2, "compression_ratio": 1.0682191267622339, "context_length": 1, "expression": "(t + 1)"}
 {"step": 400, "ts": 1776661847.4778445, "agent_id": 3, "compression_ratio": 1.0680227536350286, "context_length": 1, "expression": "(t + 3)"}
+{"type": "run_metadata", "timestamp": "2026-04-23T09:28:13.959468", "run_dir": "experiments\\phase1\\runs\\integration_noise"}
+{"step": 200, "ts": 1776918495.8166797, "agent_id": 0, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776918497.5884001, "agent_id": 1, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776918499.3534591, "agent_id": 2, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776918501.094186, "agent_id": 3, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 400, "ts": 1776918504.3991356, "agent_id": 0, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776918507.6870375, "agent_id": 1, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776918510.9890313, "agent_id": 2, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776918514.2842195, "agent_id": 3, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"type": "run_metadata", "timestamp": "2026-04-23T09:45:49.557485", "run_dir": "experiments\\phase1\\runs\\integration_noise"}
+{"step": 200, "ts": 1776919550.493842, "agent_id": 0, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776919551.5316854, "agent_id": 1, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776919554.5080078, "agent_id": 2, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776919557.4291255, "agent_id": 3, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 400, "ts": 1776919562.6421404, "agent_id": 0, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776919564.590941, "agent_id": 1, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776919566.3354802, "agent_id": 2, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776919568.149426, "agent_id": 3, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"type": "run_metadata", "timestamp": "2026-04-23T09:56:16.613077", "run_dir": "experiments\\phase1\\runs\\integration_noise"}
+{"step": 200, "ts": 1776920177.5878248, "agent_id": 0, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776920178.4672039, "agent_id": 1, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776920179.4434175, "agent_id": 2, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 200, "ts": 1776920180.3323402, "agent_id": 3, "compression_ratio": 1.0192162145509138, "context_length": 1, "expression": "0"}
+{"step": 400, "ts": 1776920182.1029696, "agent_id": 0, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776920183.8283002, "agent_id": 1, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776920185.8791623, "agent_id": 2, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}
+{"step": 400, "ts": 1776920188.064548, "agent_id": 3, "compression_ratio": 1.008822995658727, "context_length": 1, "expression": "1"}

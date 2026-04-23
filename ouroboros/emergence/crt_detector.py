@@ -146,7 +146,7 @@ def check_behavioral_crt(
 from typing import List, Any
 
 
-def check_behavioral_crt(
+def check_behavioral_crt_simple(
     expr: Any,
     obs: List[int],
     mod1: int = 7,

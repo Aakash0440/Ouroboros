@@ -240,7 +240,7 @@ class ProtoAxiomPool:
 
             # Reject non-improving candidates (e.g. random/noise consensus on constants).
             # Consensus alone is not enough: an axiom must beat naive coding.
-            if compression_improvement <= 0.0:
+            if compression_improvement < 0.05:
                 continue
 
             # Confidence: fraction of agents * how much improvement they achieve
