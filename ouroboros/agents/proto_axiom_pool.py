@@ -47,6 +47,10 @@ class ProtoAxiomPool:
     def promoted_expr(self) -> Optional[Any]:
         return self._promoted_expr
 
+    @property
+    def n_submissions(self) -> int:
+        return sum(len(subs) for subs in self._submissions.values())
+
     def reset(self) -> None:
         self._submissions.clear()
         self._promoted = False
