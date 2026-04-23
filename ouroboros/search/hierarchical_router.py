@@ -119,7 +119,7 @@ class HierarchicalSearchRouter:
 
         if verbose:
             print(f"\n[Router] Family: {classification.primary_family.name} "
-                  f"(confidence={classification.classification_confidence:.2f})")
+                  f"(confidence={classification.confidence:.2f})")
             print(f"[Router] Recommended: {[c.name for c in classification.recommended_categories]}")
 
         # Step 2: Build beam config with classification-restricted categories
@@ -187,13 +187,13 @@ class HierarchicalSearchRouter:
             expr=expr,
             mdl_cost=cost,
             math_family=classification.primary_family,
-            classification_confidence=classification.classification_confidence,
+            classification_confidence=classification.confidence,
             categories_searched=classification.recommended_categories,
             time_seconds=elapsed,
         )
 
         # Step 6: If poor result and low confidence, try MIXED (fallback)
-        if (cost > 500 and classification.classification_confidence < 0.4
+        if (cost > 500 and classification.confidence < 0.4
                 and elapsed < self.cfg.time_budget_seconds * 0.7):
             if verbose:
                 print(f"[Router] Poor result + low confidence, trying MIXED fallback")
