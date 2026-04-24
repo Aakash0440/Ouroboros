@@ -1,9 +1,1 @@
-[
-  {
-    "expr": "obs[t-7]",
-    "mdl_cost": 86.71104415127292,
-    "env": "ModularArithmeticEnv",
-    "session": 1,
-    "usage_count": 0
-  }
-]
+[]
