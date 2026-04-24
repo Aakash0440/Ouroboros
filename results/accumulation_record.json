@@ -1,0 +1,280 @@
+{
+  "experiment_id": "accum_fast",
+  "n_sessions": 30,
+  "total_axioms": 1,
+  "mean_rounds_early": 388.20346587970005,
+  "mean_rounds_late": 434.7887070813989,
+  "convergence_speedup": 0.8928554480763516,
+  "sessions": [
+    {
+      "session_id": 1,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 1,
+      "prior_benefit": 513.6922139324413,
+      "elapsed": 21.105708122253418
+    },
+    {
+      "session_id": 2,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 155.8132927417755
+    },
+    {
+      "session_id": 3,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 27.858322381973267
+    },
+    {
+      "session_id": 4,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 24.52238178253174
+    },
+    {
+      "session_id": 5,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 151.54852318763733
+    },
+    {
+      "session_id": 6,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 29.558106422424316
+    },
+    {
+      "session_id": 7,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 20.880430459976196
+    },
+    {
+      "session_id": 8,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 104.35202813148499
+    },
+    {
+      "session_id": 9,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.599801301956177
+    },
+    {
+      "session_id": 10,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 8.393036365509033
+    },
+    {
+      "session_id": 11,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 53.22202801704407
+    },
+    {
+      "session_id": 12,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.555458784103394
+    },
+    {
+      "session_id": 13,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 8.281553268432617
+    },
+    {
+      "session_id": 14,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 52.67307257652283
+    },
+    {
+      "session_id": 15,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.569281339645386
+    },
+    {
+      "session_id": 16,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 8.511701583862305
+    },
+    {
+      "session_id": 17,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 55.39164137840271
+    },
+    {
+      "session_id": 18,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.731933832168579
+    },
+    {
+      "session_id": 19,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 8.556503295898438
+    },
+    {
+      "session_id": 20,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 52.830546855926514
+    },
+    {
+      "session_id": 21,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.574559688568115
+    },
+    {
+      "session_id": 22,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 8.320473194122314
+    },
+    {
+      "session_id": 23,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 52.059160470962524
+    },
+    {
+      "session_id": 24,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.792979717254639
+    },
+    {
+      "session_id": 25,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 8.397214651107788
+    },
+    {
+      "session_id": 26,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 70.40137791633606
+    },
+    {
+      "session_id": 27,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 18.12783694267273
+    },
+    {
+      "session_id": 28,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 86.71104415127292,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 18.426719427108765
+    },
+    {
+      "session_id": 29,
+      "env": "ModularArithmeticEnv",
+      "best_mdl": 625.8333712290411,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 71.81427216529846
+    },
+    {
+      "session_id": 30,
+      "env": "Fibonacci(7)",
+      "best_mdl": 552.5634561682621,
+      "rounds": 1,
+      "n_new_axioms": 0,
+      "prior_benefit": 0.0,
+      "elapsed": 9.656838417053223
+    }
+  ]
+}
