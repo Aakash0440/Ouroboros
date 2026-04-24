@@ -36,7 +36,9 @@ class ObservationEnvironment(ABC):
     """
 
     def __init__(self, alphabet_size: int = 256, seed: int = 42, name: Optional[str] = None):
-        self.alphabet_size = alphabet_size
+        if not isinstance(getattr(type(self), 'alphabet_size', None), property):
+            if not isinstance(getattr(type(self), 'alphabet_size', None), property):
+                self.alphabet_size = alphabet_size
         self.name = name or self.__class__.__name__
         self.rng = np.random.default_rng(seed)
         self._stream: List[int] = []

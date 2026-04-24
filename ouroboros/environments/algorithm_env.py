@@ -78,6 +78,10 @@ class GCDEnv(Environment):
     def alphabet_size(self) -> int:
         return self.MAX_VAL + 1
 
+    @alphabet_size.setter
+    def alphabet_size(self, value: int) -> None:
+        pass
+
     def ground_truth_algorithm(self) -> str:
         return "GCD(a, b) via Euclidean: GCD(a, b) = GCD(b, a%b), GCD(a, 0) = a"
 
@@ -196,3 +200,6 @@ class CollatzEnv(Environment):
     @property
     def alphabet_size(self) -> int:
         return max(self._cache[:300]) + 2 if self._cache else 200
+
+    def ground_truth_algorithm(self) -> str:
+        return "Collatz(n): while n>1: n = n//2 if even else 3n+1; return steps"
