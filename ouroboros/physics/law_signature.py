@@ -169,11 +169,19 @@ def _test_free_fall(seq: List[float], threshold: float = 0.05) -> SignatureTestR
     if not d2 or statistics.mean([abs(v) for v in d2]) < 1e-10:
         return SignatureTestResult(PhysicsLaw.FREE_FALL, False, 0.0,
                                   "zero acceleration", 1.0, threshold)
-    mean_d2 = statistics.mean(d2)
+    # Trim d2 to active region — exclude floor-clamped zeros at the end
+    d2_active = d2[:]
+    for k in range(len(seq) - 1, 1, -1):
+        if abs(seq[k] - seq[k-1]) > 1e-9:
+            d2_active = d2[:max(1, k - 2)]
+            break
+    if not d2_active:
+        d2_active = d2
+    mean_d2 = statistics.mean(d2_active)
     if abs(mean_d2) < 1e-10:
         cv = 1.0
     else:
-        std_d2 = statistics.stdev(d2) if len(d2) > 1 else 0.0
+        std_d2 = statistics.stdev(d2_active) if len(d2_active) > 1 else 0.0
         cv = std_d2 / abs(mean_d2)  # coefficient of variation
     passed = cv < threshold
     confidence = min(1.0, threshold / max(cv, 1e-10)) if passed else threshold / max(cv, 1e-10) * 0.5

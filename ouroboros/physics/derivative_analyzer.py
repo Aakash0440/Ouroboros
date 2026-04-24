@@ -102,8 +102,23 @@ class DerivativeAnalyzer:
         corr_d1_orig = _safe_corr(d1, seq[1:1 + len(d1)])
         corr_d1_d1 = _safe_corr(d1[:-1], d1[1:]) if len(d1) > 2 else 0.0
 
-        mean_d2 = statistics.mean(d2) if d2 else 0.0
-        std_d2 = statistics.stdev(d2) if len(d2) > 1 else 0.0
+        # Trim d2 to active region — exclude values where the original
+        # sequence has hit a floor/ceiling (consecutive identical values).
+        # Floor clamping creates impact spikes that destroy the CV signal.
+        d2_active = d2[:]
+        if len(seq) > 3:
+            # Find first index where seq stays constant to end
+            floor_start = len(seq)
+            for k in range(len(seq) - 1, 1, -1):
+                if abs(seq[k] - seq[k-1]) > 1e-9:
+                    floor_start = k
+                    break
+            # d2[i] corresponds to seq[i+2], so clip d2 accordingly
+            d2_active = d2[:max(1, floor_start - 2)]
+        if not d2_active:
+            d2_active = d2
+        mean_d2 = statistics.mean(d2_active) if d2_active else 0.0
+        std_d2 = statistics.stdev(d2_active) if len(d2_active) > 1 else 0.0
         cv_d2 = std_d2 / max(abs(mean_d2), 1e-10)
 
         d1_range = max(d1) - min(d1) if d1 else 0.0
