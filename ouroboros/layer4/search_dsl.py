@@ -85,7 +85,7 @@ class DSLInstruction:
         """MDL cost to describe this instruction."""
         bits = OPCODE_BITS.get(self.opcode, 4.0)
         if self.param > 0:
-            bits += max(1.0, float(self.param).bit_length())
+            bits += max(1.0, float(int(self.param).bit_length()))
         for instr in self.body_a:
             bits += instr.description_bits()
         for instr in self.body_b:

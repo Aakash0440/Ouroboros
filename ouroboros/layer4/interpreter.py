@@ -144,7 +144,11 @@ class AlgorithmInterpreter:
             new_exprs = [searcher._random_expr() for _ in range(n)]
             # Add seed pool
             new_exprs.extend(ctx.seed_pool[:5])
-            new_candidates = [(e, self._score(e, ctx)) for e in new_exprs]
+            new_candidates = []
+            for e in new_exprs:
+                if time.time() - start_time > self.time_budget:
+                    break
+                new_candidates.append((e, self._score(e, ctx)))
             ctx.beam.extend(new_candidates)
             ctx.beam.sort(key=lambda x: x[1])
             if verbose:
@@ -161,6 +165,8 @@ class AlgorithmInterpreter:
             )
             new_candidates = []
             for expr, cost in ctx.beam:
+                if time.time() - start_time > self.time_budget:
+                    break
                 for _ in range(n_mutations):
                     mutated = searcher._mutate_grammar(expr)
                     new_candidates.append((mutated, self._score(mutated, ctx)))
@@ -212,6 +218,8 @@ class AlgorithmInterpreter:
                 if time.time() - start_time > self.time_budget:
                     break
                 for sub_instr in instr.body_a:
+                    if time.time() - start_time > self.time_budget:
+                        break
                     self._execute(sub_instr, ctx, start_time, verbose)
 
         elif op == DSLOpcode.CLASSIFY_ENV:
