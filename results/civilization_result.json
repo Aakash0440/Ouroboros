@@ -1,0 +1,78 @@
+{
+  "n_agents": 16,
+  "n_rounds": 50,
+  "total_discoveries": 8,
+  "order_correlation": 0.5238095238095238,
+  "specialization_emerged": true,
+  "ouroboros_order": [
+    "Counting/Arithmetic",
+    "Prime Numbers",
+    "Rolling Statistics",
+    "GCD / Number Theory",
+    "Fourier Analysis",
+    "Fibonacci/Recurrences",
+    "Statistical Analysis",
+    "Calculus/Derivatives"
+  ],
+  "human_order": [
+    "Counting/Arithmetic",
+    "Prime Numbers",
+    "GCD / Number Theory",
+    "Fibonacci/Recurrences",
+    "Calculus/Derivatives",
+    "Fourier Analysis",
+    "Statistical Analysis",
+    "Rolling Statistics"
+  ],
+  "discoveries": [
+    {
+      "concept": "Counting/Arithmetic",
+      "round": 1,
+      "agent": "A5",
+      "env": "Fibonacci(7)"
+    },
+    {
+      "concept": "Prime Numbers",
+      "round": 1,
+      "agent": "A15",
+      "env": "Fibonacci(7)"
+    },
+    {
+      "concept": "Rolling Statistics",
+      "round": 2,
+      "agent": "A9",
+      "env": "ModularArithmeticEnv"
+    },
+    {
+      "concept": "GCD / Number Theory",
+      "round": 5,
+      "agent": "A8",
+      "env": "ModularArithmeticEnv"
+    },
+    {
+      "concept": "Fourier Analysis",
+      "round": 5,
+      "agent": "A8",
+      "env": "ModularArithmeticEnv"
+    },
+    {
+      "concept": "Fibonacci/Recurrences",
+      "round": 5,
+      "agent": "A11",
+      "env": "Fibonacci(7)"
+    },
+    {
+      "concept": "Statistical Analysis",
+      "round": 7,
+      "agent": "A1",
+      "env": "RadioactiveDecay(\u03bb=0.05)"
+    },
+    {
+      "concept": "Calculus/Derivatives",
+      "round": 9,
+      "agent": "A9",
+      "env": "RadioactiveDecay(\u03bb=0.05)"
+    }
+  ],
+  "runtime_seconds": 2169.463990688324
+}

@@ -208,18 +208,25 @@ class ExtExprNode:
         history: List[float],
         state: Optional[Dict[int, float]] = None,
     ) -> float:
-        """
-        Evaluate the expression at timestep t.
-        
-        history: list of all previous observations [obs[0], obs[1], ..., obs[t-1]]
-        state: persistent state dict shared across timesteps (for STATE_VAR)
-        
-        Never raises. Returns PENALTY if undefined.
-        """
+        if t == 0:
+            self._clear_cache()
         try:
-            return self._eval(t, history, state or {})
+            return self._eval_cached(t, history, state or {})
         except Exception:
             return PENALTY
+
+    def _clear_cache(self):
+        self._cache.clear()
+        if self.left:  self.left._clear_cache()
+        if self.right: self.right._clear_cache()
+        if self.third: self.third._clear_cache()
+
+    def _eval_cached(self, t: int, history: List[float], state: Dict[int, float]) -> float:
+        if t in self._cache:
+            return self._cache[t]
+        result = self._eval(t, history, state)
+        self._cache[t] = result
+        return result
 
     def _eval(self, t: int, history: List[float], state: Dict[int, float]) -> float:
         nt = self.node_type
@@ -246,9 +253,9 @@ class ExtExprNode:
 
         # ── Helper: get a window's worth of history values of a sub-expression ─
         def hist_vals(expr: 'ExtExprNode', w: int) -> List[float]:
-            w = max(1, min(int(w), 200))  # cap window at 200
+            w = max(1, min(int(w), 200))
             return [
-                expr._eval(max(0, t - w + i + 1), history, state)
+                expr._eval_cached(max(0, t - w + i + 1), history, state)
                 for i in range(min(w, t + 1))
             ]
 
@@ -266,7 +273,7 @@ class ExtExprNode:
 
         if nt == ExtNodeType.CUMSUM:
             return sum(
-                self.left._eval(i, history, state)
+                self.left._eval_cached(i, history, state)
                 for i in range(t + 1)
             ) if self.left else 0.0
 
@@ -291,18 +298,18 @@ class ExtExprNode:
             return (v_plus - v_minus) / (2.0 * h)
 
         if nt == ExtNodeType.RUNNING_MAX:
-            vals = [self.left._eval(i, history, state) for i in range(t + 1)] if self.left else [0.0]
+            vals = [self.left._eval_cached(i, history, state) for i in range(t + 1)] if self.left else [0.0]
             return max(vals)
 
         if nt == ExtNodeType.RUNNING_MIN:
-            vals = [self.left._eval(i, history, state) for i in range(t + 1)] if self.left else [0.0]
+            vals = [self.left._eval_cached(i, history, state) for i in range(t + 1)] if self.left else [0.0]
             return min(vals)
 
         if nt == ExtNodeType.EWMA:
             alpha = max(0.01, min(0.99, abs(R())))
             result = 0.0
             for i in range(t + 1):
-                v = self.left._eval(i, history, state) if self.left else 0.0
+                v = self.left._eval_cached(i, history, state) if self.left else 0.0
                 result = alpha * v + (1 - alpha) * result
             return result
 

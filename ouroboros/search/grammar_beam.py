@@ -23,6 +23,7 @@ import copy
 import random
 from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any
+import time
 
 from ouroboros.nodes.extended_nodes import ExtNodeType, ExtExprNode, NODE_SPECS, NodeCategory
 from ouroboros.grammar.math_grammar import MathGrammar, DEFAULT_GRAMMAR
@@ -256,19 +257,21 @@ class GrammarConstrainedBeam:
         return node
 
     def _score(self, expr: ExtExprNode, observations: List[int]) -> float:
-        """Score an expression under MDL."""
         try:
             state: Dict[int, float] = {}
             predictions = []
             for t in range(len(observations)):
-                pred = expr.evaluate(t, observations[:t], state)
-                predictions.append(int(round(pred)) if math.isfinite(pred) else 0)
-
+                pred = expr.evaluate(t, observations[:t] if t > 0 else [], state)
+                if not math.isfinite(pred):
+                    return float('inf')
+                predictions.append(int(round(pred)))
             result = self._mdl.compute(
                 predictions, observations,
                 expr.node_count(), expr.constant_count()
             )
             return result.total_mdl_cost
+        except RecursionError:
+            return float('inf')
         except Exception:
             return float('inf')
 
@@ -342,7 +345,10 @@ class GrammarConstrainedBeam:
             print(f"  Grammar beam initial best: {candidates[0].mdl_cost:.2f}")
             print(f"  Best expr: {candidates[0].expr.to_string()[:60]}")
 
+        deadline = time.time() + getattr(self.cfg, 'time_budget_seconds', 8.0)
         for iteration in range(self.cfg.n_iterations):
+            if time.time() > deadline:
+                break
             new_candidates = list(candidates)
             for cand in candidates:
                 for _ in range(3):
