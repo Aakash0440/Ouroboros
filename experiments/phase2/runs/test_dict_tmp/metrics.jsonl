@@ -48,3 +48,13 @@
 {"step": 1, "ts": 1776930006.0267801, "agent_id": 1, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
 {"step": 2, "ts": 1776930008.1758115, "agent_id": 0, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
 {"step": 2, "ts": 1776930010.378234, "agent_id": 1, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"type": "run_metadata", "timestamp": "2026-04-29T12:35:23.961476", "run_dir": "experiments\\phase2\\runs\\test_dict_tmp"}
+{"step": 1, "ts": 1777448126.3562467, "agent_id": 0, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"step": 1, "ts": 1777448128.7171855, "agent_id": 1, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"step": 2, "ts": 1777448131.0382035, "agent_id": 0, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"step": 2, "ts": 1777448133.3662133, "agent_id": 1, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"type": "run_metadata", "timestamp": "2026-04-29T12:50:23.828195", "run_dir": "experiments\\phase2\\runs\\test_dict_tmp"}
+{"step": 1, "ts": 1777449024.9753146, "agent_id": 0, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"step": 1, "ts": 1777449026.1080754, "agent_id": 1, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"step": 2, "ts": 1777449027.2679799, "agent_id": 0, "compression_ratio": 0.12348515819744768, "approved_mods": 0}
+{"step": 2, "ts": 1777449028.426238, "agent_id": 1, "compression_ratio": 0.12348515819744768, "approved_mods": 0}

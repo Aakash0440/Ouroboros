@@ -141,8 +141,9 @@ class TestExtendedSystemIntegration:
 
     def test_full_suite_passing(self):
         import subprocess
+        import sys
         result = subprocess.run(
-            ['python', '-m', 'pytest', 'tests/', '-q', '--tb=no', '-x',
+            [sys.executable, '-m', 'pytest', 'tests/', '-q', '--tb=no', '-x',
              '--ignore=tests/test_end_to_end.py', '--ignore=tests/test_physics_and_lean4.py'],  # skip slow e2e
             capture_output=True, text=True
         )
