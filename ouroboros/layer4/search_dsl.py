@@ -201,17 +201,8 @@ def random_restart_program(n_restarts: int = 5, per_restart: int = 8) -> SearchA
 
 # ── Three new opcodes added Day 42 ────────────────────────────────────────────
 
-# Add to DSLOpcode enum (extend the existing one)
-# Since Python enums cannot be directly extended after definition,
-# we add the new constants here and register them in OPCODE_BITS.
-
-# The actual enum extension is done via monkey-patching at import time.
-# In production code, you'd restructure the enum — here we use this approach
-# to maintain backward compatibility with all existing code.
-
 import enum as _enum
 
-# Create extended opcode set by rebuilding the enum
 _old_members = {name: member.value for name, member in DSLOpcode.__members__.items()}
 _new_max = max(_old_members.values())
 
@@ -222,10 +213,26 @@ DSLOpcode = _enum.Enum('DSLOpcode', {
     'CROSS':      _new_max + 3,
 })
 
-# Register new opcodes in OPCODE_BITS
-OPCODE_BITS[DSLOpcode.ANNEAL]     = 7.0  # complex — has 3 parameters
-OPCODE_BITS[DSLOpcode.ELITE_KEEP] = 3.0  # simple — just k
-OPCODE_BITS[DSLOpcode.CROSS]      = 4.0  # medium — crossover n pairs
+# Rebuild OPCODE_BITS with new DSLOpcode (old keys are now stale objects)
+OPCODE_BITS = {
+    DSLOpcode.INIT:           4.0,
+    DSLOpcode.BEAM:           3.0,
+    DSLOpcode.MUTATE:         3.0,
+    DSLOpcode.FFT_SEED:       2.0,
+    DSLOpcode.MCMC:           4.0,
+    DSLOpcode.GRAMMAR_FILTER: 2.0,
+    DSLOpcode.SORT_MDL:       2.0,
+    DSLOpcode.TAKE:           3.0,
+    DSLOpcode.LOOP:           5.0,
+    DSLOpcode.CLASSIFY_ENV:   3.0,
+    DSLOpcode.IF_PERIODIC:    6.0,
+    DSLOpcode.SAVE_BEST:      2.0,
+    DSLOpcode.LOAD_BEST:      2.0,
+    DSLOpcode.PARALLEL:       6.0,
+    DSLOpcode.ANNEAL:         7.0,
+    DSLOpcode.ELITE_KEEP:     3.0,
+    DSLOpcode.CROSS:          4.0,
+}
 
 
 def anneal_program(
@@ -247,7 +254,7 @@ def anneal_program(
             DSLInstruction(DSLOpcode.SORT_MDL),
             DSLInstruction(DSLOpcode.TAKE, param=width // 2),
             DSLInstruction(DSLOpcode.SAVE_BEST),
-            DSLInstruction(DSLOpcode.ANNEAL, param=steps),  # param=steps
+            DSLInstruction(DSLOpcode.ANNEAL, param=steps),
             DSLInstruction(DSLOpcode.LOAD_BEST),
             DSLInstruction(DSLOpcode.SORT_MDL),
         ]
