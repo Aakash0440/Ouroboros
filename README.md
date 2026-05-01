@@ -45,11 +45,6 @@ uvicorn ouroboros.api.server:app --port 8000
 # Run the publication-quality benchmark (~90 min, 10 seeds)
 python scripts/run_full_benchmark.py --seeds 10
 
-# Run all key verification scripts
-python verify_day33.py   # Hooke's Law from spring data
-python verify_day34.py   # CUMSUM(ISPRIME(t)) = π(n)
-python verify_day43.py   # DERIV(INTEGRAL(f)) = f
-python verify_day50_FINAL.py  # Complete system check
 ```
 
 ---
