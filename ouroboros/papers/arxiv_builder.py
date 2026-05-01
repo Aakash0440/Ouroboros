@@ -1,4 +1,4 @@
-"""
+r"""
 ArxivPaperBuilder — Generates arxiv-submission-ready LaTeX packages.
 
 What makes a paper "arxiv-ready":
@@ -517,6 +517,6 @@ python scripts/run_civilization_stats.py --fast
 | Zero sorry in Lean4 | verify_day32.py | stdout |
 """
 
-        (out / "README.md").write_text(readme)
+        (out / "README.md").write_text(readme, encoding="utf-8")
         print(f"Reproducibility package written to: {output_dir}")
         return output_dir
