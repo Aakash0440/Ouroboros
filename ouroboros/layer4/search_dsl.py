@@ -197,3 +197,115 @@ def random_restart_program(n_restarts: int = 5, per_restart: int = 8) -> SearchA
             DSLInstruction(DSLOpcode.TAKE, param=20),
         ]
     )
+
+
+# ── Three new opcodes added Day 42 ────────────────────────────────────────────
+
+# Add to DSLOpcode enum (extend the existing one)
+# Since Python enums cannot be directly extended after definition,
+# we add the new constants here and register them in OPCODE_BITS.
+
+# The actual enum extension is done via monkey-patching at import time.
+# In production code, you'd restructure the enum — here we use this approach
+# to maintain backward compatibility with all existing code.
+
+import enum as _enum
+
+# Create extended opcode set by rebuilding the enum
+_old_members = {name: member.value for name, member in DSLOpcode.__members__.items()}
+_new_max = max(_old_members.values())
+
+DSLOpcode = _enum.Enum('DSLOpcode', {
+    **_old_members,
+    'ANNEAL':     _new_max + 1,
+    'ELITE_KEEP': _new_max + 2,
+    'CROSS':      _new_max + 3,
+})
+
+# Register new opcodes in OPCODE_BITS
+OPCODE_BITS[DSLOpcode.ANNEAL]     = 7.0  # complex — has 3 parameters
+OPCODE_BITS[DSLOpcode.ELITE_KEEP] = 3.0  # simple — just k
+OPCODE_BITS[DSLOpcode.CROSS]      = 4.0  # medium — crossover n pairs
+
+
+def anneal_program(
+    width: int = 20,
+    t_start: float = 5.0,
+    t_end: float = 0.1,
+    steps: int = 100,
+) -> 'SearchAlgorithmProgram':
+    """
+    ANNEAL-based search program.
+    Phase 1: beam search to find starting point
+    Phase 2: simulated annealing from beam's best
+    """
+    return SearchAlgorithmProgram(
+        name="Annealing_DSL",
+        instructions=[
+            DSLInstruction(DSLOpcode.INIT, param=width),
+            DSLInstruction(DSLOpcode.GRAMMAR_FILTER),
+            DSLInstruction(DSLOpcode.SORT_MDL),
+            DSLInstruction(DSLOpcode.TAKE, param=width // 2),
+            DSLInstruction(DSLOpcode.SAVE_BEST),
+            DSLInstruction(DSLOpcode.ANNEAL, param=steps),  # param=steps
+            DSLInstruction(DSLOpcode.LOAD_BEST),
+            DSLInstruction(DSLOpcode.SORT_MDL),
+        ]
+    )
+
+
+def elitist_restart_program(
+    width: int = 20,
+    n_restarts: int = 3,
+    elite_k: int = 5,
+) -> 'SearchAlgorithmProgram':
+    """
+    Elitist restart: preserve top-k across independent restarts.
+    Better than random restart because elites carry over.
+    """
+    return SearchAlgorithmProgram(
+        name="ElitistRestart_DSL",
+        instructions=[
+            DSLInstruction(DSLOpcode.INIT, param=width),
+            DSLInstruction(DSLOpcode.GRAMMAR_FILTER),
+            DSLInstruction(DSLOpcode.SORT_MDL),
+            DSLInstruction(DSLOpcode.ELITE_KEEP, param=elite_k),
+            DSLInstruction(DSLOpcode.LOOP, param=n_restarts, body_a=[
+                DSLInstruction(DSLOpcode.INIT, param=width),
+                DSLInstruction(DSLOpcode.LOAD_BEST),
+                DSLInstruction(DSLOpcode.GRAMMAR_FILTER),
+                DSLInstruction(DSLOpcode.SORT_MDL),
+                DSLInstruction(DSLOpcode.TAKE, param=width),
+                DSLInstruction(DSLOpcode.ELITE_KEEP, param=elite_k),
+            ]),
+            DSLInstruction(DSLOpcode.SORT_MDL),
+            DSLInstruction(DSLOpcode.TAKE, param=width),
+        ]
+    )
+
+
+def crossover_beam_program(
+    width: int = 20,
+    iterations: int = 8,
+    n_cross: int = 5,
+) -> 'SearchAlgorithmProgram':
+    """
+    Beam search enhanced with crossover.
+    Each iteration: mutate some, cross others, merge.
+    This is a basic genetic algorithm over expression trees.
+    """
+    return SearchAlgorithmProgram(
+        name="CrossoverBeam_DSL",
+        instructions=[
+            DSLInstruction(DSLOpcode.INIT, param=width),
+            DSLInstruction(DSLOpcode.GRAMMAR_FILTER),
+            DSLInstruction(DSLOpcode.SORT_MDL),
+            DSLInstruction(DSLOpcode.TAKE, param=width),
+            DSLInstruction(DSLOpcode.LOOP, param=iterations, body_a=[
+                DSLInstruction(DSLOpcode.MUTATE, param=2),
+                DSLInstruction(DSLOpcode.CROSS, param=n_cross),
+                DSLInstruction(DSLOpcode.SORT_MDL),
+                DSLInstruction(DSLOpcode.TAKE, param=width),
+            ]),
+        ]
+    )

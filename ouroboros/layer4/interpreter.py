@@ -261,3 +261,170 @@ class AlgorithmInterpreter:
                 all_beams.extend(sub_ctx.beam)
             all_beams.sort(key=lambda x: x[1])
             ctx.beam = all_beams
+
+
+
+# ── New opcode handlers added Day 42 ──────────────────────────────────────────
+
+def _execute_anneal(
+    self,
+    instr: 'DSLInstruction',
+    ctx: 'InterpreterContext',
+    start_time: float,
+    verbose: bool,
+) -> None:
+    """
+    ANNEAL(steps) — Simulated annealing on current beam members.
+    
+    Takes the top beam member, runs annealing from that starting point.
+    Temperature schedule: linear decay from 5.0 to 0.1 over `steps` steps.
+    """
+    import math as _math
+
+    n_steps = max(10, instr.param)
+    if not ctx.beam:
+        return
+
+    # Start from best beam member
+    current_expr, current_cost = ctx.beam[0]
+    best_expr, best_cost = current_expr, current_cost
+    T_start, T_end = 5.0, 0.1
+
+    searcher = GrammarConstrainedBeam(
+        GrammarBeamConfig(beam_width=5, random_seed=ctx.random_seed)
+    )
+
+    for step in range(n_steps):
+        if time.time() - start_time > self.time_budget:
+            break
+
+        T = T_start * ((T_end / T_start) ** (step / max(n_steps - 1, 1)))
+        mutated = searcher._mutate_grammar(current_expr)
+        mut_cost = self._score(mutated, ctx)
+
+        delta = mut_cost - current_cost
+        if delta < 0 or (T > 0 and ctx._rng.random() < _math.exp(-delta / T)):
+            current_expr, current_cost = mutated, mut_cost
+
+        if current_cost < best_cost:
+            best_cost = current_cost
+            best_expr = current_expr
+
+    # Add annealing result to beam
+    ctx.beam.append((best_expr, best_cost))
+    ctx.beam.sort(key=lambda x: x[1])
+
+
+def _execute_elite_keep(
+    self,
+    instr: 'DSLInstruction',
+    ctx: 'InterpreterContext',
+    start_time: float,
+    verbose: bool,
+) -> None:
+    """
+    ELITE_KEEP(k) — Save top-k to saved_best, restore after operations.
+    
+    Ensures the top-k expressions are never lost during restarts.
+    Works by updating saved_best to be a list (if k>1) or single best.
+    """
+    k = max(1, instr.param)
+    if not ctx.beam:
+        return
+
+    # Save the top-k to a special elite pool in the context
+    if not hasattr(ctx, '_elite_pool'):
+        ctx._elite_pool = []
+
+    # Merge current beam with elite pool, keep top-k unique
+    merged = list(ctx.beam) + ctx._elite_pool
+    seen_costs = set()
+    unique = []
+    for expr, cost in sorted(merged, key=lambda x: x[1]):
+        cost_rounded = round(cost, 2)
+        if cost_rounded not in seen_costs:
+            seen_costs.add(cost_rounded)
+            unique.append((expr, cost))
+        if len(unique) >= k:
+            break
+    ctx._elite_pool = unique
+
+    # Also update saved_best with the overall best
+    if ctx._elite_pool:
+        ctx.saved_best = ctx._elite_pool[0]
+
+    if verbose:
+        print(f"  ELITE_KEEP({k}): pool size={len(ctx._elite_pool)}, "
+              f"best_cost={ctx._elite_pool[0][1]:.2f}")
+
+
+def _execute_cross(
+    self,
+    instr: 'DSLInstruction',
+    ctx: 'InterpreterContext',
+    start_time: float,
+    verbose: bool,
+) -> None:
+    """
+    CROSS(n) — Create n offspring by crossing over pairs of beam members.
+    
+    Crossover: take the left subtree of parent A, right subtree of parent B.
+    This creates expressions that combine the structure of two survivors.
+    Better than pure mutation for escaping flat landscapes.
+    """
+    import copy as _copy, random as _random
+
+    n_cross = max(1, instr.param)
+    if len(ctx.beam) < 2:
+        return
+
+    offspring = []
+    for _ in range(n_cross):
+        if time.time() - start_time > self.time_budget:
+            break
+
+        # Pick two parents from beam
+        parent_a, cost_a = ctx._rng.choice(ctx.beam[:max(2, len(ctx.beam) // 2)])
+        parent_b, cost_b = ctx._rng.choice(ctx.beam[:max(2, len(ctx.beam) // 2)])
+
+        if parent_a is parent_b:
+            continue
+
+        # Crossover: swap a random subtree
+        child = _copy.deepcopy(parent_a)
+        donor = _copy.deepcopy(parent_b)
+
+        # Simple crossover: replace left child of root with donor's left child
+        if hasattr(child, 'left') and child.left is not None and \
+                hasattr(donor, 'left') and donor.left is not None:
+            child.left = donor.left
+
+        child_cost = self._score(child, ctx)
+        offspring.append((child, child_cost))
+
+    ctx.beam.extend(offspring)
+    ctx.beam.sort(key=lambda x: x[1])
+    if verbose:
+        print(f"  CROSS({n_cross}): added {len(offspring)} offspring")
+
+
+# Monkey-patch the new handlers into AlgorithmInterpreter
+def _execute_extended(self, instr, ctx, start_time, verbose):
+    """Extended execute handler for new opcodes."""
+    from ouroboros.layer4.search_dsl import DSLOpcode
+    op = instr.opcode
+
+    if op == DSLOpcode.ANNEAL:
+        _execute_anneal(self, instr, ctx, start_time, verbose)
+    elif op == DSLOpcode.ELITE_KEEP:
+        _execute_elite_keep(self, instr, ctx, start_time, verbose)
+    elif op == DSLOpcode.CROSS:
+        _execute_cross(self, instr, ctx, start_time, verbose)
+    else:
+        # Call original handler
+        _original_execute(self, instr, ctx, start_time, verbose)
+
+
+# Patch the execute method
+_original_execute = AlgorithmInterpreter._execute
+AlgorithmInterpreter._execute = _execute_extended
