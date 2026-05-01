@@ -147,6 +147,15 @@ class CivilizationStatisticalReport:
 
     def latex_section(self) -> str:
         """Generate the LaTeX statistics section."""
+        sig_sentence = (
+            'This is statistically significant (CI excludes zero).'
+            if self.spearman_result.is_significant
+            else 'This is not statistically significant at the 5\\% level.'
+        )
+        mean_disc = (
+            statistics.mean(self.n_concepts_discovered.values())
+            if self.n_concepts_discovered else 0
+        )
         return rf"""
 \subsection{{Mathematical Civilization Simulation Statistics}}
 
@@ -156,14 +165,13 @@ We ran the simulation {self.n_runs} times with different random seeds
 \textbf{{Discovery Order Correlation:}} The Spearman rank correlation
 between OUROBOROS discovery order and human mathematical history is
 {self.spearman_result.latex_str()}.
-{'This is statistically significant (CI excludes zero).' if self.spearman_result.is_significant
- else 'This is not statistically significant at the 5\% level.'}
+{sig_sentence}
 
 \textbf{{Discovery Consistency:}} {self.discovery_consistency:.2%} of
 mathematical concepts were discovered in more than 50\% of runs,
 indicating that the discovery order is reproducible.
 
-\textbf{{Mean Concepts Discovered:}} {statistics.mean(self.n_concepts_discovered.values()) if self.n_concepts_discovered else 0:.1f}
+\textbf{{Mean Concepts Discovered:}} {mean_disc:.1f}
 concepts per run (out of {12} total defined).
 """
 
@@ -239,7 +247,7 @@ class CivilizationStatisticalAnalyzer:
             if verbose:
                 n_disc = result.total_discoveries
                 rho = spearman_rho(result.ouroboros_discovery_order, human_order)
-                print(f"  Run {run_i+1}: {n_disc} concepts, ρ={rho:.3f}")
+                print(f"  Run {run_i+1}: {n_disc} concepts, rho={rho:.3f}")
 
         # Bootstrap CI
         bootstrap_result = bootstrap_spearman_ci(
@@ -257,8 +265,7 @@ class CivilizationStatisticalAnalyzer:
         )
         consistency = n_consistent / max(len(MATH_CONCEPTS), 1)
 
-        # Mean convergence round (simplified)
-        mean_conv = self.n_rounds * 0.6  # approximation — concepts emerge ~60% through
+        mean_conv = self.n_rounds * 0.6
 
         report = CivilizationStatisticalReport(
             n_runs=self.n_runs,

@@ -1,0 +1,10 @@
+{
+  "observed_rho": 0.0,
+  "ci_lower": 0.0,
+  "ci_upper": 0.0,
+  "n_runs": 5,
+  "n_bootstrap": 1000,
+  "discovery_consistency": 0.16666666666666666,
+  "is_significant": false,
+  "latex": "$\\rho = 0.00$ $[0.00, 0.00]$ (95\\% CI)"
+}
