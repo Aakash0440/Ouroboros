@@ -557,3 +557,88 @@ class ExtExprNode:
         if name == 'PREV':
             return f"obs[t-{self.lag}]"
         return name
+    
+
+# ── INTEGRAL_NODE — added Day 43 ──────────────────────────────────────────────
+# Extend ExtNodeType with INTEGRAL
+import enum as _enum_integral
+
+_old_ext_members = {name: member.value for name, member in ExtNodeType.__members__.items()}
+_ext_max = max(_old_ext_members.values())
+
+ExtNodeType = _enum_integral.Enum('ExtNodeType', {
+    **_old_ext_members,
+    'INTEGRAL': _ext_max + 1,    # ∫₀ᵗ f(x)dx ≈ Σᵢ₌₀ᵗ f(i)
+    'INTEGRAL_WIN': _ext_max + 2, # ∫_{t-W}^{t} f(x)dx — windowed integral
+})
+
+# Add specs for new nodes
+NODE_SPECS[ExtNodeType.INTEGRAL] = NodeSpec(
+    node_type=ExtNodeType.INTEGRAL,
+    category=NodeCategory.CALCULUS,
+    arity=1,
+    description_bits=5.0,
+)
+NODE_SPECS[ExtNodeType.INTEGRAL_WIN] = NodeSpec(
+    node_type=ExtNodeType.INTEGRAL_WIN,
+    category=NodeCategory.CALCULUS,
+    arity=2,
+    description_bits=6.0,
+    window_arg=True,
+)
+
+
+def _eval_integral(node: 'ExtExprNode', t: int, history: list, state: dict) -> float:
+    """
+    INTEGRAL(f)[t] = Σᵢ₌₀ᵗ f(i)
+    Discrete Riemann sum (left-endpoint rule, dt=1).
+    This is exactly CUMSUM of f evaluated from 0 to t.
+    """
+    if node.left is None:
+        return 0.0
+    total = 0.0
+    for i in range(t + 1):
+        try:
+            val = node.left._eval(i, history[:i], state)
+            if not (val != val) and abs(val) < 1e9:  # not NaN and not too large
+                total += val
+        except Exception:
+            pass
+    return total
+
+
+def _eval_integral_win(node: 'ExtExprNode', t: int, history: list, state: dict) -> float:
+    """
+    INTEGRAL_WIN(f, W)[t] = Σᵢ₌ₜ₋ᵥ₊₁ᵗ f(i)
+    Windowed Riemann sum over the last W steps.
+    """
+    if node.left is None:
+        return 0.0
+    w = max(1, int(abs(node.right._eval(t, history, state)) + 0.5)) if node.right else 10
+    w = min(w, 100)
+    total = 0.0
+    start = max(0, t - w + 1)
+    for i in range(start, t + 1):
+        try:
+            val = node.left._eval(i, history[:i], state)
+            if not (val != val) and abs(val) < 1e9:
+                total += val
+        except Exception:
+            pass
+    return total
+
+
+# Patch _eval in ExtExprNode to handle new node types
+_original_ext_eval = ExtExprNode._eval
+
+def _patched_ext_eval(self, t: int, history: list, state: dict) -> float:
+    """Extended eval that handles INTEGRAL and INTEGRAL_WIN."""
+    nt = self.node_type
+    if hasattr(nt, 'name'):
+        if nt.name == 'INTEGRAL':
+            return _eval_integral(self, t, history, state)
+        if nt.name == 'INTEGRAL_WIN':
+            return _eval_integral_win(self, t, history, state)
+    return _original_ext_eval(self, t, history, state)
+
+ExtExprNode._eval = _patched_ext_eval
