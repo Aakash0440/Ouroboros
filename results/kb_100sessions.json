@@ -1,0 +1,30 @@
+[
+  {
+    "expr": "4.000",
+    "mdl_cost": 1121.4925478822954,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  },
+  {
+    "expr": "2.000",
+    "mdl_cost": 1162.3569556683342,
+    "env": "ModularArithmeticEnv",
+    "session": 2,
+    "usage_count": 0
+  },
+  {
+    "expr": "0.914",
+    "mdl_cost": 1025.8453917212664,
+    "env": "Fibonacci(7)",
+    "session": 3,
+    "usage_count": 0
+  },
+  {
+    "expr": "1.000",
+    "mdl_cost": 600.4032580837143,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  }
+]
