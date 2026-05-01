@@ -67,10 +67,15 @@ class StyleCheckResult:
         return "\n".join(lines)
 
 
+def _strip_comment(line: str) -> str:
+    """Return the code portion of a line (everything before --)."""
+    return line.split('--')[0]
+
+
 class ProofStyleChecker:
     """
     Checks Lean4 proof files for Mathlib4 style compliance.
-    
+
     Mathlib4 style rules (simplified):
     1. Every theorem and lemma must have a docstring (/-- ... -/)
     2. No `sorry` (proved by axioms are OK, sorry is not)
@@ -81,10 +86,14 @@ class ProofStyleChecker:
 
     def check_file(self, lean_path: str) -> StyleCheckResult:
         """Check a single .lean file for Mathlib4 style."""
-        content = Path(lean_path).read_text()
+        content = Path(lean_path).read_text(encoding='utf-8')
         lines = content.split('\n')
 
-        n_sorry = len(re.findall(r'\bsorry\b', content))
+        # Count sorry only in non-comment code
+        n_sorry = sum(
+            1 for line in lines
+            if re.search(r'\bsorry\b', _strip_comment(line))
+        )
 
         # Count theorems and their docstrings
         theorem_lines = []
@@ -116,7 +125,6 @@ class ProofStyleChecker:
             m = re.match(r'^(theorem|lemma)\s+(\w+)', line.strip())
             if m:
                 name = m.group(2)
-                # Mathlib4 uses camelCase starting lowercase
                 if name and name[0].isupper():
                     naming_issues.append(StyleIssue(
                         line_number=i + 1,
@@ -125,10 +133,11 @@ class ProofStyleChecker:
                         severity="warning",
                     ))
 
-        # Check for sorry
+        # Check for sorry (code lines only)
         all_issues = list(naming_issues)
         for i, line in enumerate(lines):
-            if 'sorry' in line and not line.strip().startswith('--'):
+            code = _strip_comment(line)
+            if re.search(r'\bsorry\b', code):
                 all_issues.append(StyleIssue(
                     line_number=i + 1,
                     issue_type="SorryPresent",
@@ -138,7 +147,7 @@ class ProofStyleChecker:
 
         # Missing docstrings
         missing_docs = [tl for tl in theorem_lines
-                       if not any(abs(dl - tl) <= 2 for dl in docstring_lines)]
+                        if not any(abs(dl - tl) <= 2 for dl in docstring_lines)]
         for line_num in missing_docs:
             all_issues.append(StyleIssue(
                 line_number=line_num,
@@ -207,7 +216,7 @@ example : (3 * (5 + 7) + 1) % 7 = (3 * 5 + 1) % 7 := LinearMod.ax00001_periodic 
 
 -- Test CRT
 #check CRT711.existence
-example : ∃ x : ℕ, x < 77 ∧ x % 7 = 3 ∧ x % 11 = 5 :=
+example : \u2203 x : \u2115, x < 77 \u2227 x % 7 = 3 \u2227 x % 11 = 5 :=
   CRT711.existence 3 5 (by norm_num) (by norm_num)
 
 -- Verify a CRT solution
@@ -215,14 +224,14 @@ example : (3 * 22 + 5 * 56) % 77 % 7 = 3 := by norm_num
 example : (3 * 22 + 5 * 56) % 77 % 11 = 5 := by norm_num
 '''
         path = self.contribution_dir / "Test.lean"
-        path.write_text(content)
+        path.write_text(content, encoding='utf-8')
         return str(path)
 
     def generate_commit_message(self) -> str:
         """Generate a Mathlib4-style commit message."""
         return """feat(NumberTheory/LinearModular): add surjectivity for linear maps mod prime
 
-Add lemmas about linear functions `t ↦ (slope * t + intercept) % N`:
+Add lemmas about linear functions `t \u21a6 (slope * t + intercept) % N`:
 - `LinearMod.periodic`: periodicity with period N
 - `LinearMod.range_bound`: output in [0, N)
 - `LinearMod.ax00001_satisfies_spec`: the instance (3t+1) % 7 is
