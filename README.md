@@ -22,8 +22,8 @@ When an agent finds `(3t+1) % 7`, it's not because it knows modular arithmetic. 
 ## Quickstart
 
 ```bash
-git clone https://github.com/ouroboros-research/ouroboros
-cd ouroboros
+git clone https://github.com/Aakash0440/Ouroboros
+cd Ouroboros
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt && pip install -e .
 
