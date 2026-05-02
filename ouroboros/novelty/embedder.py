@@ -128,11 +128,12 @@ class ExpressionEmbedding:
         return cls(unit_vec, expr_str, is_valid, coverage, hash_str)
 
     def distance_to(self, other: 'ExpressionEmbedding') -> float:
-        """Cosine distance in [0, 1]. 0=identical, 1=opposite."""
+        """Cosine distance in [0, 2]. 0=identical, 1=orthogonal, 2=opposite."""
         if not self.is_valid or not other.is_valid:
             return 1.0
         dot = float(np.dot(self.vector, other.vector))
-        return max(0.0, min(1.0, 1.0 - dot))
+        dot = max(-1.0, min(1.0, dot))
+        return max(0.0, 1.0 - dot)
 
 
 class BehavioralEmbedder:
@@ -194,6 +195,13 @@ class BehavioralEmbedder:
 
         # Clip extreme values to prevent embedding collapse
         vec = np.clip(vec, -1e6, 1e6)
+
+        # Position-aware nonlinear mixing to distinguish constants with different values.
+        # Pure L2 normalization collapses [c,c,...,c] to the same unit vector for any c.
+        # Mixing in a value-dependent phase shift makes the direction value-specific.
+        indices = np.arange(len(vec), dtype=np.float32)
+        phase = (vec * 0.1).astype(np.float32)
+        vec = (vec * np.sin(indices * 0.3 + phase)).astype(np.float32)
 
         embedding = ExpressionEmbedding.from_vector(vec, expr_str, coverage)
         self._cache[expr_str] = embedding
