@@ -309,12 +309,13 @@ noncomputable def multiplicativeArithFn (f_primes : ℕ → ℝ) (n : ℕ) : ℝ
                 test_outputs = [residuals[i] for i in test_inputs]
 
                 coeffs_str = ", ".join(f"{c:.3f}" for c in coeffs[:6])
+                terms = " + ".join(f"{coeffs[k]:.6f} * history[-{k+1}]" for k in range(order))
                 impl_code = f'''
 def higher_order_recurrence(history: list, t: int) -> float:
     """Order-{order} linear recurrence: f(t) = {coeffs_str} * f(t-1..{order})"""
     if len(history) < {order}:
         return 0.0
-    return sum({coeffs[k]:.6f} * history[-{k+1}] for k in range({order}))
+    return {terms}
 '''
 
                 return ProposedPrimitive(
