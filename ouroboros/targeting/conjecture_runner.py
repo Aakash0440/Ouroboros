@@ -82,20 +82,18 @@ class ConjectureFinding:
         )
 
 
-def _compute_known_best_cost(
-    env,
-    known_formula_fn,
-    observations: List[int],
-) -> float:
-    """Compute MDL cost of the current best known formula."""
+def _compute_known_best_cost(env, known_formula_fn, observations):
     mdl = MDLEngine()
     try:
-        preds = [int(round(known_formula_fn(t))) for t in range(len(observations))]
+        preds = []
+        for t in range(len(observations)):
+            v = known_formula_fn(t)
+            preds.append(int(round(v)) if math.isfinite(v) else 0)
         result = mdl.compute(preds, observations, n_nodes=5, n_constants=2)
-        return result.total_mdl_cost
+        cost = result.total_mdl_cost
+        return cost if math.isfinite(cost) else 1e9
     except Exception:
-        return float('inf')
-
+        return 1e9
 
 class ConjectureTargetingSession:
     """

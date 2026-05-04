@@ -207,11 +207,11 @@ class OEISClient:
         self._cache.set(cache_key, data)
         return self._parse_oeis_response(data, from_cache=False)
 
-    def _parse_oeis_response(self, data: dict, from_cache: bool) -> OEISResult:
-        """Parse OEIS API JSON response into OEISResult."""
-        results = data.get("results")
-        if not results:
-            return OEISResult(False, None, None, None, None, [], 0, [], [], from_cache)
+    def _parse_oeis_response(self, data, from_cache: bool) -> OEISResult:
+        if isinstance(data, list):
+            results = data
+        else:
+            results = data.get("results") if isinstance(data, dict) else None
 
         # Take the first (best) result
         r = results[0]
