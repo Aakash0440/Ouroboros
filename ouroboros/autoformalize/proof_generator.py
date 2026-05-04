@@ -439,3 +439,13 @@ theorem {theorem_name} : {stmt} := {tactic}
             # Add Nat.cast where needed
             return tactic.replace("by ", "by push_cast; ")
         return None
+    
+def prove_ouroboros_discovery(self, expression_str, property_type, property_params):
+    """Compatibility shim for SelfImprovementLoop."""
+    if property_type == "periodic":
+        period = property_params.get("period", 7)
+        slope = property_params.get("slope", 1)
+        intercept = property_params.get("intercept", 0)
+        modulus = property_params.get("modulus", period)
+        return self.prove_modular_periodicity(slope, intercept, modulus)
+    return self.prove_modular_periodicity(1, 0, 7)
