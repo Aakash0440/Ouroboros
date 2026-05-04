@@ -20,6 +20,7 @@ expressions. No wasted evaluations on invalid combinations.
 
 from __future__ import annotations
 import copy
+import math
 import random
 from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any
@@ -42,7 +43,7 @@ class GrammarBeamConfig:
     mcmc_iterations: int = 0      # set 0 to skip MCMC, grammar beam is faster
     random_seed: int = 42
     grammar: MathGrammar = field(default_factory=lambda: DEFAULT_GRAMMAR)
-    
+
     # Category weights for sampling (higher = more likely to be sampled)
     category_weights: Dict[NodeCategory, float] = field(default_factory=lambda: {
         NodeCategory.TERMINAL:    3.0,
@@ -115,7 +116,6 @@ class GrammarConstrainedBeam:
                 weights.append(w)
 
         if not candidates:
-            from ouroboros.synthesis.expr_node import NodeType
             return NodeCategory.TERMINAL
 
         total = sum(weights)
@@ -128,11 +128,10 @@ class GrammarConstrainedBeam:
         return candidates[-1]
 
     def _make_const(self) -> ExtExprNode:
-        from ouroboros.synthesis.expr_node import NodeType, ExprNode
-        v = self._rng.randint(0, self.cfg.const_range)
+        from ouroboros.synthesis.expr_node import NodeType
         node = ExtExprNode.__new__(ExtExprNode)
         node.node_type = NodeType.CONST
-        node.value = float(v)
+        node.value = float(self._rng.randint(0, self.cfg.const_range))
         node.lag = 1
         node.state_key = 0
         node.window = 10
@@ -227,6 +226,53 @@ class GrammarConstrainedBeam:
 
         return node
 
+    def _make_literal_node(self, node_type, value=0.0, left=None, right=None, third=None) -> ExtExprNode:
+        """Helper to build a node with explicit fields (no random)."""
+        node = ExtExprNode.__new__(ExtExprNode)
+        node.node_type = node_type
+        node.value = float(value)
+        node.lag = 1
+        node.state_key = 0
+        node.window = 10
+        node.left = left
+        node.right = right
+        node.third = third
+        node._cache = {}
+        return node
+
+    def _seed_modular_templates(self, observations: List[int]) -> List[GrammarBeamCandidate]:
+        """
+        Seed beam with (slope*t + intercept) % mod templates.
+        Exhaustively tries small parameter combinations — one will exactly
+        match any modular arithmetic sequence with near-zero MDL cost.
+        """
+        from ouroboros.synthesis.expr_node import NodeType
+
+        seeds = []
+        obs_set = set(observations)
+        max_mod = max(obs_set) + 2 if obs_set else 14
+
+        for mod in range(2, min(int(max_mod) + 1, 20)):
+            for slope in range(1, mod + 1):
+                for intercept in range(0, mod):
+                    t_node  = self._make_literal_node(NodeType.TIME)
+                    c_slope = self._make_literal_node(NodeType.CONST, slope)
+                    c_inter = self._make_literal_node(NodeType.CONST, intercept)
+                    c_mod   = self._make_literal_node(NodeType.CONST, mod)
+
+                    mul_node = self._make_literal_node(NodeType.MUL,
+                                                       left=c_slope, right=t_node)
+                    add_node = self._make_literal_node(NodeType.ADD,
+                                                       left=mul_node, right=c_inter)
+                    mod_node = self._make_literal_node(NodeType.MOD,
+                                                       left=add_node, right=c_mod)
+
+                    cost = self._score(mod_node, observations)
+                    seeds.append(GrammarBeamCandidate(mod_node, cost))
+
+        seeds.sort()
+        return seeds[:self.cfg.beam_width]
+
     def _score(self, expr: ExtExprNode, observations: List[int]) -> float:
         try:
             state: Dict[int, float] = {}
@@ -253,8 +299,6 @@ class GrammarConstrainedBeam:
 
     def _mutate_node_inplace(self, node: ExtExprNode, depth: int) -> None:
         """Mutate a node in place, maintaining grammar validity."""
-        from ouroboros.synthesis.expr_node import NodeType
-
         r = self._rng.random()
 
         # 50%: perturb constant
@@ -290,15 +334,19 @@ class GrammarConstrainedBeam:
         verbose: bool = False,
     ) -> Optional[ExtExprNode]:
         """Run grammar-constrained beam search. Returns the best expression found."""
-        import math
-
         beam_width = self.cfg.beam_width
 
+        # Random initial population
         init_exprs = [self._random_expr() for _ in range(beam_width * 5)]
         init_costs = [self._score(e, observations) for e in init_exprs]
 
+        # Modular arithmetic seeds — exhaustively covers (slope*t+intercept)%mod
+        mod_seeds = self._seed_modular_templates(observations)
+
+        # Merge and keep best beam_width
         candidates = sorted(
-            [GrammarBeamCandidate(e, c) for e, c in zip(init_exprs, init_costs)],
+            [GrammarBeamCandidate(e, c) for e, c in zip(init_exprs, init_costs)]
+            + mod_seeds,
         )[:beam_width]
 
         if verbose:
@@ -319,10 +367,10 @@ class GrammarConstrainedBeam:
             new_candidates.sort()
             candidates = new_candidates[:beam_width]
 
+            if verbose and iteration % 5 == 0:
+                print(f"  iter {iteration}: best={candidates[0].mdl_cost:.2f}")
+
         if verbose:
             print(f"  Grammar beam final: {candidates[0].mdl_cost:.2f}")
 
         return candidates[0].expr if candidates else None
-
-
-import math  # needed for isfinite in _score

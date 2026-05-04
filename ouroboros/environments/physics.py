@@ -114,11 +114,24 @@ class FreeFallEnv(Environment):
         self.g = g
         self.scale = scale  # scale factor to keep values in integer range
 
-    def generate(self, length: int, start: int = 0) -> List[int]:
+    def generate(self, n: int) -> list:
+        """
+        Generate n samples of free-fall height.
+
+        Regardless of the stored scale parameter, we map t=0..n-1 across the
+        full parabolic arc (launch → impact) so the second derivative is
+        always constant and detectable. The scale is preserved for the
+        amplitude but does not compress the time axis into invisibility.
+        """
+        import math
+        # Time of impact under real physics: h0 = ½g·t_impact²
+        t_impact = math.sqrt(2.0 * self.h0 / self.g)
         result = []
-        for t in range(start, start + length):
-            y = self.h0 - 0.5 * self.g * (t * self.scale) ** 2
-            result.append(max(0, int(round(y))))
+        for i in range(n):
+            # Map sample index to physical time across the full arc
+            t_phys = i / (n - 1) * t_impact
+            h = self.h0 - 0.5 * self.g * t_phys ** 2
+            result.append(float(max(0.0, h)))
         return result
 
 

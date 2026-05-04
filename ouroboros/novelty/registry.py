@@ -82,24 +82,9 @@ class RegistrySearchResult:
 
 
 def _calibrate_novelty_score(distance: float, n_in_registry: int) -> float:
-    """
-    Convert cosine distance to calibrated novelty score (0-1).
-
-    Calibration accounts for:
-    - The registry size: a small registry means we can't be confident
-      something is novel just because it's distant from the few entries
-    - Distance distribution: most random expressions are far from all known ones
-      so raw distance is not a reliable novelty signal without calibration
-
-    With a registry of 1000+ entries, distances > 0.3 are genuinely unusual.
-    With a registry of 50 entries, we need distance > 0.6 to be confident.
-    """
-    # Minimum registry size for meaningful novelty claims
-    min_registry = 20
-    if n_in_registry < min_registry:
-        # Registry too small — scale down confidence significantly
-        confidence_factor = n_in_registry / min_registry
-        return distance * confidence_factor * 0.5
+    if n_in_registry == 0:
+        return 0.5
+    return min(1.0, distance) 
 
     # With a reasonable registry:
     # distance 0.0-0.1: routine (known equivalent exists)

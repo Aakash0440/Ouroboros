@@ -155,36 +155,46 @@ def _test_exponential_decay(seq: List[float], threshold: float = 0.85) -> Signat
         key_value=corr,
         threshold=-threshold,
     )
-
-
 def _test_free_fall(seq: List[float], threshold: float = 0.05) -> SignatureTestResult:
-    """
-    Free Fall: DERIV2(y) = constant (≈ -g)
-    Test: coefficient of variation of DERIV2(seq) < threshold
-    """
     if len(seq) < 10:
         return SignatureTestResult(PhysicsLaw.FREE_FALL, False, 0.0,
-                                  "sequence too short", 0.0, threshold)
-    d2 = _deriv2(seq)
-    if not d2 or statistics.mean([abs(v) for v in d2]) < 1e-10:
-        return SignatureTestResult(PhysicsLaw.FREE_FALL, False, 0.0,
-                                  "zero acceleration", 1.0, threshold)
-    # Trim d2 to active region — exclude floor-clamped zeros at the end
-    d2_active = d2[:]
-    for k in range(len(seq) - 1, 1, -1):
-        if abs(seq[k] - seq[k-1]) > 1e-9:
-            d2_active = d2[:max(1, k - 2)]
+                                   "sequence too short", 0.0, threshold)
+
+    # Strip flat prefix (object hasn't started falling yet)
+    start = 0
+    for i in range(1, len(seq)):
+        if abs(seq[i] - seq[i - 1]) > 1e-9:
+            start = max(0, i - 1)
             break
-    if not d2_active:
-        d2_active = d2
-    mean_d2 = statistics.mean(d2_active)
+
+    # Strip flat suffix (object has hit the ground / clamped at 0)
+    end = len(seq)
+    for i in range(len(seq) - 1, 0, -1):
+        if abs(seq[i] - seq[i - 1]) > 1e-9:
+            end = i + 1
+            break
+
+    active = seq[start:end]
+    if len(active) < 5:
+        return SignatureTestResult(PhysicsLaw.FREE_FALL, False, 0.0,
+                                   "active region too short", 1.0, threshold)
+
+    d2 = _deriv2(active)
+    if not d2:
+        return SignatureTestResult(PhysicsLaw.FREE_FALL, False, 0.0,
+                                   "zero acceleration", 1.0, threshold)
+
+    mean_d2 = statistics.mean(d2)
     if abs(mean_d2) < 1e-10:
-        cv = 1.0
-    else:
-        std_d2 = statistics.stdev(d2_active) if len(d2_active) > 1 else 0.0
-        cv = std_d2 / abs(mean_d2)  # coefficient of variation
+        return SignatureTestResult(PhysicsLaw.FREE_FALL, False, 0.0,
+                                   "zero mean acceleration", 1.0, threshold)
+
+    std_d2 = statistics.stdev(d2) if len(d2) > 1 else 0.0
+    cv = std_d2 / abs(mean_d2)
+
     passed = cv < threshold
-    confidence = min(1.0, threshold / max(cv, 1e-10)) if passed else threshold / max(cv, 1e-10) * 0.5
+    confidence = min(1.0, threshold / max(cv, 1e-10)) if passed else min(1.0, threshold / max(cv, 1e-10)) * 0.5
+
     return SignatureTestResult(
         law=PhysicsLaw.FREE_FALL,
         passed=passed,
@@ -193,8 +203,7 @@ def _test_free_fall(seq: List[float], threshold: float = 0.05) -> SignatureTestR
         key_value=cv,
         threshold=threshold,
     )
-
-
+    
 def _test_simple_harmonic(seq: List[float], threshold: float = 0.80) -> SignatureTestResult:
     """
     Simple Harmonic Motion: DERIV2(x) + ω²x = 0
