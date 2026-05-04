@@ -71,13 +71,13 @@ class SpearmanBootstrapResult:
 
 
 def spearman_rho(order_a: List[str], order_b: List[str]) -> float:
-    """Compute Spearman rank correlation between two concept orderings."""
     common = [c for c in order_a if c in order_b]
     n = len(common)
     if n < 3:
         return 0.0
-    rank_a = {c: i for i, c in enumerate(order_a)}
-    rank_b = {c: i for i, c in enumerate(order_b)}
+    # Re-rank within the common subset only
+    rank_a = {c: i for i, c in enumerate(c for c in order_a if c in common)}
+    rank_b = {c: i for i, c in enumerate(c for c in order_b if c in common)}
     d_sq = sum((rank_a[c] - rank_b[c])**2 for c in common)
     return 1.0 - (6 * d_sq) / (n * (n**2 - 1))
 

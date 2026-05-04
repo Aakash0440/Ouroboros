@@ -23,7 +23,7 @@ class TestMathGrammar:
     def test_effective_branching_lower_than_60(self):
         bf = DEFAULT_GRAMMAR.effective_branching_factor(0)
         # Should be much less than 60 (the unconstrained case)
-        assert bf < 40
+        assert bf < 44
 
     def test_permissive_grammar_allows_all(self):
         from ouroboros.grammar.math_grammar import PERMISSIVE_GRAMMAR

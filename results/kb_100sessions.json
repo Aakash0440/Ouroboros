@@ -26,5 +26,54 @@
     "env": "ModularArithmeticEnv",
     "session": 1,
     "usage_count": 0
+  },
+  {
+    "expr": "obs[t-7]",
+    "mdl_cost": 86.71104415127292,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  },
+  {
+    "expr": "1.256",
+    "mdl_cost": 552.5634561682621,
+    "env": "Fibonacci(7)",
+    "session": 3,
+    "usage_count": 0
+  },
+  {
+    "expr": "BOOL_NOT(obs[t-5])",
+    "mdl_cost": 540.9157376952423,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  },
+  {
+    "expr": "SIGN(DIFF_QUOT(obs[t-7], 40.000))",
+    "mdl_cost": 589.1853394062903,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  },
+  {
+    "expr": "CEIL_NODE(MEAN_WIN(obs[t-2], 23.000))",
+    "mdl_cost": 582.9242068926152,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  },
+  {
+    "expr": "STATE_VAR",
+    "mdl_cost": 625.8333712290411,
+    "env": "ModularArithmeticEnv",
+    "session": 2,
+    "usage_count": 0
+  },
+  {
+    "expr": "SIGN(t)",
+    "mdl_cost": 554.106494574959,
+    "env": "Fibonacci(7)",
+    "session": 3,
+    "usage_count": 0
   }
 ]

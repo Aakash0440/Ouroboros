@@ -110,7 +110,7 @@ class TestLean4SorryFixes:
 class TestExtendedSystemIntegration:
     def test_40_nodes_available(self):
         from ouroboros.nodes.extended_nodes import NODE_SPECS
-        assert len(NODE_SPECS) == 40
+        assert len(NODE_SPECS) == 42
 
     def test_grammar_constrained_beam_runs(self):
         from ouroboros.search.grammar_beam import GrammarConstrainedBeam, GrammarBeamConfig

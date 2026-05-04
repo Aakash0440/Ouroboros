@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "expr": "CEIL_NODE(MEAN_WIN(obs[t-2], 23.000))",
+    "mdl_cost": 582.9242068926152,
+    "env": "ModularArithmeticEnv",
+    "session": 1,
+    "usage_count": 0
+  }
+]

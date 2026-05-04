@@ -1,5 +1,5 @@
 """
-Extended node types for OUROBOROS — all 40 new mathematical primitives.
+Extended node types for OUROBOROS — all 42 mathematical primitives.
 
 Design principles:
 1. Every node has a NodeCategory (used by hierarchical classifier)
@@ -92,6 +92,10 @@ class ExtNodeType(Enum):
     RUNNING_MIN = auto()   # min(f(0)..f(t))        [unary]
     EWMA        = auto()   # exponentially weighted moving average [binary: f, alpha]
 
+    # ── INTEGRAL (Day 43, 2 nodes) ────────────────────────────────────────────
+    INTEGRAL     = auto()  # ∫₀ᵗ f(x)dx ≈ Σᵢ₌₀ᵗ f(i)        [unary]
+    INTEGRAL_WIN = auto()  # ∫_{t-W}^{t} f(x)dx windowed      [binary: f, W]
+
 
 # ── Node metadata ──────────────────────────────────────────────────────────────
 
@@ -109,15 +113,17 @@ class NodeSpec:
 # Build the complete node specification table
 NODE_SPECS: Dict[ExtNodeType, NodeSpec] = {
     # Calculus
-    ExtNodeType.DERIV:       NodeSpec(ExtNodeType.DERIV,       NodeCategory.CALCULUS,    1, 4.0),
-    ExtNodeType.DERIV2:      NodeSpec(ExtNodeType.DERIV2,      NodeCategory.CALCULUS,    1, 5.0),
-    ExtNodeType.CUMSUM:      NodeSpec(ExtNodeType.CUMSUM,      NodeCategory.CALCULUS,    1, 4.0),
-    ExtNodeType.CUMSUM_WIN:  NodeSpec(ExtNodeType.CUMSUM_WIN,  NodeCategory.CALCULUS,    2, 5.0, window_arg=True),
-    ExtNodeType.CONVOLVE:    NodeSpec(ExtNodeType.CONVOLVE,    NodeCategory.CALCULUS,    2, 8.0),
-    ExtNodeType.DIFF_QUOT:   NodeSpec(ExtNodeType.DIFF_QUOT,   NodeCategory.CALCULUS,    2, 6.0),
-    ExtNodeType.RUNNING_MAX: NodeSpec(ExtNodeType.RUNNING_MAX, NodeCategory.CALCULUS,    1, 3.0),
-    ExtNodeType.RUNNING_MIN: NodeSpec(ExtNodeType.RUNNING_MIN, NodeCategory.CALCULUS,    1, 3.0),
-    ExtNodeType.EWMA:        NodeSpec(ExtNodeType.EWMA,        NodeCategory.CALCULUS,    2, 5.0),
+    ExtNodeType.DERIV:        NodeSpec(ExtNodeType.DERIV,        NodeCategory.CALCULUS,    1, 4.0),
+    ExtNodeType.DERIV2:       NodeSpec(ExtNodeType.DERIV2,       NodeCategory.CALCULUS,    1, 5.0),
+    ExtNodeType.CUMSUM:       NodeSpec(ExtNodeType.CUMSUM,       NodeCategory.CALCULUS,    1, 4.0),
+    ExtNodeType.CUMSUM_WIN:   NodeSpec(ExtNodeType.CUMSUM_WIN,   NodeCategory.CALCULUS,    2, 5.0, window_arg=True),
+    ExtNodeType.CONVOLVE:     NodeSpec(ExtNodeType.CONVOLVE,     NodeCategory.CALCULUS,    2, 8.0),
+    ExtNodeType.DIFF_QUOT:    NodeSpec(ExtNodeType.DIFF_QUOT,    NodeCategory.CALCULUS,    2, 6.0),
+    ExtNodeType.RUNNING_MAX:  NodeSpec(ExtNodeType.RUNNING_MAX,  NodeCategory.CALCULUS,    1, 3.0),
+    ExtNodeType.RUNNING_MIN:  NodeSpec(ExtNodeType.RUNNING_MIN,  NodeCategory.CALCULUS,    1, 3.0),
+    ExtNodeType.EWMA:         NodeSpec(ExtNodeType.EWMA,         NodeCategory.CALCULUS,    2, 5.0),
+    ExtNodeType.INTEGRAL:     NodeSpec(ExtNodeType.INTEGRAL,     NodeCategory.CALCULUS,    1, 5.0),
+    ExtNodeType.INTEGRAL_WIN: NodeSpec(ExtNodeType.INTEGRAL_WIN, NodeCategory.CALCULUS,    2, 6.0, window_arg=True),
 
     # Statistical
     ExtNodeType.MEAN_WIN:    NodeSpec(ExtNodeType.MEAN_WIN,    NodeCategory.STATISTICAL, 2, 5.0, window_arg=True),
@@ -169,15 +175,15 @@ EPS = 1e-10
 
 class ExtExprNode:
     """
-    Extended expression node supporting all 60 node types.
-    
+    Extended expression node supporting all 42 node types.
+
     Combines the original NodeType from Days 1-29 with the new ExtNodeType.
     Both are represented in a single class for compatibility.
-    
+
     The key invariant: evaluate() NEVER raises an exception.
     All operations are numerically protected.
     """
-    
+
     __slots__ = ['node_type', 'value', 'lag', 'state_key', 'window',
                  'left', 'right', 'third', '_cache']
 
@@ -283,7 +289,6 @@ class ExtExprNode:
             return sum(vals)
 
         if nt == ExtNodeType.CONVOLVE:
-            # Σₖ f(k) * g(t-k) for k in [0, t]
             total = 0.0
             for k in range(min(t + 1, 50)):  # cap at 50 to avoid O(t²)
                 fk = self.left._eval(k, history, state) if self.left else 0.0
@@ -312,6 +317,33 @@ class ExtExprNode:
                 v = self.left._eval_cached(i, history, state) if self.left else 0.0
                 result = alpha * v + (1 - alpha) * result
             return result
+
+        if nt == ExtNodeType.INTEGRAL:
+            if self.left is None:
+                return 0.0
+            total = 0.0
+            for i in range(t + 1):
+                try:
+                    val = self.left._eval_cached(i, history, state)
+                    if not (val != val) and abs(val) < 1e9:
+                        total += val
+                except Exception:
+                    pass
+            return total
+
+        if nt == ExtNodeType.INTEGRAL_WIN:
+            if self.left is None:
+                return 0.0
+            w = max(1, min(int(abs(R()) + 0.5), 100)) if self.right else 10
+            total = 0.0
+            for i in range(max(0, t - w + 1), t + 1):
+                try:
+                    val = self.left._eval_cached(i, history, state)
+                    if not (val != val) and abs(val) < 1e9:
+                        total += val
+                except Exception:
+                    pass
+            return total
 
         # ── Statistical ───────────────────────────────────────────────────────
         if nt == ExtNodeType.MEAN_WIN:
@@ -392,7 +424,6 @@ class ExtExprNode:
             k_freq = max(0, int(abs(R()) + 0.5)) if self.right else 1
             vals = hist_vals(self.left, w) if self.left else [0.0]
             if len(vals) < 4: return 0.0
-            # DFT coefficient k via direct computation (no numpy dependency)
             n = len(vals)
             k_freq = k_freq % (n // 2 + 1)
             real = sum(vals[j] * math.cos(2*math.pi*k_freq*j/n) for j in range(n))
@@ -422,14 +453,12 @@ class ExtExprNode:
             return num / max(denom, EPS)
 
         if nt == ExtNodeType.HILBERT_ENV:
-            # Approximation: instantaneous amplitude via |f + j*H(f)|
-            # Use a simple approximation: sqrt(f² + DERIV(f)²)
             v = L()
             v_prev = self.left._eval(max(0, t-1), history, state) if self.left else 0.0
             deriv = v - v_prev
             return math.sqrt(v**2 + deriv**2)
 
-        # ── Number-Theoretic ─────────────────────────────────────────────────
+        # ── Number-Theoretic ──────────────────────────────────────────────────
         if nt == ExtNodeType.GCD_NODE:
             a, b = int(abs(L())), int(abs(R()))
             if a == 0 and b == 0: return 0.0
@@ -557,88 +586,3 @@ class ExtExprNode:
         if name == 'PREV':
             return f"obs[t-{self.lag}]"
         return name
-    
-
-# ── INTEGRAL_NODE — added Day 43 ──────────────────────────────────────────────
-# Extend ExtNodeType with INTEGRAL
-import enum as _enum_integral
-
-_old_ext_members = {name: member.value for name, member in ExtNodeType.__members__.items()}
-_ext_max = max(_old_ext_members.values())
-
-ExtNodeType = _enum_integral.Enum('ExtNodeType', {
-    **_old_ext_members,
-    'INTEGRAL': _ext_max + 1,    # ∫₀ᵗ f(x)dx ≈ Σᵢ₌₀ᵗ f(i)
-    'INTEGRAL_WIN': _ext_max + 2, # ∫_{t-W}^{t} f(x)dx — windowed integral
-})
-
-# Add specs for new nodes
-NODE_SPECS[ExtNodeType.INTEGRAL] = NodeSpec(
-    node_type=ExtNodeType.INTEGRAL,
-    category=NodeCategory.CALCULUS,
-    arity=1,
-    description_bits=5.0,
-)
-NODE_SPECS[ExtNodeType.INTEGRAL_WIN] = NodeSpec(
-    node_type=ExtNodeType.INTEGRAL_WIN,
-    category=NodeCategory.CALCULUS,
-    arity=2,
-    description_bits=6.0,
-    window_arg=True,
-)
-
-
-def _eval_integral(node: 'ExtExprNode', t: int, history: list, state: dict) -> float:
-    """
-    INTEGRAL(f)[t] = Σᵢ₌₀ᵗ f(i)
-    Discrete Riemann sum (left-endpoint rule, dt=1).
-    This is exactly CUMSUM of f evaluated from 0 to t.
-    """
-    if node.left is None:
-        return 0.0
-    total = 0.0
-    for i in range(t + 1):
-        try:
-            val = node.left._eval(i, history[:i], state)
-            if not (val != val) and abs(val) < 1e9:  # not NaN and not too large
-                total += val
-        except Exception:
-            pass
-    return total
-
-
-def _eval_integral_win(node: 'ExtExprNode', t: int, history: list, state: dict) -> float:
-    """
-    INTEGRAL_WIN(f, W)[t] = Σᵢ₌ₜ₋ᵥ₊₁ᵗ f(i)
-    Windowed Riemann sum over the last W steps.
-    """
-    if node.left is None:
-        return 0.0
-    w = max(1, int(abs(node.right._eval(t, history, state)) + 0.5)) if node.right else 10
-    w = min(w, 100)
-    total = 0.0
-    start = max(0, t - w + 1)
-    for i in range(start, t + 1):
-        try:
-            val = node.left._eval(i, history[:i], state)
-            if not (val != val) and abs(val) < 1e9:
-                total += val
-        except Exception:
-            pass
-    return total
-
-
-# Patch _eval in ExtExprNode to handle new node types
-_original_ext_eval = ExtExprNode._eval
-
-def _patched_ext_eval(self, t: int, history: list, state: dict) -> float:
-    """Extended eval that handles INTEGRAL and INTEGRAL_WIN."""
-    nt = self.node_type
-    if hasattr(nt, 'name'):
-        if nt.name == 'INTEGRAL':
-            return _eval_integral(self, t, history, state)
-        if nt.name == 'INTEGRAL_WIN':
-            return _eval_integral_win(self, t, history, state)
-    return _original_ext_eval(self, t, history, state)
-
-ExtExprNode._eval = _patched_ext_eval

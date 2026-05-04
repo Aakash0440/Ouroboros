@@ -1,25 +1,25 @@
 {
   "n_sessions": 8,
-  "total_axioms": 4,
-  "early_mdl": 596.2094964263259,
-  "late_mdl": 596.2094964263259,
+  "total_axioms": 11,
+  "early_mdl": 591.8107154393608,
+  "late_mdl": 591.8107154393608,
   "improvement_pct": 0.0,
   "growth_model": {
     "type": "logarithmic",
-    "a": 0.0,
-    "b": 4.0,
+    "a": -8.2064225182515e-15,
+    "b": 11.00000000000001,
     "r_squared": 1.0,
     "plateau": null
   },
   "knowledge_accumulated": false,
   "axiom_counts": [
-    4.0,
-    4.0,
-    4.0,
-    4.0,
-    4.0,
-    4.0,
-    4.0,
-    4.0
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0,
+    11.0
   ]
 }

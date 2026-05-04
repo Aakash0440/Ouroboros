@@ -22,7 +22,7 @@ class TestCompleteSystem:
     def test_extended_nodes_accessible(self):
         """Days 30-31: 60 node types available."""
         from ouroboros.nodes.extended_nodes import NODE_SPECS, ExtNodeType
-        assert len(NODE_SPECS) == 40
+        assert len(NODE_SPECS) == 42
         assert ExtNodeType.ISPRIME in NODE_SPECS
 
     def test_grammar_constrained_search(self):

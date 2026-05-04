@@ -27,7 +27,7 @@ def make(nt, left=None, right=None, third=None) -> ExtExprNode:
 
 class TestNodeSpecs:
     def test_all_40_nodes_have_specs(self):
-        assert len(NODE_SPECS) == 40
+        assert len(NODE_SPECS) == 42
 
     def test_all_have_positive_description_bits(self):
         for nt, spec in NODE_SPECS.items():
