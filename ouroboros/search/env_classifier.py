@@ -249,13 +249,24 @@ class EnvironmentClassifier:
 
     def _score_periodic(self, stats: dict, obs: List[float]) -> float:
         """Higher score if sequence shows periodic patterns."""
+        int_obs = [int(round(v)) for v in obs]
+        max_val = max(int_obs) if int_obs else 1
+        min_val = min(int_obs) if int_obs else 0
+
+        # Discount: small bounded non-negative alphabet is modular, not periodic.
+        # A sin/cos sequence has large alphabet and non-integer-ish values.
+        # (3t+1)%7 has max_val=6, unique_ratio=0.035 — this is NUMBER_THEOR territory.
+        looks_modular = (min_val >= 0 and max_val < 50 and stats["unique_ratio"] < 0.3)
+        if looks_modular:
+            # Still give partial credit (modular seqs DO have periodicity)
+            # but cap well below NUMBER_THEOR's score
+            ac7_contrib = min(0.4, abs(stats["autocorr_lag7"]) * 0.5)
+            return ac7_contrib
+
         score = 0.0
-        # High autocorrelation at any lag is a periodicity signal
         score += min(1.0, abs(stats["autocorr_lag7"]) * 2)
         score += min(0.5, abs(stats["autocorr_lag1"]) * 1)
-        # Low entropy → repeated patterns
         score += (1.0 - stats["entropy"]) * 0.3
-        # Small unique ratio for discrete periodic sequences
         if stats["unique_ratio"] < 0.2:
             score += 0.3
         return min(1.0, score)
@@ -277,15 +288,26 @@ class EnvironmentClassifier:
     def _score_recurrent(self, stats: dict, obs: List[float]) -> float:
         """Higher score if sequence satisfies a linear recurrence."""
         from ouroboros.emergence.recurrence_detector import berlekamp_massey_mod
-        # Run BM as a quick check
         int_obs = [int(round(v)) for v in obs[:100]]
+
+        # If the sequence looks modular (bounded small alphabet, low unique_ratio)
+        # do NOT let BM steal the signal — modular arithmetic IS a linear recurrence
+        # over GF(m) but it belongs to NUMBER_THEOR, not RECURRENT.
+        max_val = max(int_obs) if int_obs else 1
+        looks_modular = (
+            min(int_obs) >= 0
+            and max_val < 50
+            and stats["unique_ratio"] < 0.3
+        )
+        if looks_modular:
+            return abs(stats["autocorr_lag1"]) * 0.3   # weak signal only
+
         mod_candidates = [v for v in range(2, 20) if all(0 <= x < v for x in int_obs)]
         if mod_candidates:
             m = max(mod_candidates)
             result = berlekamp_massey_mod(int_obs, m)
             if result is not None and len(result) <= 5:
                 return 0.9
-        # Fall back to autocorrelation check
         return abs(stats["autocorr_lag1"]) * 0.5
 
     def _score_statistical(self, stats: dict, obs: List[float]) -> float:
@@ -304,19 +326,45 @@ class EnvironmentClassifier:
         """Higher score if sequence has modular/number-theoretic structure."""
         int_obs = [int(round(v)) for v in obs]
         score = 0.0
-        # Low unique ratio with bounded values → modular
+        if not int_obs:
+            return 0.0
         max_val = max(int_obs) if int_obs else 1
-        if max_val > 0 and stats["unique_ratio"] < 0.3 and max_val < 100:
+        min_val = min(int_obs)
+
+        # Bounded small non-negative alphabet → strong modular signal
+        # (3t+1)%7 has max_val=6, unique_ratio=0.035 — catches this exactly)
+        if min_val >= 0 and max_val < 100 and stats["unique_ratio"] < 0.3:
             score += 0.5
-        # Very low entropy with small alphabet
-        if stats["entropy"] < 0.5 and max_val < 20:
-            score += 0.3
+
+        # Direct modular periodicity test: does the sequence repeat with
+        # period = (max_val + 1)?  Works for any (at+b)%m sequence.
+        period = max_val + 1
+        if period >= 2 and len(obs) >= period * 3:
+            matches = sum(
+                1 for i in range(period, len(int_obs))
+                if int_obs[i] == int_obs[i - period]
+            )
+            period_frac = matches / (len(int_obs) - period)
+            if period_frac > 0.85:
+                score += 0.4   # very strong modular signal
+
+        # Entropy is EXPECTED to be high for uniform modular sequences —
+        # do NOT penalise high entropy here (old bug: gated +0.3 on entropy<0.5)
+        # Instead, give a small bonus for small bounded alphabet regardless
+        if max_val < 20 and min_val >= 0:
+            score += 0.1
+
         return min(1.0, score)
 
     def _score_monotone(self, stats: dict, obs: List[float]) -> float:
         return min(1.0, (stats["monotonicity"] - 0.5) * 4)
 
     def _score_random(self, stats: dict, obs: List[float]) -> float:
+        int_obs = [int(round(v)) for v in obs]
+        max_val = max(int_obs) if int_obs else 1
+        # Modular sequences have high entropy but are NOT random
+        if min(int_obs) >= 0 and max_val < 50 and stats["unique_ratio"] < 0.3:
+            return 0.1
         return stats["entropy"] * 0.8 + (1 - abs(stats["autocorr_lag1"])) * 0.2
 
     def _make_result(self, family, scores, obs):

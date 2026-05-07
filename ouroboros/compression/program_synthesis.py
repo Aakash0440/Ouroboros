@@ -1,43 +1,11 @@
 ﻿"""
 Symbolic program synthesis for OUROBOROS agents.
-
-Extended node types (v2):
-    CONST(n)       — integer constant n
-    TIME           — timestep variable t
-    ADD(l, r)      — l + r
-    MUL(l, r)      — l * r
-    MOD(l, r)      — l mod r  (r=0 → 0)
-    SUB(l, r)      — l - r    (NEW: enables negative residues)
-    DIV(l, r)      — l // r   (NEW: integer floor division, r=0 → 0)
-    POW(l, r)      — l ** r   (NEW: polynomial sequences, r clamped ≤5)
-    PREV(k)        — obs[t-k] (NEW: recurrence relations — k is lag)
-    IF(c, t, e)    — c≠0 ? t : e (NEW: piecewise rules, 3-child node)
-    EQ(l, r)       — 1 if l==r else 0 (NEW: equality test, useful in IF)
-    LT(l, r)       — 1 if l<r  else 0 (NEW: less-than test)
-
-Why these and not more?
-    These cover: modular arithmetic (MOD), recurrence (PREV),
-    polynomial (POW), piecewise (IF+EQ/LT), and basic arithmetic.
-    Together they express the vast majority of simple mathematical
-    sequences. Adding more primitives beyond this set increases
-    search space without proportionally increasing expressiveness.
-
-PREV semantics:
-    PREV(k) evaluates to observation_history[t-k].
-    If t-k < 0, returns 0 (boundary condition).
-    The observation_history is passed as context to evaluate().
-    For prediction (no history), PREV uses the expression's own
-    previous predictions — this is the recurrence mode.
-
-IF semantics:
-    IF has THREE children: condition, then_branch, else_branch.
-    evaluate() checks if condition != 0, returns then or else.
-    This requires a special 3-child node structure.
+Extended node types (v3): Adds PRIME support for adversarial discovery.
 """
 
 from enum import Enum, auto
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Dict
+from typing import List, Optional, Tuple, Dict, Any
 import numpy as np
 
 
@@ -52,6 +20,7 @@ class NodeType(Enum):
     SUB   = auto()
     DIV   = auto()
     POW   = auto()
+    PRIME = auto()  # ✅ Added for prime sequence discovery
     # New structural
     PREV  = auto()
     IF    = auto()
@@ -61,6 +30,7 @@ class NodeType(Enum):
 
 # Node category helpers
 LEAF_TYPES    = {NodeType.CONST, NodeType.TIME, NodeType.PREV}
+UNARY_TYPES   = {NodeType.PRIME}  # ✅ PRIME only takes one child
 BINARY_TYPES  = {NodeType.ADD, NodeType.MUL, NodeType.MOD,
                  NodeType.SUB, NodeType.DIV, NodeType.POW,
                  NodeType.EQ, NodeType.LT}
@@ -69,20 +39,10 @@ TERNARY_TYPES = {NodeType.IF}
 
 @dataclass
 class ExprNode:
-    """
-    Node in a symbolic expression tree.
-
-    Leaf:    CONST(value), TIME, PREV(lag)
-    Binary:  ADD/MUL/MOD/SUB/DIV/POW/EQ/LT (left, right)
-    Ternary: IF (condition=left, then=right, else=extra)
-
-    evaluate() needs observation_history for PREV nodes.
-    If history is None, PREV returns 0 (safe default for synthesis mode).
-    """
     node_type: NodeType
     value: Optional[int] = None         # CONST: the integer value
     lag: Optional[int] = None           # PREV: lag k (PREV(k) = obs[t-k])
-    left: Optional['ExprNode'] = None   # Binary: left child / IF: condition
+    left: Optional['ExprNode'] = None   # Binary: left child / Unary: child / IF: condition
     right: Optional['ExprNode'] = None  # Binary: right child / IF: then-branch
     extra: Optional['ExprNode'] = None  # IF: else-branch (third child)
 
@@ -92,18 +52,6 @@ class ExprNode:
         history: Optional[List[int]] = None,
         alphabet_size: int = 256
     ) -> int:
-        """
-        Evaluate expression at timestep t.
-
-        Args:
-            t: Current timestep
-            history: Observation history (needed for PREV nodes)
-                     If None, PREV returns 0
-            alphabet_size: For clamping (not applied here — caller clamps)
-
-        Returns:
-            Integer value of expression at t
-        """
         # ── Leaf nodes ───────────────────────────────────────────────────
         if self.node_type == NodeType.CONST:
             return self.value
@@ -118,9 +66,17 @@ class ExprNode:
                 return 0
             return history[idx]
 
+        # ── Unary nodes ──────────────────────────────────────────────────
+        if self.node_type == NodeType.PRIME:
+            import sympy
+            # Use left child as index into prime sequence
+            # We use % 10000 to keep sympy from hanging on massive primes during search
+            idx = int(abs(np.round(self.left.evaluate(t, history, alphabet_size)))) % 10000
+            return int(sympy.prime(idx + 1))
+
         # ── Binary nodes ─────────────────────────────────────────────────
         lv = self.left.evaluate(t, history, alphabet_size)
-        rv = self.right.evaluate(t, history, alphabet_size)
+        rv = self.right.evaluate(t, history, alphabet_size) if self.right else 0
 
         if self.node_type == NodeType.ADD:
             return lv + rv
@@ -133,7 +89,6 @@ class ExprNode:
         if self.node_type == NodeType.DIV:
             return lv // rv if rv != 0 else 0
         if self.node_type == NodeType.POW:
-            # Clamp exponent to prevent explosion
             exp = max(0, min(rv, 5))
             base = max(-100, min(lv, 100))
             try:
@@ -163,26 +118,31 @@ class ExprNode:
     ) -> List[int]:
         seeds = list(initial_history) if initial_history else []
         full_history = list(seeds)
-        predictions = list(seeds)
+        predictions = []
 
-        remaining = length - len(seeds)
-        for _ in range(remaining):
-            t = len(full_history)  # absolute timestep
-            raw = self.evaluate(t, full_history, alphabet_size)
-            clamped = raw % alphabet_size if alphabet_size > 0 else raw
+        for current_t in range(length):
+            # If we have seeds for the beginning, use them
+            if current_t < len(seeds):
+                clamped = seeds[current_t] % alphabet_size
+            else:
+                raw = self.evaluate(current_t, full_history, alphabet_size)
+                clamped = raw % alphabet_size if alphabet_size > 0 else raw
+            
             predictions.append(clamped)
-            full_history.append(clamped)
+            if current_t >= len(full_history):
+                full_history.append(clamped)
 
-        return predictions[:length]
+        return predictions
 
     def to_string(self) -> str:
-        """Human-readable infix representation."""
         if self.node_type == NodeType.CONST:
             return str(self.value)
         if self.node_type == NodeType.TIME:
             return 't'
         if self.node_type == NodeType.PREV:
             return f"prev({self.lag or 1})"
+        if self.node_type == NodeType.PRIME:
+            return f"prime({self.left.to_string()})"
 
         ops = {
             NodeType.ADD: '+', NodeType.SUB: '-',
@@ -208,12 +168,9 @@ class ExprNode:
         if self.node_type in LEAF_TYPES:
             return 0
         d = 0
-        if self.left:
-            d = max(d, self.left.depth())
-        if self.right:
-            d = max(d, self.right.depth())
-        if self.extra:
-            d = max(d, self.extra.depth())
+        if self.left: d = max(d, self.left.depth())
+        if self.right: d = max(d, self.right.depth())
+        if self.extra: d = max(d, self.extra.depth())
         return d + 1
 
     def num_nodes(self) -> int:
@@ -223,308 +180,45 @@ class ExprNode:
         if self.extra: n += self.extra.num_nodes()
         return n
 
-    def node_count(self) -> int:
-        return self.num_nodes()
-
-    def constant_count(self) -> int:
-        count = 1 if self.node_type == NodeType.CONST else 0
-        if self.left:  count += self.left.constant_count()
-        if self.right: count += self.right.constant_count()
-        if self.extra: count += self.extra.constant_count()
-        return count
-
     def has_prev(self) -> bool:
-        """Check if expression tree contains any PREV nodes."""
-        if self.node_type == NodeType.PREV:
-            return True
-        return any(
-            child.has_prev()
-            for child in [self.left, self.right, self.extra]
-            if child is not None
-        )
+        if self.node_type == NodeType.PREV: return True
+        children = [self.left, self.right, self.extra]
+        return any(c.has_prev() for c in children if c is not None)
 
     def contains_time(self) -> bool:
-        """Check if expression tree contains any TIME nodes."""
-        if self.node_type == NodeType.TIME:
-            return True
-        return any(
-            child.contains_time()
-            for child in [self.left, self.right, self.extra]
-            if child is not None
-        )
-
-    def __eq__(self, other) -> bool:
-        if not isinstance(other, ExprNode):
-            return False
-        return self.to_string() == other.to_string()
-
-    def __hash__(self) -> int:
-        return hash(self.to_string())
-
-    def __repr__(self) -> str:
-        return f"ExprNode({self.to_string()!r})"
-
+        if self.node_type == NodeType.TIME: return True
+        children = [self.left, self.right, self.extra]
+        return any(c.contains_time() for c in children if c is not None)
 
 # ── Convenience constructors ──────────────────────────────────────────────────
 
-def C(n: int) -> ExprNode:
-    return ExprNode(NodeType.CONST, value=n)
+def C(n: int) -> ExprNode: return ExprNode(NodeType.CONST, value=n)
+def T() -> ExprNode: return ExprNode(NodeType.TIME)
+def PREV(lag: int = 1) -> ExprNode: return ExprNode(NodeType.PREV, lag=lag)
+def PRIME(node: ExprNode) -> ExprNode: return ExprNode(NodeType.PRIME, left=node) # ✅ Added
+def ADD(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.ADD, left=l, right=r)
+def SUB(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.SUB, left=l, right=r)
+def MUL(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.MUL, left=l, right=r)
+def DIV(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.DIV, left=l, right=r)
+def POW(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.POW, left=l, right=r)
+def MOD(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.MOD, left=l, right=r)
+def EQ(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.EQ, left=l, right=r)
+def LT(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.LT, left=l, right=r)
+def IF(c: ExprNode, t: ExprNode, e: ExprNode) -> ExprNode:
+    return ExprNode(NodeType.IF, left=c, right=t, extra=e)
 
-def T() -> ExprNode:
-    return ExprNode(NodeType.TIME)
+# ── Program builders ──────────────────────────────────────────────────────────
 
-def PREV(lag: int = 1) -> ExprNode:
-    return ExprNode(NodeType.PREV, lag=lag)
-
-def ADD(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.ADD, left=l, right=r)
-
-def SUB(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.SUB, left=l, right=r)
-
-def MUL(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.MUL, left=l, right=r)
-
-def DIV(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.DIV, left=l, right=r)
-
-def POW(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.POW, left=l, right=r)
-
-def MOD(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.MOD, left=l, right=r)
-
-def EQ(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.EQ, left=l, right=r)
-
-def LT(l: ExprNode, r: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.LT, left=l, right=r)
-
-def IF(condition: ExprNode, then_branch: ExprNode,
-       else_branch: ExprNode) -> ExprNode:
-    return ExprNode(NodeType.IF, left=condition,
-                    right=then_branch, extra=else_branch)
-
-def build_linear_modular(slope: int, intercept: int, modulus: int) -> ExprNode:
-    """Build (slope * t + intercept) mod modulus."""
-    return MOD(ADD(MUL(C(slope), T()), C(intercept)), C(modulus))
-
-def build_fibonacci_mod(modulus: int) -> ExprNode:
+def build_linear_modular(a: int, b: int, m: int) -> ExprNode:
     """
-    F(0)=0, F(1)=1, F(t)=(prev(1)+prev(2)) mod modulus
-    Seeds are baked in via IF guards.
+    Builds the expression tree for (a*t + b) % m.
+    
+    This is the canonical depth-3 linear modular program:
+        MOD(ADD(MUL(CONST(a), TIME), CONST(b)), CONST(m))
+    
+    Used by expr_node.py and grammar_beam.py as a fast-path constructor
+    when the classifier identifies a LINEAR_MODULAR family.
     """
-    recurrence = MOD(ADD(PREV(1), PREV(2)), C(modulus))
-    with_seed1 = IF(EQ(T(), C(0)), C(0), IF(EQ(T(), C(1)), C(1), recurrence))
-    return with_seed1
-
-
-def predict_fibonacci_mod(modulus: int, length: int) -> list:
-    """Predict Fibonacci mod modulus with correct [0,1] seeds."""
-    expr = build_fibonacci_mod(modulus)
-    return expr.predict_sequence(length, modulus, initial_history=[0, 1])
-
-def build_piecewise(
-    period: int,
-    expr1: ExprNode,
-    expr2: ExprNode
-) -> ExprNode:
-    """
-    Build IF(t mod period == 0, expr1, expr2).
-    Alternates between expr1 and expr2 every `period` steps.
-    """
-    return IF(EQ(MOD(T(), C(period)), C(0)), expr1, expr2)
-
-
-# ── Extended Beam Search ──────────────────────────────────────────────────────
-
-# Rescue loop constant range — deliberately small to avoid O(n²) score calls.
-# The beam already covers small constants via const_range; the rescue loop
-# only needs to catch the handful of depth-2 T-expressions the beam misses.
-_RESCUE_CONST_RANGE = 16
-
-
-class BeamSearchSynthesizer:
-    """
-    Beam search over expression trees — extended with new primitives.
-
-    New candidates at depth 0:
-        All PREV(k) for k in 1..max_lag (alongside CONST and TIME)
-
-    New candidates at expansion:
-        SUB, DIV, POW operations (alongside ADD, MUL, MOD)
-        IF constructions (condition from EQ/LT, then/else from beam)
-
-    PREV-containing expressions are scored using predict_sequence()
-    in recurrence mode — the expression's own previous predictions
-    are fed back as history. This is how Fibonacci emerges.
-
-    Args:
-        beam_width: Candidates kept at each depth
-        max_depth: Maximum tree depth
-        const_range: Search constants 0..const_range
-        max_lag: Maximum PREV lag to try (default 3)
-        alphabet_size: For prediction clamping — MUST match env.alphabet_size
-        mdl_lambda: MDL regularization weight
-        enable_prev: Include PREV nodes (default True)
-        enable_if: Include IF nodes (default True, slower)
-        enable_pow: Include POW nodes (default True)
-    """
-
-    def __init__(
-        self,
-        beam_width: int = 25,
-        max_depth: int = 3,
-        const_range: int = 16,
-        max_lag: int = 3,
-        alphabet_size: int = 256,
-        mdl_lambda: float = 1.0,
-        enable_prev: bool = True,
-        enable_if: bool = True,
-        enable_pow: bool = True
-    ):
-        self.beam_width = beam_width
-        self.max_depth = max_depth
-        self.const_range = const_range
-        self.max_lag = max_lag
-        self.alphabet_size = alphabet_size
-        self.mdl_lambda = mdl_lambda
-        self.enable_prev = enable_prev
-        self.enable_if = enable_if
-        self.enable_pow = enable_pow
-
-    def _leaves(self) -> List[ExprNode]:
-        """All depth-0 candidates."""
-        leaves = [T()]
-        leaves += [C(n) for n in range(0, self.const_range + 1)]
-        if self.enable_prev:
-            leaves += [PREV(k) for k in range(1, self.max_lag + 1)]
-        return leaves
-
-    def _score(self, node: ExprNode, actuals: List[int]) -> float:
-        """MDL cost of a node on actuals."""
-        from ouroboros.compression.mdl import MDLCost
-        n = len(actuals)
-        preds = node.predict_sequence(n, self.alphabet_size)
-        mdl = MDLCost(lambda_weight=self.mdl_lambda)
-        return mdl.total_cost(node.to_bytes(), preds, actuals, self.alphabet_size)
-
-    def _binary_ops(self) -> List[NodeType]:
-        ops = [NodeType.ADD, NodeType.MUL, NodeType.MOD, NodeType.SUB]
-        if self.enable_pow:
-            ops.append(NodeType.POW)
-        ops += [NodeType.DIV, NodeType.EQ, NodeType.LT]
-        return ops
-
-    def _expand(self, node: ExprNode) -> List[ExprNode]:
-        """Expand node by one layer."""
-        if node.depth() >= self.max_depth - 1:
-            return []
-
-        leaves = self._leaves()[:8]
-        if not any(l.to_string() == 't' for l in leaves):
-            leaves = [T()] + leaves[:7]
-        expansions = []
-
-        for op in self._binary_ops():
-            for leaf in leaves:
-                expansions.append(ExprNode(op, left=node, right=leaf))
-                if op in (NodeType.MOD, NodeType.SUB, NodeType.DIV, NodeType.LT):
-                    expansions.append(ExprNode(op, left=leaf, right=node))
-
-        # IF expansions: IF(EQ(node, leaf), leaf2, leaf3)
-        if self.enable_if and node.depth() <= 1:
-            for leaf1 in leaves[:5]:
-                for leaf2 in leaves[:5]:
-                    for leaf3 in leaves[:3]:
-                        cond = ExprNode(NodeType.EQ, left=node, right=leaf1)
-                        expansions.append(IF(cond, leaf2, leaf3))
-
-        return expansions
-
-    def search(
-        self,
-        actuals: List[int],
-        verbose: bool = False
-    ) -> Tuple[ExprNode, float]:
-        """
-        Beam search over expression trees.
-
-        Returns: (best_expression, best_mdl_cost)
-        """
-        if not actuals:
-            return C(0), float('inf')
-
-        # Depth 0
-        beam: List[Tuple[float, ExprNode]] = []
-        for leaf in self._leaves():
-            cost = self._score(leaf, actuals)
-            beam.append((cost, leaf))
-
-        beam.sort(key=lambda x: x[0])
-        beam = beam[:self.beam_width]
-        # Force T into beam so time-dependent expressions can be built deeper
-        if not any(n.to_string() == 't' for _, n in beam):
-            t_node = T()
-            t_cost = self._score(t_node, actuals)
-            beam[-1] = (t_cost, t_node)
-
-        if verbose:
-            print(f"  Depth 0: best={beam[0][1].to_string()!r} cost={beam[0][0]:.1f}")
-
-        # Depth 1..max_depth
-        for depth in range(1, self.max_depth + 1):
-            new_candidates = []
-            for _, node in beam:
-                for expanded in self._expand(node):
-                    cost = self._score(expanded, actuals)
-                    new_candidates.append((cost, expanded))
-
-            if not new_candidates:
-                break
-
-            all_candidates = beam + new_candidates
-            all_candidates.sort(key=lambda x: x[0])
-
-            # Reserve 3 slots for best T-containing expressions for diversity
-            t_in_beam = [(c, n) for c, n in all_candidates if 't' in n.to_string()]
-            non_t = [(c, n) for c, n in all_candidates if 't' not in n.to_string()]
-            reserved = t_in_beam[:3]
-            rest = non_t[:self.beam_width - len(reserved)]
-            beam = sorted(reserved + rest, key=lambda x: x[0])
-
-            # Always keep the best T-containing candidate from new expansions
-            t_candidates = [(c, n) for c, n in new_candidates if 't' in n.to_string()]
-            if t_candidates:
-                t_candidates.sort(key=lambda x: x[0])
-                best_t = t_candidates[0]
-                if not any(n.to_string() == best_t[1].to_string() for _, n in beam):
-                    beam[-1] = best_t
-
-            if verbose:
-                print(f"  Depth {depth}: best={beam[0][1].to_string()!r} cost={beam[0][0]:.1f}")
-
-            # Early exit: perfect prediction
-            top_cost, top_expr = beam[0]
-            preds = top_expr.predict_sequence(len(actuals), self.alphabet_size)
-            if all(p == a for p, a in zip(preds, actuals)):
-                if verbose:
-                    print(f"  Perfect prediction at depth {depth}")
-                break
-
-        best_cost, best_expr = beam[0]
-
-        # Targeted rescue: catch depth-2 T-expressions the beam may have missed
-        # (e.g. ADD(MUL(3,t), 1)). Uses a small fixed const range to stay fast.
-        for c1 in range(0, _RESCUE_CONST_RANGE + 1):
-            for op1 in [NodeType.MUL, NodeType.ADD, NodeType.SUB]:
-                mid = ExprNode(op1, left=C(c1), right=T())
-                for c2 in range(0, _RESCUE_CONST_RANGE + 1):
-                    for op2 in [NodeType.ADD, NodeType.MOD, NodeType.MUL, NodeType.SUB]:
-                        candidate = ExprNode(op2, left=mid, right=C(c2))
-                        cost = self._score(candidate, actuals)
-                        if cost < best_cost:
-                            best_cost = cost
-                            best_expr = candidate
-
-        return best_expr, best_cost
+    if m <= 0:
+        raise ValueError(f"Modulus m must be positive, got {m}")
+    return MOD(ADD(MUL(C(a), T()), C(b)), C(m))

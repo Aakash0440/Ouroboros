@@ -1,260 +1,234 @@
+# math_grammar.py  --  ASCII only, UTF-8 no BOM
 """
-MathGrammar — Formal grammar specifying valid parent-child node combinations.
+MathGrammar -- grammar constraints for OUROBOROS expression-tree search.
 
-This is the core mechanism that makes 60 node types tractable.
+All lookups go through _RULES[node.name] -- works identically for
+ExtNodeType members and original NodeType shims (both have .name).
 
-Without grammar: branching factor = 60, depth 4 → 60^16 ≈ 10^28 candidates
-With grammar:    branching factor ≈ 6 (average valid children), depth 4 → 6^16 ≈ 10^12
-With pruning:    practical beam search explores ~25 * 12 iterations → ~300 candidates
-
-Grammar rules encode mathematical validity:
-  ✓ DERIV(SIN(TIME))          — derivative of a continuous function: valid
-  ✗ DERIV(ISPRIME(TIME))      — derivative of a discrete indicator: meaningless
-  ✓ MEAN_WIN(SIN(TIME), 20)   — rolling mean of a continuous signal: valid
-  ✗ MEAN_WIN(ISPRIME, 20)     — rolling mean of a primality check: weird but allowed
-  ✓ FFT_AMP(SIN(TIME), 1, 32) — Fourier amplitude of a sinusoid: valid
-  ✗ FFT_AMP(ISPRIME, 1, 32)   — Fourier transform of primality: invalid
-  ✓ BOOL_AND(THRESHOLD(f,c), COMPARE(f,g)) — logical combination of binary signals
-  ✗ BOOL_AND(SIN(TIME), EXP(TIME))         — AND of continuous values: meaningless
-
-The grammar is organized as a dict:
-  parent_category → set of allowed child categories for each argument position
+_RULES layout per name:  (arg0_cats, arg1_cats, arg2_cats)
+  frozenset[NodeCategory]  -- allowed categories for that argument position
+  None                     -- argument position does not exist for this node
 """
 
 from __future__ import annotations
-from typing import Set, Dict, List, Optional, FrozenSet
+import warnings
+from typing import Dict, FrozenSet, List, Tuple
 from ouroboros.nodes.extended_nodes import ExtNodeType, NodeCategory, NODE_SPECS
 
-# Also import original node categories for backward compatibility
-CONTINUOUS_TYPES = frozenset([
-    NodeCategory.CALCULUS,
-    NodeCategory.STATISTICAL,
-    NodeCategory.TRANSFORM,
-    NodeCategory.TRANSCEND,
-    NodeCategory.ARITHMETIC,
-])
-
-DISCRETE_TYPES = frozenset([
-    NodeCategory.NUMBER,
-    NodeCategory.LOGICAL,
-    NodeCategory.MEMORY,
-])
-
-TERMINAL_TYPES = frozenset([NodeCategory.TERMINAL])
 ANY_TYPES = frozenset(NodeCategory)
 
+# -- Category shorthands -------------------------------------------------------
+_T  = frozenset([NodeCategory.TERMINAL])
+_A  = frozenset([NodeCategory.ARITHMETIC])
+_C  = frozenset([NodeCategory.CALCULUS])
+_S  = frozenset([NodeCategory.STATISTICAL])
+_L  = frozenset([NodeCategory.LOGICAL])
+_TR = frozenset([NodeCategory.TRANSFORM])
+_N  = frozenset([NodeCategory.NUMBER])
+_M  = frozenset([NodeCategory.MEMORY])
+_TX = frozenset([NodeCategory.TRANSCEND])
 
-# ── Grammar: allowed child categories per (parent_node, argument_position) ────
+# -- Semantic groups -----------------------------------------------------------
+_NUMERIC = _T | _A | _C | _S | _N | _M | _TX   # any real-valued scalar
+_SMOOTH  = _T | _A | _C | _S | _TX              # continuous / differentiable
+_INTEGER = _T | _A | _N | _M                     # guaranteed integer-valued
+_BOOLEAN = _L                                    # guaranteed 0/1 output
+_CONST   = _T                                    # constant terminals only
 
-# Format: (ExtNodeType, arg_index) → frozenset of allowed NodeCategory for that arg
-GRAMMAR: Dict[tuple, FrozenSet[NodeCategory]] = {
 
-    # ── CALCULUS NODES ─────────────────────────────────────────────────────────
-    # DERIV makes sense on continuous signals, not discrete indicators
-    (ExtNodeType.DERIV, 0):       frozenset([NodeCategory.CALCULUS, NodeCategory.STATISTICAL,
-                                              NodeCategory.TRANSCEND, NodeCategory.ARITHMETIC,
-                                              NodeCategory.TERMINAL]),
-    (ExtNodeType.DERIV2, 0):      frozenset([NodeCategory.CALCULUS, NodeCategory.TRANSCEND,
-                                              NodeCategory.ARITHMETIC, NodeCategory.TERMINAL]),
-    (ExtNodeType.CUMSUM, 0):      frozenset([NodeCategory.CALCULUS, NodeCategory.STATISTICAL,
-                                              NodeCategory.TRANSCEND, NodeCategory.ARITHMETIC,
-                                              NodeCategory.TERMINAL, NodeCategory.LOGICAL]),
-    (ExtNodeType.CUMSUM_WIN, 0):  frozenset([NodeCategory.CALCULUS, NodeCategory.TRANSCEND,
-                                              NodeCategory.ARITHMETIC, NodeCategory.TERMINAL]),
-    (ExtNodeType.CUMSUM_WIN, 1):  frozenset([NodeCategory.TERMINAL]),  # window = CONST
-    (ExtNodeType.CONVOLVE, 0):    frozenset([NodeCategory.CALCULUS, NodeCategory.TRANSCEND,
-                                              NodeCategory.ARITHMETIC, NodeCategory.TERMINAL]),
-    (ExtNodeType.CONVOLVE, 1):    frozenset([NodeCategory.CALCULUS, NodeCategory.TRANSCEND,
-                                              NodeCategory.ARITHMETIC, NodeCategory.TERMINAL]),
-    (ExtNodeType.DIFF_QUOT, 0):   frozenset([NodeCategory.CALCULUS, NodeCategory.TRANSCEND,
-                                              NodeCategory.ARITHMETIC, NodeCategory.TERMINAL]),
-    (ExtNodeType.DIFF_QUOT, 1):   frozenset([NodeCategory.TERMINAL]),  # step h = CONST
-    (ExtNodeType.RUNNING_MAX, 0): ANY_TYPES - frozenset([NodeCategory.TRANSFORM]),
-    (ExtNodeType.RUNNING_MIN, 0): ANY_TYPES - frozenset([NodeCategory.TRANSFORM]),
-    (ExtNodeType.EWMA, 0):        frozenset([NodeCategory.CALCULUS, NodeCategory.TRANSCEND,
-                                              NodeCategory.ARITHMETIC, NodeCategory.TERMINAL]),
-    (ExtNodeType.EWMA, 1):        frozenset([NodeCategory.TERMINAL]),  # alpha = CONST
+# =============================================================================
+# _RULES -- keyed by node .name string
+# Works for both ExtNodeType and original NodeType shims.
+# =============================================================================
+_RULES: Dict[str, Tuple] = {
 
-    # ── STATISTICAL NODES ─────────────────────────────────────────────────────
-    # Rolling statistics make sense on any continuous signal
-    (ExtNodeType.MEAN_WIN, 0):    CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.MEAN_WIN, 1):    TERMINAL_TYPES,  # window = CONST
-    (ExtNodeType.VAR_WIN, 0):     CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.VAR_WIN, 1):     TERMINAL_TYPES,
-    (ExtNodeType.STD_WIN, 0):     CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.STD_WIN, 1):     TERMINAL_TYPES,
-    (ExtNodeType.CORR, 0):        CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.CORR, 1):        CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.CORR, 2):        TERMINAL_TYPES,  # window = CONST
-    (ExtNodeType.ZSCORE, 0):      CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.ZSCORE, 1):      TERMINAL_TYPES,
-    (ExtNodeType.QUANTILE, 0):    CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.QUANTILE, 1):    TERMINAL_TYPES,  # q in (0,1) = CONST
+    # -- Original arithmetic shims ---------------------------------------------
+    "ADD":   (_NUMERIC, _NUMERIC, None),
+    "SUB":   (_NUMERIC, _NUMERIC, None),
+    "MUL":   (_NUMERIC, _NUMERIC, None),
+    "DIV":   (_NUMERIC, _NUMERIC, None),
+    "MOD":   (_NUMERIC, _NUMERIC, None),
+    "POW":   (_NUMERIC, _NUMERIC, None),
 
-    # ── LOGICAL NODES ─────────────────────────────────────────────────────────
-    # Threshold produces binary 0/1 — can apply to anything
-    (ExtNodeType.THRESHOLD, 0):   ANY_TYPES - frozenset([NodeCategory.LOGICAL]),
-    (ExtNodeType.THRESHOLD, 1):   TERMINAL_TYPES,  # threshold = CONST
-    (ExtNodeType.SIGN, 0):        CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.COMPARE, 0):     CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.COMPARE, 1):     CONTINUOUS_TYPES | TERMINAL_TYPES,
-    # BOOL_AND/OR should take binary (logical) inputs
-    (ExtNodeType.BOOL_AND, 0):    frozenset([NodeCategory.LOGICAL]),
-    (ExtNodeType.BOOL_AND, 1):    frozenset([NodeCategory.LOGICAL]),
-    (ExtNodeType.BOOL_OR, 0):     frozenset([NodeCategory.LOGICAL]),
-    (ExtNodeType.BOOL_OR, 1):     frozenset([NodeCategory.LOGICAL]),
-    (ExtNodeType.BOOL_NOT, 0):    frozenset([NodeCategory.LOGICAL]),
-    (ExtNodeType.CLAMP, 0):       CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.CLAMP, 1):       TERMINAL_TYPES,  # lo = CONST
-    (ExtNodeType.CLAMP, 2):       TERMINAL_TYPES,  # hi = CONST
+    # -- Original transcendental shims (unary) ---------------------------------
+    "SIN":   (_NUMERIC, None, None),
+    "COS":   (_NUMERIC, None, None),
+    "EXP":   (_NUMERIC, None, None),
+    "LOG":   (_NUMERIC, None, None),
+    "SQRT":  (_NUMERIC, None, None),
+    "ABS":   (_NUMERIC, None, None),
+    "PRIME": (_INTEGER, None, None),
 
-    # ── TRANSFORM NODES ───────────────────────────────────────────────────────
-    # FFT makes sense only on continuous signals
-    (ExtNodeType.FFT_AMP, 0):     CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.FFT_AMP, 1):     TERMINAL_TYPES,   # freq index k = CONST
-    (ExtNodeType.FFT_AMP, 2):     TERMINAL_TYPES,   # window W = CONST
-    (ExtNodeType.FFT_PHASE, 0):   CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.FFT_PHASE, 1):   TERMINAL_TYPES,
-    (ExtNodeType.FFT_PHASE, 2):   TERMINAL_TYPES,
-    (ExtNodeType.AUTOCORR, 0):    CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.AUTOCORR, 1):    TERMINAL_TYPES,   # lag L = CONST
-    (ExtNodeType.HILBERT_ENV, 0): CONTINUOUS_TYPES | TERMINAL_TYPES,
+    # -- Original logical / control shims --------------------------------------
+    "EQ":    (_NUMERIC, _NUMERIC, None),
+    "LT":    (_NUMERIC, _NUMERIC, None),
+    "IF":    (_BOOLEAN, _NUMERIC, _NUMERIC),
 
-    # ── NUMBER-THEORETIC NODES ────────────────────────────────────────────────
-    # GCD/LCM take integer inputs — floor them first in practice
-    (ExtNodeType.GCD_NODE, 0):    ANY_TYPES,
-    (ExtNodeType.GCD_NODE, 1):    ANY_TYPES,
-    (ExtNodeType.LCM_NODE, 0):    ANY_TYPES,
-    (ExtNodeType.LCM_NODE, 1):    ANY_TYPES,
-    (ExtNodeType.FLOOR_NODE, 0):  CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.CEIL_NODE, 0):   CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.ROUND_NODE, 0):  CONTINUOUS_TYPES | TERMINAL_TYPES,
-    (ExtNodeType.FRAC_NODE, 0):   CONTINUOUS_TYPES | TERMINAL_TYPES,
-    # TOTIENT and ISPRIME expect integer inputs
-    (ExtNodeType.TOTIENT, 0):     ANY_TYPES,
-    (ExtNodeType.ISPRIME, 0):     ANY_TYPES,
+    # -- Terminals (arity 0 -- never a parent) ---------------------------------
+    "CONST": (frozenset(), None, None),
+    "TIME":  (frozenset(), None, None),
+    "PREV":  (frozenset(), None, None),
 
-    # ── MEMORY NODES ──────────────────────────────────────────────────────────
-    (ExtNodeType.ARGMAX_WIN, 0):  ANY_TYPES,
-    (ExtNodeType.ARGMAX_WIN, 1):  TERMINAL_TYPES,
-    (ExtNodeType.ARGMIN_WIN, 0):  ANY_TYPES,
-    (ExtNodeType.ARGMIN_WIN, 1):  TERMINAL_TYPES,
-    (ExtNodeType.COUNT_WIN, 0):   ANY_TYPES,
-    (ExtNodeType.COUNT_WIN, 1):   TERMINAL_TYPES,   # target value = CONST
-    (ExtNodeType.COUNT_WIN, 2):   TERMINAL_TYPES,   # window W = CONST
-    (ExtNodeType.STREAK, 0):      ANY_TYPES,
-    (ExtNodeType.DELTA_ZERO, 0):  ANY_TYPES,
+    # -- CALCULUS --------------------------------------------------------------
+    "DERIV":        (_SMOOTH,  None,     None),
+    "DERIV2":       (_SMOOTH,  None,     None),
+    "DIFF_QUOT":    (_SMOOTH,  _CONST,   None),
+    "CUMSUM":       (_NUMERIC, None,     None),
+    "CUMSUM_WIN":   (_NUMERIC, _CONST,   None),
+    "INTEGRAL":     (_NUMERIC, None,     None),
+    "INTEGRAL_WIN": (_NUMERIC, _CONST,   None),
+    "CONVOLVE":     (_NUMERIC, _NUMERIC, None),
+    "RUNNING_MAX":  (_NUMERIC, None,     None),
+    "RUNNING_MIN":  (_NUMERIC, None,     None),
+    "EWMA":         (_NUMERIC, _CONST,   None),
+
+    # -- STATISTICAL -----------------------------------------------------------
+    "MEAN_WIN": (_NUMERIC, _CONST,    None),
+    "VAR_WIN":  (_NUMERIC, _CONST,    None),
+    "STD_WIN":  (_NUMERIC, _CONST,    None),
+    "ZSCORE":   (_NUMERIC, _CONST,    None),
+    "QUANTILE": (_NUMERIC, _CONST,    None),
+    "CORR":     (_NUMERIC, _NUMERIC,  _CONST),
+
+    # -- LOGICAL ---------------------------------------------------------------
+    "THRESHOLD":   (_NUMERIC, _CONST,    None),
+    "SIGN":        (_NUMERIC, None,      None),
+    "COMPARE":     (_NUMERIC, _NUMERIC,  None),
+    "BOOL_AND":    (_BOOLEAN, _BOOLEAN,  None),
+    "BOOL_OR":     (_BOOLEAN, _BOOLEAN,  None),
+    "BOOL_NOT":    (_BOOLEAN, None,      None),
+    "CLAMP":       (_NUMERIC, _CONST,    _CONST),
+
+    # -- TRANSFORM -------------------------------------------------------------
+    "FFT_AMP":     (_SMOOTH, _CONST, _CONST),
+    "FFT_PHASE":   (_SMOOTH, _CONST, _CONST),
+    "AUTOCORR":    (_SMOOTH, _CONST, None),
+    "HILBERT_ENV": (_SMOOTH, None,   None),
+
+    # -- NUMBER-THEORETIC ------------------------------------------------------
+    "GCD_NODE":    (_INTEGER, _INTEGER, None),
+    "LCM_NODE":    (_INTEGER, _INTEGER, None),
+    "FLOOR_NODE":  (_NUMERIC, None,     None),
+    "CEIL_NODE":   (_NUMERIC, None,     None),
+    "ROUND_NODE":  (_NUMERIC, None,     None),
+    "FRAC_NODE":   (_NUMERIC, None,     None),
+    "TOTIENT":     (_INTEGER, None,     None),
+    "ISPRIME":     (_INTEGER, None,     None),
+
+    # -- MEMORY ----------------------------------------------------------------
+    "ARGMAX_WIN":  (_NUMERIC, _CONST,  None),
+    "ARGMIN_WIN":  (_NUMERIC, _CONST,  None),
+    "COUNT_WIN":   (_NUMERIC, _CONST,  _CONST),
+    "STREAK":      (_NUMERIC, None,    None),
+    "DELTA_ZERO":  (_NUMERIC, None,    None),
+    "STATE_VAR":   (frozenset(), None, None),
 }
 
 
+# =============================================================================
+# MathGrammar
+# =============================================================================
+
 class MathGrammar:
     """
-    Enforces the mathematical grammar during expression tree construction.
-    
-    Usage:
-        grammar = MathGrammar()
-        allowed = grammar.allowed_child_types(parent_type, arg_index=0)
-        # → frozenset of NodeCategory values that are valid children
-        
-        grammar.is_valid_tree(root_expr)
-        # → True if entire tree satisfies grammar rules
+    Enforces mathematical grammar constraints during beam search.
+
+    All parent-node lookups use _RULES[node.name], making the class
+    immune to import-order issues and dual enum hierarchies.
     """
 
-    def __init__(self, strict: bool = True):
-        """
-        strict=True:  enforce all grammar rules (recommended for main search)
-        strict=False: allow any combination (used for mutation in beam search)
-        """
+    def __init__(self, strict=True):
         self.strict = strict
-        self._category_to_types: Dict[NodeCategory, List[ExtNodeType]] = {}
-        self._build_category_index()
-
-    def _build_category_index(self) -> None:
-        """Index node types by category for fast lookup."""
+        self._by_cat: Dict[NodeCategory, list] = {}
         for nt, spec in NODE_SPECS.items():
-            cat = spec.category
-            if cat not in self._category_to_types:
-                self._category_to_types[cat] = []
-            self._category_to_types[cat].append(nt)
+            self._by_cat.setdefault(spec.category, []).append(nt)
 
-    def allowed_child_categories(
-        self,
-        parent_type: ExtNodeType,
-        arg_index: int,
-    ) -> FrozenSet[NodeCategory]:
-        """
-        Return the set of NodeCategory values allowed as the arg_index-th
-        child of parent_type.
-        
-        Returns ANY_TYPES if no rule is specified (permissive default).
-        """
-        if not self.strict:
-            return ANY_TYPES
-        key = (parent_type, arg_index)
-        return GRAMMAR.get(key, ANY_TYPES)
+    # -- Internal --------------------------------------------------------------
 
-    def allowed_child_node_types(
-        self,
-        parent_type: ExtNodeType,
-        arg_index: int,
-        include_terminals: bool = True,
-    ) -> List[ExtNodeType]:
-        """
-        Return list of ExtNodeType values that are grammatically valid
-        as the arg_index-th child of parent_type.
-        """
-        allowed_cats = self.allowed_child_categories(parent_type, arg_index)
+    def _nodes_for_cats(self, cats):
         result = []
-        for nt, spec in NODE_SPECS.items():
-            if spec.category in allowed_cats:
-                if not include_terminals and spec.arity == 0:
-                    continue
-                result.append(nt)
+        for cat in cats:
+            result.extend(self._by_cat.get(cat, []))
         return result
 
-    def category_of(self, node_type: ExtNodeType) -> NodeCategory:
-        """Return the NodeCategory for a given ExtNodeType."""
-        spec = NODE_SPECS.get(node_type)
-        if spec:
-            return spec.category
-        # Fall back for original NodeTypes
-        return NodeCategory.ARITHMETIC
+    def _cats_for(self, parent_type, arg_index):
+        if not self.strict:
+            return ANY_TYPES
+        name = parent_type.name if hasattr(parent_type, "name") else str(parent_type)
+        rule = _RULES.get(name)
+        if rule is None:
+            warnings.warn(
+                "MathGrammar: no rule for '{}' (arg {}) "
+                "-- permissive fallback. Add '{}' to _RULES.".format(
+                    name, arg_index, name),
+                stacklevel=4,
+            )
+            return ANY_TYPES
+        cats = rule[arg_index] if arg_index < len(rule) else None
+        return cats if cats is not None else frozenset()
 
-    def is_valid_combination(
-        self,
-        parent_type: ExtNodeType,
-        child_type,
-        arg_index: int,
-    ) -> bool:
-        """Check if a specific parent-child-position combination is valid."""
+    # -- Public API ------------------------------------------------------------
+
+    def get_allowed_children(self, parent_type, arg_index=0):
+        """Return all node objects valid as the arg_index-th child of parent_type."""
+        if not self.strict:
+            return list(NODE_SPECS.keys())
+        return self._nodes_for_cats(self._cats_for(parent_type, arg_index))
+
+    def allowed_child_categories(self, parent_type, arg_index=0):
+        return self._cats_for(parent_type, arg_index)
+
+    def allowed_child_node_types(self, parent_type, arg_index=0,
+                                  include_terminals=True):
+        return self.get_allowed_children(parent_type, arg_index)
+
+    def category_of(self, node_type):
+        spec = NODE_SPECS.get(node_type)
+        return spec.category if spec else NodeCategory.ARITHMETIC
+
+    def is_valid_combination(self, parent_type, child_type, arg_index=0):
         if not self.strict:
             return True
-        child_cat = self.category_of(child_type) if isinstance(child_type, ExtNodeType) \
-                    else NodeCategory.ARITHMETIC
-        allowed = self.allowed_child_categories(parent_type, arg_index)
-        return child_cat in allowed
+        return child_type in self.get_allowed_children(parent_type, arg_index)
 
-    def effective_branching_factor(self, depth: int, arg_index: int = 0) -> float:
-        """
-        Compute the average number of valid children for a node at this depth.
-        Used to estimate the actual search space size.
-        """
-        total_valid = 0
-        n_parents = 0
+    # -- Analytics -------------------------------------------------------------
+
+    def effective_branching_factor(self, arg_index=0):
+        total, n = 0, 0
         for nt, spec in NODE_SPECS.items():
             if spec.arity > arg_index:
-                valid_children = len(self.allowed_child_node_types(nt, arg_index))
-                total_valid += valid_children
-                n_parents += 1
-        return total_valid / max(1, n_parents)
+                total += len(self.get_allowed_children(nt, arg_index))
+                n += 1
+        return total / max(1, n)
 
-    def search_space_size(self, max_depth: int) -> float:
-        """Estimate the grammar-constrained search space size."""
-        avg_branching = self.effective_branching_factor(0)
-        # Binary tree with branching factor b at each level
-        return avg_branching ** (2 ** max_depth)
+    def print_branching_report(self):
+        total = len(NODE_SPECS)
+        rows = []
+        for nt, spec in NODE_SPECS.items():
+            if spec.arity == 0:
+                continue
+            name = nt.name if hasattr(nt, "name") else str(nt)
+            allowed = len(self.get_allowed_children(nt, 0))
+            rows.append((name, allowed, spec.arity, spec.category.name))
+        rows.sort(key=lambda r: r[1])
+
+        print("\n{:<22} {:<14} {:>5} {:>7} {:>6}".format(
+            "Node", "Category", "Arity", "Allowed", "%"))
+        print("-" * 58)
+        for name, allowed, arity, cat in rows:
+            print("  {:<20} {:<14} {:>5}  {:>6}  {:>5.1f}%".format(
+                name, cat, arity, allowed, allowed / total * 100))
+
+        avg = self.effective_branching_factor()
+        target = 28.0
+        print("\n  Average branching factor   : {:.2f}".format(avg))
+        print("  Total node types           : {}".format(total))
+        print("  Reduction vs unconstrained : {:.1f}x".format(total / avg))
+        print("  Target (55-node system)    : < {:.0f}".format(target))
+        print("  RESULT: {}  (got {:.2f}, target < {:.0f})".format(
+            "PASS" if avg < target else "FAIL", avg, target))
 
 
-# Global grammar instance
-DEFAULT_GRAMMAR = MathGrammar(strict=True)
+# -- Global instances ----------------------------------------------------------
+DEFAULT_GRAMMAR    = MathGrammar(strict=True)
 PERMISSIVE_GRAMMAR = MathGrammar(strict=False)

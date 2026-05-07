@@ -273,6 +273,44 @@ class GrammarConstrainedBeam:
         seeds.sort()
         return seeds[:self.cfg.beam_width]
 
+    def _seed_recurrence_templates(self, observations: List[int]) -> List[GrammarBeamCandidate]:
+        """
+        Seed beam with Fibonacci-style recurrence templates:
+        (prev(a) + prev(b)) % mod
+        (c * prev(1) + prev(2)) % mod
+        Covers Fibonacci mod N and linear recurrences mod N.
+        """
+        from ouroboros.synthesis.expr_node import NodeType
+
+        seeds = []
+        obs_set = set(observations)
+        max_mod = max(obs_set) + 2 if obs_set else 14
+
+        for mod in range(2, min(int(max_mod) + 1, 20)):
+            for lag_a in range(1, 4):
+                for lag_b in range(lag_a + 1, 5):
+                    p_a   = self._make_prev(lag_a)
+                    p_b   = self._make_prev(lag_b)
+                    add   = self._make_literal_node(NodeType.ADD, left=p_a, right=p_b)
+                    c_mod = self._make_literal_node(NodeType.CONST, mod)
+                    expr  = self._make_literal_node(NodeType.MOD, left=add, right=c_mod)
+                    cost  = self._score(expr, observations)
+                    seeds.append(GrammarBeamCandidate(expr, cost))
+
+            for slope in range(1, min(mod + 1, 8)):
+                p1    = self._make_prev(1)
+                p2    = self._make_prev(2)
+                c_s   = self._make_literal_node(NodeType.CONST, slope)
+                mul   = self._make_literal_node(NodeType.MUL, left=c_s, right=p1)
+                add   = self._make_literal_node(NodeType.ADD, left=mul, right=p2)
+                c_mod = self._make_literal_node(NodeType.CONST, mod)
+                expr  = self._make_literal_node(NodeType.MOD, left=add, right=c_mod)
+                cost  = self._score(expr, observations)
+                seeds.append(GrammarBeamCandidate(expr, cost))
+
+        seeds.sort()
+        return seeds[:self.cfg.beam_width]
+
     def _score(self, expr: ExtExprNode, observations: List[int]) -> float:
         try:
             state: Dict[int, float] = {}
@@ -328,6 +366,7 @@ class GrammarConstrainedBeam:
         if getattr(node, 'third', None) and self._rng.random() < 0.3:
             self._mutate_node_inplace(node.third, depth + 1)
 
+        
     def search(
         self,
         observations: List[int],
@@ -340,13 +379,17 @@ class GrammarConstrainedBeam:
         init_exprs = [self._random_expr() for _ in range(beam_width * 5)]
         init_costs = [self._score(e, observations) for e in init_exprs]
 
-        # Modular arithmetic seeds — exhaustively covers (slope*t+intercept)%mod
+        # Modular arithmetic seeds — (slope*t + intercept) % mod
         mod_seeds = self._seed_modular_templates(observations)
 
-        # Merge and keep best beam_width
+        # Recurrence seeds — (prev(a) + prev(b)) % mod, Fibonacci-style
+        rec_seeds = self._seed_recurrence_templates(observations)
+
+        # Merge all seeds and keep best beam_width
         candidates = sorted(
             [GrammarBeamCandidate(e, c) for e, c in zip(init_exprs, init_costs)]
-            + mod_seeds,
+            + mod_seeds
+            + rec_seeds,
         )[:beam_width]
 
         if verbose:
@@ -361,7 +404,7 @@ class GrammarConstrainedBeam:
             for cand in candidates:
                 for _ in range(3):
                     mutated = self._mutate_grammar(cand.expr)
-                    cost = self._score(mutated, observations)
+                    cost    = self._score(mutated, observations)
                     new_candidates.append(GrammarBeamCandidate(mutated, cost))
 
             new_candidates.sort()

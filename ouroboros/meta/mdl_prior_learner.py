@@ -58,7 +58,7 @@ MAX_BITS = 12.0
 
 # Learning rate for prior updates
 PRIOR_LR = 0.02
-LAPLACE_ALPHA = 2.0  # Laplace smoothing
+LAPLACE_ALPHA = 0.1  # Laplace smoothing
 
 
 @dataclass
@@ -223,28 +223,19 @@ class MetaMDLLearner:
             self._state.domain_priors[domain] = dict(DEFAULT_BITS)
 
         domain_bits = self._state.domain_priors[domain]
-        total_successes = sum(success_counts.values()) + LAPLACE_ALPHA * len(DEFAULT_BITS)
-        total_total = sum(total_counts.values()) + LAPLACE_ALPHA * len(DEFAULT_BITS)
 
         for node_name in set(list(success_counts.keys()) + list(DEFAULT_BITS.keys())):
             n_success = success_counts.get(node_name, 0) + LAPLACE_ALPHA
-            n_total = total_counts.get(node_name, 0) + LAPLACE_ALPHA
-
-            # P(success | used this node)
-            p_success_given_node = n_success / max(n_total, 1)
-
-            # Reduce bits for nodes that often appear in successes
-            # Increase bits for nodes that rarely appear in successes
-            target_bits = DEFAULT_BITS.get(node_name, 4.0)
-            if p_success_given_node > 0.5:
-                target_bits *= 0.9  # reduce cost
-            elif p_success_given_node < 0.2:
-                target_bits *= 1.1  # increase cost
-
-            # Apply learning rate update
-            current = domain_bits.get(node_name, DEFAULT_BITS.get(node_name, 4.0))
-            new_bits = current + self.lr * (target_bits - current)
-            domain_bits[node_name] = max(MIN_BITS, min(MAX_BITS, new_bits))
+            n_total   = total_counts.get(node_name, 0) + LAPLACE_ALPHA
+            p = n_success / max(n_total, 1)
+            default = DEFAULT_BITS.get(node_name, 4.0)
+            # Direct target: interpolate between 50% and 100% of default
+            # High p → target approaches 0.5*default (cheap)
+            # Low p  → target approaches default (unchanged)
+            target = default * (1.0 - 0.5 * p)
+            current = domain_bits.get(node_name, default)
+            domain_bits[node_name] = max(MIN_BITS, min(MAX_BITS,
+                current + self.lr * (target - current)))
 
     def _update_global_prior(
         self,
@@ -259,18 +250,23 @@ class MetaMDLLearner:
                 self._state.description_bits[node_name] = DEFAULT_BITS.get(node_name, 4.0)
             current = self._state.description_bits[node_name]
             # Move toward lower cost for successful nodes, higher for failed
-            delta = -0.1 * weight * count * self.lr
+            delta = -weight * count * self.lr
             new_bits = current + delta
             self._state.description_bits[node_name] = max(MIN_BITS, min(MAX_BITS, new_bits))
 
     def _count_nodes(self, expr) -> Counter:
-        """Count node types in an expression tree."""
         counts = Counter()
         if expr is None:
             return counts
+        # Handle string expressions from quick_search stub
+        if isinstance(expr, str):
+            for token in expr.replace("(","").replace(")","").split():
+                if token.upper() in DEFAULT_BITS:
+                    counts[token.upper()] += 1
+            return counts
         node_name = expr.node_type.name if hasattr(expr.node_type, 'name') else str(expr.node_type)
         counts[node_name] += 1
-        for child_attr in ['left', 'right', 'third']:
+        for child_attr in ['left', 'right', 'child', 'third']:
             child = getattr(expr, child_attr, None)
             if child:
                 counts.update(self._count_nodes(child))

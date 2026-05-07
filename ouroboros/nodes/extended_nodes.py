@@ -167,6 +167,37 @@ NODE_SPECS: Dict[ExtNodeType, NodeSpec] = {
     ExtNodeType.STATE_VAR:   NodeSpec(ExtNodeType.STATE_VAR,   NodeCategory.MEMORY,      0, 4.0),
 }
 
+# ── Register original NodeType nodes into NODE_SPECS so grammar ──────────────
+# constraints can include TERMINAL / ARITHMETIC / TRANSCEND categories.
+# This brings total tracked nodes from 42 → 55 but lets allowed_child_node_types
+# correctly restrict ADD, DERIV, etc. to a small set.
+def _register_original_nodes() -> None:
+    try:
+        from ouroboros.compression.program_synthesis import NodeType as _Orig
+        _TERMINAL   = {"CONST", "TIME", "PREV"}
+        _ARITHMETIC = {"ADD", "SUB", "MUL", "DIV", "MOD", "POW"}
+        _TRANSCEND  = {"SIN", "COS", "EXP", "LOG", "SQRT", "ABS", "PRIME"}
+        _LOGICAL2   = {"EQ", "LT"}
+        _LOGICAL3   = {"IF"}
+
+        for nt in _Orig:
+            if nt in NODE_SPECS:
+                continue
+            n = nt.name
+            if n in _TERMINAL:
+                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TERMINAL,    0, 1.0)
+            elif n in _ARITHMETIC:
+                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.ARITHMETIC,  2, 2.0)
+            elif n in _TRANSCEND:
+                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TRANSCEND,   1, 2.0)
+            elif n in _LOGICAL2:
+                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.LOGICAL,     2, 2.0)
+            elif n in _LOGICAL3:
+                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.LOGICAL,     3, 2.0)
+    except ImportError:
+        pass  # program_synthesis not available — skip
+
+_register_original_nodes()
 
 # ── Extended ExprNode ──────────────────────────────────────────────────────────
 
@@ -545,6 +576,62 @@ class ExtExprNode:
                 if abs(v) < 0.5:
                     return float(i)
             return float(len(history))
+
+        # ── Old NodeType arithmetic (ADD, SUB, MUL, DIV, MOD, POW, EQ, LT, IF) ──
+        # These come from ouroboros.synthesis.expr_node / program_synthesis.
+        # _seed_modular_templates builds trees with these types, so they must
+        # be handled here or they silently return PENALTY.
+        name = nt.name if hasattr(nt, 'name') else ''
+        if name == 'ADD':
+            return L() + R()
+        if name == 'SUB':
+            return L() - R()
+        if name == 'MUL':
+            return L() * R()
+        if name == 'DIV':
+            r = R()
+            return L() / r if abs(r) > EPS else PENALTY
+        if name == 'MOD':
+            r = R()
+            ri = int(round(r))
+            return float(int(round(L())) % ri) if ri != 0 else PENALTY
+        if name == 'POW':
+            base, exp = L(), R()
+            if abs(base) > 1e4 or abs(exp) > 20:
+                return PENALTY
+            try:
+                return float(base ** exp)
+            except Exception:
+                return PENALTY
+        if name == 'EQ':
+            return 1.0 if abs(L() - R()) < 0.5 else 0.0
+        if name == 'LT':
+            return 1.0 if L() < R() else 0.0
+        if name == 'IF':
+            return L() if (self.right and R() != 0) else (T() if self.third else 0.0)
+        if name == 'ABS':
+            return abs(L())
+        if name == 'SIN':
+            return math.sin(L())
+        if name == 'COS':
+            return math.cos(L())
+        if name == 'EXP':
+            v = L()
+            return math.exp(min(v, 700)) if v < 700 else PENALTY
+        if name == 'LOG':
+            v = abs(L())
+            return math.log(v) if v > EPS else PENALTY
+        if name == 'SQRT':
+            v = L()
+            return math.sqrt(v) if v >= 0 else PENALTY
+        if name == 'PRIME':
+            n = int(abs(L()))
+            if n < 2: return 0.0
+            if n == 2: return 1.0
+            if n % 2 == 0: return 0.0
+            for i in range(3, min(int(n**0.5)+1, 1000), 2):
+                if n % i == 0: return 0.0
+            return 1.0
 
         return PENALTY
 

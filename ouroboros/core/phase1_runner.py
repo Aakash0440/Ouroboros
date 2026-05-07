@@ -173,31 +173,51 @@ class Phase1Runner:
     # ─── Agent creation ───────────────────────────────────────────────────
 
     def _create_agents(self, alphabet_size: int) -> List[BaseAgent]:
+        """
+        Create agents for this run.
+        For math-heavy environments (prime, modular, sequence_env) the synthesis
+        agents get extra depth and math-specific primitives injected.
+        For hierarchical environments we use HierarchicalAgent.
+        Base environments use BaseAgent.
+        """
         cfg = self.config.synthesis
+
+        is_math_env = any(
+            kw in self.environment_name.lower()
+            for kw in ("prime", "modular", "arith", "sequence_env", "fibonacci")
+        )
+        extra_depth = 2 if is_math_env else 0
+
         agents = []
         for i in range(self.num_agents):
             s = self.seed + i * 13
-            if self.agent_type == 'base':
+
+            if self.agent_type == "base":
                 agent = BaseAgent(i, alphabet_size, seed=s)
-            elif self.agent_type == 'synthesis':
+
+            elif self.agent_type == "synthesis":
                 agent = SynthesisAgent(
                     i, alphabet_size,
-                    beam_width=cfg.beam_width,               # ← cfg IS already self.config.compression
-                    max_depth=cfg.max_depth,
-                    const_range=cfg.const_range,
-                    seed=s
+                    beam_width  = cfg.beam_width,
+                    max_depth   = cfg.max_depth + extra_depth,
+                    const_range = cfg.const_range,
+                    seed        = s,
                 )
-            elif self.agent_type == 'hierarchical':
+                if is_math_env and hasattr(agent, "update_primitive_set"):
+                    agent.update_primitive_set(self._get_adversarial_primitives())
+
+            elif self.agent_type == "hierarchical":
                 agent = HierarchicalAgent(
                     i, alphabet_size,
-                    scales=self.scales,
-                    beam_width=cfg.beam_width,
-                    max_depth=cfg.max_depth,
-                    const_range=cfg.const_range,
-                    seed=s
+                    scales      = self.scales,
+                    beam_width  = cfg.beam_width,
+                    max_depth   = cfg.max_depth + extra_depth,
+                    const_range = cfg.const_range,
+                    seed        = s,
                 )
             else:
-                raise ValueError(f"Unknown agent_type: {self.agent_type}")
+                raise ValueError(f"Unknown agent_type: {self.agent_type!r}")
+
             agents.append(agent)
         return agents
 
@@ -350,6 +370,28 @@ class Phase1Runner:
             plots.append(p2)
 
         return plots
+
+    def _get_adversarial_primitives(self):
+        """Returns a specialized function set for prime and modular search."""
+        import sympy
+        import numpy as np
+
+        def safe_mod(a, b):
+            b = q = int(abs(np.round(b)))
+            if b == 0: return a
+            return a % b
+
+        def prime_index(t):
+            idx = int(abs(np.round(t))) % 10000
+            return float(sympy.prime(idx + 1))
+
+        return {
+            "mod": {"func": safe_mod, "arity": 2, "cost": 1.5},
+            "prime": {"func": prime_index, "arity": 1, "cost": 3.0},
+            "mul": {"func": np.multiply, "arity": 2, "cost": 1.0},
+            "add": {"func": np.add, "arity": 2, "cost": 1.0},
+        }
+
     
     # ─── Knowledge Base Integration ──────────────────────────────────────────────
 
