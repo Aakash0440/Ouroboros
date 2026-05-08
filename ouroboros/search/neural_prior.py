@@ -42,6 +42,7 @@ from typing import List, Dict, Optional, Tuple
 
 from ouroboros.nodes.extended_nodes import ExtNodeType, NodeCategory, NODE_SPECS
 from ouroboros.nodes.extended_nodes import ExtExprNode
+from ouroboros.grammar.dynamic_adapter import DynamicGrammarAdapter
 
 
 # Feature dimension (6 statistics)

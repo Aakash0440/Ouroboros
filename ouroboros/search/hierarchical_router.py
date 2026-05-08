@@ -33,6 +33,7 @@ from ouroboros.search.env_classifier import EnvironmentClassifier, MathFamily
 from ouroboros.search.neural_prior import NeuralNodePrior
 from ouroboros.search.grammar_beam import GrammarConstrainedBeam, GrammarBeamConfig
 from ouroboros.nodes.extended_nodes import ExtExprNode
+from ouroboros.grammar.dynamic_adapter import DynamicGrammarAdapter
 
 
 @dataclass
@@ -94,6 +95,10 @@ class HierarchicalSearchRouter:
             seed=self.cfg.random_seed,
         )
         self._grammar = DEFAULT_GRAMMAR
+        self._dynamic = DynamicGrammarAdapter(
+            stuck_threshold=60.0,
+            min_gain=5.0,
+        )
 
         # Load prior if path provided
         if self.cfg.prior_path:
@@ -178,7 +183,7 @@ class HierarchicalSearchRouter:
                     int(round(expr.evaluate(t, observations[:t])))
                     for t in range(len(observations))
                 ]
-                r = mdl.compute(preds, observations, expr.node_count(), expr.constant_count())
+                r = mdl.compute(preds, observations, expr.node_count(), expr.constant_count(), alphabet_size=alphabet_size)
                 cost = r.total_mdl_cost
             except Exception:
                 cost = float('inf')
@@ -215,6 +220,34 @@ class HierarchicalSearchRouter:
                         result.categories_searched = list(NodeCategory)
                 except Exception:
                     pass
+
+        # Step 7: Dynamic grammar expansion — if still stuck, propose new primitive
+        if result.mdl_cost > 60:
+            new_node = self._dynamic.maybe_expand(
+                observations, result.expr, result.mdl_cost
+            )
+            if new_node is not None:
+                # Re-run beam with expanded grammar (new node now in NODE_SPECS)
+                if verbose:
+                    print(f"[Router] Retrying with new primitive: {new_node.name}")
+                retry_beam = GrammarConstrainedBeam(beam_cfg)
+                retry_expr = retry_beam.search(observations, verbose=False)
+                if retry_expr is not None:
+                    try:
+                        from ouroboros.compression.mdl_engine import MDLEngine
+                        mdl2 = MDLEngine()
+                        preds2 = [
+                            int(round(retry_expr.evaluate(t, observations[:t])))
+                            for t in range(len(observations))
+                        ]
+                        r2 = mdl2.compute(preds2, observations,
+                                          retry_expr.node_count(),
+                                          retry_expr.constant_count())
+                        if r2.total_mdl_cost < result.mdl_cost:
+                            result.expr     = retry_expr
+                            result.mdl_cost = r2.total_mdl_cost
+                    except Exception:
+                        pass
 
         if verbose:
             print(f"\n[Router] Final: {result.description()}")

@@ -34,7 +34,8 @@ _SMOOTH  = _T | _A | _C | _S | _TX              # continuous / differentiable
 _INTEGER = _T | _A | _N | _M                     # guaranteed integer-valued
 _BOOLEAN = _L                                    # guaranteed 0/1 output
 _CONST   = _T                                    # constant terminals only
-
+_SCALAR  = _T | _A | _N          # terminals + arithmetic + numbers only
+_EXPONENT = _T | _N             # only terminals/numbers as exponents (CONST, TIME, STATE_VAR)
 
 # =============================================================================
 # _RULES -- keyed by node .name string
@@ -42,86 +43,86 @@ _CONST   = _T                                    # constant terminals only
 # =============================================================================
 _RULES: Dict[str, Tuple] = {
 
-    # -- Original arithmetic shims ---------------------------------------------
-    "ADD":   (_NUMERIC, _NUMERIC, None),
-    "SUB":   (_NUMERIC, _NUMERIC, None),
-    "MUL":   (_NUMERIC, _NUMERIC, None),
-    "DIV":   (_NUMERIC, _NUMERIC, None),
-    "MOD":   (_NUMERIC, _NUMERIC, None),
-    "POW":   (_NUMERIC, _NUMERIC, None),
+    # -- Arithmetic (tightened to _SCALAR) ------------------------------------
+    "ADD":   (_SCALAR, _SCALAR, None),
+    "SUB":   (_SCALAR, _SCALAR, None),
+    "MUL":   (_SCALAR, _SCALAR, None),
+    "DIV":   (_SCALAR, _SCALAR, None),
+    "MOD":   (_SCALAR, _SCALAR, None),
+    "POW":   (_SMOOTH, _EXPONENT, None),
 
-    # -- Original transcendental shims (unary) ---------------------------------
-    "SIN":   (_NUMERIC, None, None),
-    "COS":   (_NUMERIC, None, None),
-    "EXP":   (_NUMERIC, None, None),
-    "LOG":   (_NUMERIC, None, None),
-    "SQRT":  (_NUMERIC, None, None),
-    "ABS":   (_NUMERIC, None, None),
+    # -- Transcendentals (tightened to _SMOOTH) --------------------------------
+    "SIN":   (_SMOOTH, None, None),
+    "COS":   (_SMOOTH, None, None),
+    "EXP":   (_SMOOTH, None, None),
+    "LOG":   (_SMOOTH, None, None),
+    "SQRT":  (_SMOOTH, None, None),
+    "ABS":   (_SCALAR, None, None),
     "PRIME": (_INTEGER, None, None),
 
-    # -- Original logical / control shims --------------------------------------
-    "EQ":    (_NUMERIC, _NUMERIC, None),
-    "LT":    (_NUMERIC, _NUMERIC, None),
-    "IF":    (_BOOLEAN, _NUMERIC, _NUMERIC),
+    # -- Logical / control -----------------------------------------------------
+    "EQ":    (_SCALAR, _SCALAR, None),
+    "LT":    (_SCALAR, _SCALAR, None),
+    "IF":    (_BOOLEAN, _SCALAR, _SCALAR),
 
-    # -- Terminals (arity 0 -- never a parent) ---------------------------------
-    "CONST": (frozenset(), None, None),
-    "TIME":  (frozenset(), None, None),
-    "PREV":  (frozenset(), None, None),
+    # -- Terminals (arity 0) ---------------------------------------------------
+    "CONST":     (frozenset(), None, None),
+    "TIME":      (frozenset(), None, None),
+    "PREV":      (frozenset(), None, None),
+    "STATE_VAR": (frozenset(), None, None),
 
-    # -- CALCULUS --------------------------------------------------------------
-    "DERIV":        (_SMOOTH,  None,     None),
-    "DERIV2":       (_SMOOTH,  None,     None),
-    "DIFF_QUOT":    (_SMOOTH,  _CONST,   None),
-    "CUMSUM":       (_NUMERIC, None,     None),
-    "CUMSUM_WIN":   (_NUMERIC, _CONST,   None),
-    "INTEGRAL":     (_NUMERIC, None,     None),
-    "INTEGRAL_WIN": (_NUMERIC, _CONST,   None),
-    "CONVOLVE":     (_NUMERIC, _NUMERIC, None),
-    "RUNNING_MAX":  (_NUMERIC, None,     None),
-    "RUNNING_MIN":  (_NUMERIC, None,     None),
-    "EWMA":         (_NUMERIC, _CONST,   None),
+    # -- CALCULUS (accept _SMOOTH inputs, window args must be _CONST) ----------
+    "DERIV":        (_SMOOTH,  None,    None),
+    "DERIV2":       (_SMOOTH,  None,    None),
+    "DIFF_QUOT":    (_SMOOTH,  _CONST,  None),
+    "CUMSUM":       (_SCALAR,  None,    None),
+    "CUMSUM_WIN":   (_SCALAR,  _CONST,  None),
+    "INTEGRAL":     (_SMOOTH,  None,    None),
+    "INTEGRAL_WIN": (_SMOOTH,  _CONST,  None),
+    "CONVOLVE":     (_SCALAR,  _SCALAR, None),
+    "RUNNING_MAX":  (_SCALAR,  None,    None),
+    "RUNNING_MIN":  (_SCALAR,  None,    None),
+    "EWMA":         (_SCALAR,  _CONST,  None),
 
-    # -- STATISTICAL -----------------------------------------------------------
-    "MEAN_WIN": (_NUMERIC, _CONST,    None),
-    "VAR_WIN":  (_NUMERIC, _CONST,    None),
-    "STD_WIN":  (_NUMERIC, _CONST,    None),
-    "ZSCORE":   (_NUMERIC, _CONST,    None),
-    "QUANTILE": (_NUMERIC, _CONST,    None),
-    "CORR":     (_NUMERIC, _NUMERIC,  _CONST),
+    # -- STATISTICAL (scalar inputs, window = _CONST) -------------------------
+    "MEAN_WIN": (_SCALAR, _CONST,   None),
+    "VAR_WIN":  (_SCALAR, _CONST,   None),
+    "STD_WIN":  (_SCALAR, _CONST,   None),
+    "ZSCORE":   (_SCALAR, _CONST,   None),
+    "QUANTILE": (_SCALAR, _CONST,   None),
+    "CORR":     (_SCALAR, _SCALAR,  _CONST),
 
     # -- LOGICAL ---------------------------------------------------------------
-    "THRESHOLD":   (_NUMERIC, _CONST,    None),
-    "SIGN":        (_NUMERIC, None,      None),
-    "COMPARE":     (_NUMERIC, _NUMERIC,  None),
-    "BOOL_AND":    (_BOOLEAN, _BOOLEAN,  None),
-    "BOOL_OR":     (_BOOLEAN, _BOOLEAN,  None),
-    "BOOL_NOT":    (_BOOLEAN, None,      None),
-    "CLAMP":       (_NUMERIC, _CONST,    _CONST),
+    "THRESHOLD":   (_SCALAR,  _CONST,   None),
+    "SIGN":        (_SCALAR,  None,     None),
+    "COMPARE":     (_SCALAR,  _SCALAR,  None),
+    "BOOL_AND":    (_BOOLEAN, _BOOLEAN, None),
+    "BOOL_OR":     (_BOOLEAN, _BOOLEAN, None),
+    "BOOL_NOT":    (_BOOLEAN, None,     None),
+    "CLAMP":       (_SCALAR,  _CONST,   _CONST),
 
-    # -- TRANSFORM -------------------------------------------------------------
+    # -- TRANSFORM (smooth inputs only) ----------------------------------------
     "FFT_AMP":     (_SMOOTH, _CONST, _CONST),
     "FFT_PHASE":   (_SMOOTH, _CONST, _CONST),
     "AUTOCORR":    (_SMOOTH, _CONST, None),
     "HILBERT_ENV": (_SMOOTH, None,   None),
 
-    # -- NUMBER-THEORETIC ------------------------------------------------------
-    "GCD_NODE":    (_INTEGER, _INTEGER, None),
-    "LCM_NODE":    (_INTEGER, _INTEGER, None),
-    "FLOOR_NODE":  (_NUMERIC, None,     None),
-    "CEIL_NODE":   (_NUMERIC, None,     None),
-    "ROUND_NODE":  (_NUMERIC, None,     None),
-    "FRAC_NODE":   (_NUMERIC, None,     None),
-    "TOTIENT":     (_INTEGER, None,     None),
-    "ISPRIME":     (_INTEGER, None,     None),
+    # -- NUMBER-THEORETIC (integer inputs) -------------------------------------
+    "GCD_NODE":   (_INTEGER, _INTEGER, None),
+    "LCM_NODE":   (_INTEGER, _INTEGER, None),
+    "FLOOR_NODE": (_SCALAR,  None,     None),
+    "CEIL_NODE":  (_SCALAR,  None,     None),
+    "ROUND_NODE": (_SCALAR,  None,     None),
+    "FRAC_NODE":  (_SCALAR,  None,     None),
+    "TOTIENT":    (_INTEGER, None,     None),
+    "ISPRIME":    (_INTEGER, None,     None),
 
     # -- MEMORY ----------------------------------------------------------------
-    "ARGMAX_WIN":  (_NUMERIC, _CONST,  None),
-    "ARGMIN_WIN":  (_NUMERIC, _CONST,  None),
-    "COUNT_WIN":   (_NUMERIC, _CONST,  _CONST),
-    "STREAK":      (_NUMERIC, None,    None),
-    "DELTA_ZERO":  (_NUMERIC, None,    None),
-    "STATE_VAR":   (frozenset(), None, None),
+    "ARGMAX_WIN": (_SCALAR, _CONST,  None),
+    "ARGMIN_WIN": (_SCALAR, _CONST,  None),
+    "COUNT_WIN":  (_SCALAR, _CONST,  _CONST),
+    "STREAK":     (_SCALAR, None,    None),
+    "DELTA_ZERO": (_SCALAR, None,    None),
 }
 
 

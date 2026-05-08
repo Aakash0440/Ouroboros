@@ -1,0 +1,161 @@
+[
+  {
+    "name": "daily_min_temp",
+    "domain": "climate",
+    "points": 150,
+    "ratio": 0.975,
+    "passed": false,
+    "expr": "obs[t-1]",
+    "time": 14.8,
+    "status": "ok"
+  },
+  {
+    "name": "daily_max_temp",
+    "domain": "climate",
+    "points": 150,
+    "ratio": 0.935,
+    "passed": false,
+    "expr": "obs[t-2]",
+    "time": 31.6,
+    "status": "ok"
+  },
+  {
+    "name": "airline_passengers",
+    "domain": "economics",
+    "points": 144,
+    "ratio": 0.898,
+    "passed": true,
+    "expr": "obs[t-10]",
+    "time": 29.2,
+    "status": "ok",
+    "novelty_score": 0.0,
+    "oeis_id": "A000012",
+    "oeis_name": "The simplest sequence of positive numbers: the all 1's sequence."
+  },
+  {
+    "name": "monthly_airline",
+    "domain": "economics",
+    "points": 144,
+    "ratio": 0.95,
+    "passed": false,
+    "expr": "obs[t-10]",
+    "time": 15.1,
+    "status": "ok"
+  },
+  {
+    "name": "sunspots",
+    "domain": "astronomy",
+    "points": 150,
+    "ratio": 0.965,
+    "passed": false,
+    "expr": "obs[t-1]",
+    "time": 15.8,
+    "status": "ok"
+  },
+  {
+    "name": "female_births",
+    "domain": "demography",
+    "points": 150,
+    "ratio": 0.977,
+    "passed": false,
+    "expr": "obs[t-8]",
+    "time": 14.1,
+    "status": "ok"
+  },
+  {
+    "name": "shampoo_sales",
+    "domain": "economics",
+    "points": 36,
+    "ratio": 0.959,
+    "passed": false,
+    "expr": "obs[t-10]",
+    "time": 3.4,
+    "status": "ok"
+  },
+  {
+    "name": "mean_temp_monthly",
+    "domain": "climate",
+    "points": 150,
+    "ratio": 0.983,
+    "passed": false,
+    "expr": "obs[t-1]",
+    "time": 14.9,
+    "status": "ok"
+  },
+  {
+    "name": "car_sales",
+    "domain": "economics",
+    "points": 108,
+    "ratio": 0.939,
+    "passed": false,
+    "expr": "t",
+    "time": 19.8,
+    "status": "ok"
+  },
+  {
+    "name": "monthly_robberies",
+    "domain": "crime",
+    "points": 118,
+    "ratio": 0.957,
+    "passed": false,
+    "expr": "HILBERT_ENV(obs[t-1])",
+    "time": 12.4,
+    "status": "ok"
+  },
+  {
+    "name": "champagne_sales",
+    "domain": "economics",
+    "points": 105,
+    "ratio": 0.978,
+    "passed": false,
+    "expr": "obs[t-1]",
+    "time": 9.7,
+    "status": "ok"
+  },
+  {
+    "name": "writing_paper",
+    "domain": "industry",
+    "points": 147,
+    "ratio": 0.907,
+    "passed": false,
+    "expr": "obs[t-1]",
+    "time": 27.4,
+    "status": "ok"
+  },
+  {
+    "name": "water_usage",
+    "domain": "hydrology",
+    "points": 79,
+    "ratio": 0.961,
+    "passed": false,
+    "expr": "obs[t-1]",
+    "time": 8.0,
+    "status": "ok"
+  },
+  {
+    "name": "pollution",
+    "domain": "environment",
+    "points": 150,
+    "ratio": 0.5,
+    "passed": true,
+    "expr": "obs[t-1]",
+    "time": 2.6,
+    "status": "ok",
+    "novelty_score": 0.0,
+    "oeis_id": "A000012",
+    "oeis_name": "The simplest sequence of positive numbers: the all 1's sequence."
+  },
+  {
+    "name": "longley_employment",
+    "domain": "economics",
+    "points": 16,
+    "ratio": 0.597,
+    "passed": true,
+    "expr": "obs[t-1]",
+    "time": 3.3,
+    "status": "ok",
+    "novelty_score": 0.84,
+    "oeis_id": null,
+    "oeis_name": null
+  }
+]

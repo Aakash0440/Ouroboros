@@ -214,6 +214,9 @@ class OEISClient:
             results = data.get("results") if isinstance(data, dict) else None
 
         # Take the first (best) result
+        if not results:
+            return OEISResult(False, None, None, None, None, [], 0, [], [], from_cache)
+
         r = results[0]
         oeis_id = f"A{r.get('number', 0):06d}"
         name = r.get("name", "")

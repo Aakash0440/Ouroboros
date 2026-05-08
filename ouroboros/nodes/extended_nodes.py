@@ -96,6 +96,9 @@ class ExtNodeType(Enum):
     INTEGRAL     = auto()  # ∫₀ᵗ f(x)dx ≈ Σᵢ₌₀ᵗ f(i)        [unary]
     INTEGRAL_WIN = auto()  # ∫_{t-W}^{t} f(x)dx windowed      [binary: f, W]
 
+    # ── MULTIVARIATE (Day 50) ─────────────────────────────────────────────────
+    CHANNEL_PREV = auto()  # channel c at lag k: ch[c][t-k]  [terminal]
+
 
 # ── Node metadata ──────────────────────────────────────────────────────────────
 
@@ -165,7 +168,30 @@ NODE_SPECS: Dict[ExtNodeType, NodeSpec] = {
     ExtNodeType.STREAK:      NodeSpec(ExtNodeType.STREAK,      NodeCategory.MEMORY,      1, 5.0),
     ExtNodeType.DELTA_ZERO:  NodeSpec(ExtNodeType.DELTA_ZERO,  NodeCategory.MEMORY,      1, 5.0),
     ExtNodeType.STATE_VAR:   NodeSpec(ExtNodeType.STATE_VAR,   NodeCategory.MEMORY,      0, 4.0),
+    ExtNodeType.CHANNEL_PREV: NodeSpec(ExtNodeType.CHANNEL_PREV, NodeCategory.TERMINAL, 0, 3.0),
 }
+
+def _register_transcendentals() -> None:
+    """
+    Register LOG, SIN, COS, EXP, SQRT, ABS into NODE_SPECS directly.
+    These are evaluated by name-matching in ExtExprNode._eval() but were
+    never added to NODE_SPECS, so the grammar and beam search couldn't
+    see or sample them.
+    """
+    try:
+        from ouroboros.synthesis.expr_node import NodeType as _Orig
+    except ImportError:
+        try:
+            from ouroboros.compression.program_synthesis import NodeType as _Orig
+        except ImportError:
+            return
+
+    _TRANSCEND = {"SIN", "COS", "EXP", "LOG", "SQRT", "ABS"}
+    for nt in _Orig:
+        if nt.name in _TRANSCEND and nt not in NODE_SPECS:
+            NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TRANSCEND, 1, 2.0)
+
+_register_transcendentals()
 
 # ── Register original NodeType nodes into NODE_SPECS so grammar ──────────────
 # constraints can include TERMINAL / ARITHMETIC / TRANSCEND categories.
@@ -173,29 +199,33 @@ NODE_SPECS: Dict[ExtNodeType, NodeSpec] = {
 # correctly restrict ADD, DERIV, etc. to a small set.
 def _register_original_nodes() -> None:
     try:
-        from ouroboros.compression.program_synthesis import NodeType as _Orig
-        _TERMINAL   = {"CONST", "TIME", "PREV"}
-        _ARITHMETIC = {"ADD", "SUB", "MUL", "DIV", "MOD", "POW"}
-        _TRANSCEND  = {"SIN", "COS", "EXP", "LOG", "SQRT", "ABS", "PRIME"}
-        _LOGICAL2   = {"EQ", "LT"}
-        _LOGICAL3   = {"IF"}
-
-        for nt in _Orig:
-            if nt in NODE_SPECS:
-                continue
-            n = nt.name
-            if n in _TERMINAL:
-                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TERMINAL,    0, 1.0)
-            elif n in _ARITHMETIC:
-                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.ARITHMETIC,  2, 2.0)
-            elif n in _TRANSCEND:
-                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TRANSCEND,   1, 2.0)
-            elif n in _LOGICAL2:
-                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.LOGICAL,     2, 2.0)
-            elif n in _LOGICAL3:
-                NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.LOGICAL,     3, 2.0)
+        from ouroboros.synthesis.expr_node import NodeType as _Orig
     except ImportError:
-        pass  # program_synthesis not available — skip
+        try:
+            from ouroboros.compression.program_synthesis import NodeType as _Orig
+        except ImportError:
+            return
+
+    _TERMINAL   = {"CONST", "TIME", "PREV"}
+    _ARITHMETIC = {"ADD", "SUB", "MUL", "DIV", "MOD", "POW"}
+    _TRANSCEND  = {"SIN", "COS", "EXP", "LOG", "SQRT", "ABS", "PRIME"}
+    _LOGICAL2   = {"EQ", "LT"}
+    _LOGICAL3   = {"IF"}
+
+    for nt in _Orig:
+        if nt in NODE_SPECS:
+            continue
+        n = nt.name
+        if n in _TERMINAL:
+            NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TERMINAL,   0, 1.0)
+        elif n in _ARITHMETIC:
+            NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.ARITHMETIC, 2, 2.0)
+        elif n in _TRANSCEND:
+            NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.TRANSCEND,  1, 2.0)
+        elif n in _LOGICAL2:
+            NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.LOGICAL,    2, 2.0)
+        elif n in _LOGICAL3:
+            NODE_SPECS[nt] = NodeSpec(nt, NodeCategory.LOGICAL,    3, 2.0)
 
 _register_original_nodes()
 
@@ -216,7 +246,7 @@ class ExtExprNode:
     """
 
     __slots__ = ['node_type', 'value', 'lag', 'state_key', 'window',
-                 'left', 'right', 'third', '_cache']
+                 'channel_idx', 'left', 'right', 'third', '_cache']
 
     def __init__(
         self,
@@ -228,6 +258,7 @@ class ExtExprNode:
         left: Optional['ExtExprNode'] = None,
         right: Optional['ExtExprNode'] = None,
         third: Optional['ExtExprNode'] = None,
+        channel_idx: int = 0,   # for CHANNEL_PREV
     ):
         self.node_type = node_type
         self.value = value
@@ -238,6 +269,7 @@ class ExtExprNode:
         self.right = right
         self.third = third
         self._cache: Dict[int, float] = {}  # memoization cache per timestep
+        self.channel_idx = channel_idx
 
     def evaluate(
         self,
@@ -277,6 +309,13 @@ class ExtExprNode:
             idx = t - self.lag
             return float(history[idx]) if 0 <= idx < len(history) else 0.0
 
+        if nt == ExtNodeType.CHANNEL_PREV:
+            # history is passed as flat list for target channel;
+            # channels dict passed via state key -1
+            channels = state.get(-1, {})
+            ch = channels.get(self.channel_idx, [])
+            idx = t - self.lag
+            return float(ch[idx]) if 0 <= idx < len(ch) else 0.0
         if nt == ExtNodeType.STATE_VAR:
             return state.get(self.state_key, 0.0)
 
@@ -672,4 +711,6 @@ class ExtExprNode:
             return "t"
         if name == 'PREV':
             return f"obs[t-{self.lag}]"
+        if nt == ExtNodeType.CHANNEL_PREV:
+            return f"ch[{self.channel_idx}][t-{self.lag}]"
         return name

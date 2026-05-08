@@ -29,7 +29,7 @@ import time
 from ouroboros.nodes.extended_nodes import ExtNodeType, ExtExprNode, NODE_SPECS, NodeCategory
 from ouroboros.grammar.math_grammar import MathGrammar, DEFAULT_GRAMMAR
 from ouroboros.compression.mdl_engine import MDLEngine
-
+from ouroboros.nodes.extended_nodes import ExtNodeType
 
 @dataclass
 class GrammarBeamConfig:
@@ -80,7 +80,7 @@ class GrammarConstrainedBeam:
         self._rng = random.Random(self.cfg.random_seed)
         self._grammar = self.cfg.grammar
         self._mdl = MDLEngine()
-
+        self._channel_state: dict = {}
         self._nodes_by_category: Dict[NodeCategory, List[ExtNodeType]] = {}
         for nt, spec in NODE_SPECS.items():
             cat = spec.category
@@ -131,7 +131,11 @@ class GrammarConstrainedBeam:
         from ouroboros.synthesis.expr_node import NodeType
         node = ExtExprNode.__new__(ExtExprNode)
         node.node_type = NodeType.CONST
-        node.value = float(self._rng.randint(0, self.cfg.const_range))
+        if self.cfg.const_range <= 3:
+            # likely a small-valued target — sample floats too
+            node.value = self._rng.uniform(-1.0, 1.0)
+        else:
+            node.value = float(self._rng.randint(0, self.cfg.const_range))
         node.lag = 1
         node.state_key = 0
         node.window = 10
@@ -140,7 +144,7 @@ class GrammarConstrainedBeam:
         node.third = None
         node._cache = {}
         return node
-
+        
     def _make_time(self) -> ExtExprNode:
         from ouroboros.synthesis.expr_node import NodeType
         node = ExtExprNode.__new__(ExtExprNode)
@@ -170,14 +174,149 @@ class GrammarConstrainedBeam:
         return node
 
     def _random_terminal(self) -> ExtExprNode:
+        # When channels are loaded, 25% chance to emit a CHANNEL_PREV leaf
+        if self._channel_state and self._rng.random() < 0.25:
+            ch_idx = self._rng.choice(list(self._channel_state.keys()))
+            lag = self._rng.randint(0, min(3, self.cfg.max_lag))
+            return ExtExprNode(ExtNodeType.CHANNEL_PREV, channel_idx=ch_idx, lag=lag)
+
         choice = self._rng.random()
-        if choice < 0.5:
+        if choice < 0.60:
             return self._make_const()
-        elif choice < 0.8:
+        elif choice < 0.90:
             return self._make_time()
         else:
             lag = self._rng.randint(1, self.cfg.max_lag)
             return self._make_prev(lag)
+
+    def _seed_growth_templates(self, observations: List[int]) -> List[GrammarBeamCandidate]:
+        import math
+        from ouroboros.nodes.extended_nodes import NODE_SPECS
+        from ouroboros.synthesis.expr_node import NodeType
+
+        LOG_NT  = next((nt for nt in NODE_SPECS if nt.name == 'LOG'),  None)
+        SQRT_NT = next((nt for nt in NODE_SPECS if nt.name == 'SQRT'), None)
+
+        seeds = []
+
+        for scale in [1, 2, 5, 10, 20]:
+            for offset in [0, 1]:
+                if LOG_NT:
+                    t_node   = self._make_literal_node(NodeType.TIME)
+                    c_off    = self._make_literal_node(NodeType.CONST, float(offset))
+                    c_scl    = self._make_literal_node(NodeType.CONST, float(scale))
+                    add_node = self._make_literal_node(NodeType.ADD, left=t_node, right=c_off)
+                    log_node = self._make_literal_node(LOG_NT, left=add_node)
+                    expr_log = self._make_literal_node(NodeType.MUL, left=c_scl, right=log_node)
+                    seeds.append(GrammarBeamCandidate(expr_log, self._score(expr_log, observations)))
+
+                if SQRT_NT:
+                    t2        = self._make_literal_node(NodeType.TIME)
+                    c_off2    = self._make_literal_node(NodeType.CONST, float(offset))
+                    c_scl2    = self._make_literal_node(NodeType.CONST, float(scale))
+                    add_node2 = self._make_literal_node(NodeType.ADD, left=t2, right=c_off2)
+                    sqrt_node = self._make_literal_node(SQRT_NT, left=add_node2)
+                    expr_sqrt = self._make_literal_node(NodeType.MUL, left=c_scl2, right=sqrt_node)
+                    seeds.append(GrammarBeamCandidate(expr_sqrt, self._score(expr_sqrt, observations)))
+
+                # linear: scale * t
+                t3       = self._make_literal_node(NodeType.TIME)
+                c_scl3   = self._make_literal_node(NodeType.CONST, float(scale))
+                expr_lin = self._make_literal_node(NodeType.MUL, left=c_scl3, right=t3)
+                seeds.append(GrammarBeamCandidate(expr_lin, self._score(expr_lin, observations)))
+
+                # linear with intercept: scale * t + intercept
+                for intercept in [1, 2, 5, 10, 20, 50]:
+                    t5        = self._make_literal_node(NodeType.TIME)
+                    c_scl5    = self._make_literal_node(NodeType.CONST, float(scale))
+                    c_int     = self._make_literal_node(NodeType.CONST, float(intercept))
+                    mul_node  = self._make_literal_node(NodeType.MUL, left=c_scl5, right=t5)
+                    expr_lin2 = self._make_literal_node(NodeType.ADD, left=mul_node, right=c_int)
+                    seeds.append(GrammarBeamCandidate(expr_lin2, self._score(expr_lin2, observations)))
+
+                # quadratic: scale * t^2
+                t4       = self._make_literal_node(NodeType.TIME)
+                c2       = self._make_literal_node(NodeType.CONST, 2.0)
+                c_scl4   = self._make_literal_node(NodeType.CONST, float(scale))
+                pow_node = self._make_literal_node(NodeType.POW, left=t4, right=c2)
+                expr_pow = self._make_literal_node(NodeType.MUL, left=c_scl4, right=pow_node)
+                seeds.append(GrammarBeamCandidate(expr_pow, self._score(expr_pow, observations)))
+
+        # ── DATA-DRIVEN SEEDS (run once, not inside the scale/offset loops) ──
+
+        # 1. Detected linear: slope * t + intercept (supports float slopes)
+        if len(observations) >= 4:
+            diffs = [observations[i+1] - observations[i]
+                     for i in range(min(10, len(observations)-1))]
+            raw_slope = sum(diffs) / len(diffs)
+            slopes_to_try = list({round(raw_slope), raw_slope,
+                                   round(raw_slope*2)/2, round(raw_slope*4)/4})
+            slopes_to_try = [s for s in slopes_to_try if s != 0]
+            intercept = observations[0]
+            for s in slopes_to_try:
+                for b in [intercept, 0, 1]:
+                    try:
+                        c_s = self._make_literal_node(NodeType.CONST, float(s))
+                        c_b = self._make_literal_node(NodeType.CONST, float(b))
+                        t_n = self._make_literal_node(NodeType.TIME)
+                        mul = self._make_literal_node(NodeType.MUL, left=c_s, right=t_n)
+                        add = self._make_literal_node(NodeType.ADD, left=mul, right=c_b)
+                        seeds.append(GrammarBeamCandidate(add, self._score(add, observations)))
+                    except Exception:
+                        pass
+
+        # 2. Detected sqrt: c * sqrt(t + b)
+        if SQRT_NT and len(observations) >= 4 and all(v >= 0 for v in observations[:10]):
+            c_est = float(observations[0])
+            for c in {c_est, round(c_est), round(c_est/2)*2, 5.0, 10.0}:
+                for b in [0, 1, 2]:
+                    try:
+                        c_n = self._make_literal_node(NodeType.CONST, float(c))
+                        b_n = self._make_literal_node(NodeType.CONST, float(b))
+                        t_n = self._make_literal_node(NodeType.TIME)
+                        add = self._make_literal_node(NodeType.ADD, left=t_n, right=b_n)
+                        sqr = self._make_literal_node(SQRT_NT, left=add)
+                        mul = self._make_literal_node(NodeType.MUL, left=c_n, right=sqr)
+                        seeds.append(GrammarBeamCandidate(mul, self._score(mul, observations)))
+                    except Exception:
+                        pass
+
+        # 3. Detected exp decay: ratio * obs[t-1]  (AR1 approximation)
+        if len(observations) >= 5 and observations[0] > 0:
+            ratios = [observations[i+1] / observations[i]
+                      for i in range(min(8, len(observations)-1))
+                      if observations[i] > 0 and observations[i+1] > 0]
+            if ratios:
+                avg_ratio = sum(ratios) / len(ratios)
+                if 0.5 < avg_ratio < 0.99:
+                    for r in {avg_ratio, round(avg_ratio*20)/20}:
+                        try:
+                            c_r   = self._make_literal_node(NodeType.CONST, float(r))
+                            obs_n = self._make_literal_node(NodeType.PREV)
+                            mul   = self._make_literal_node(NodeType.MUL, left=c_r, right=obs_n)
+                            score = self._score(mul, observations)
+                            seeds.append(GrammarBeamCandidate(mul, score))
+                        except Exception:
+                            pass
+
+
+        if len(observations) >= 5 and observations[0] > 0:
+            # detect saturation: differences shrinking
+            diffs = [observations[i+1] - observations[i]
+                     for i in range(min(8, len(observations)-1))]
+            if len(diffs) >= 3 and diffs[0] > diffs[-1] > 0:
+                try:
+                    # seed: obs[t-1] * (1 - 1/obs[0])  rough saturation
+                    sat_ratio = 1.0 - (diffs[-1] / max(diffs[0], 1))
+                    c_r   = self._make_literal_node(NodeType.CONST, float(sat_ratio))
+                    obs_n = self._make_literal_node(NodeType.PREV)
+                    mul   = self._make_literal_node(NodeType.MUL, left=c_r, right=obs_n)
+                    seeds.append(GrammarBeamCandidate(mul, self._score(mul, observations)))
+                except Exception:
+                    pass
+                
+        seeds.sort()
+        return seeds[:self.cfg.beam_width]
 
     def _random_expr(
         self,
@@ -226,7 +365,7 @@ class GrammarConstrainedBeam:
 
         return node
 
-    def _make_literal_node(self, node_type, value=0.0, left=None, right=None, third=None) -> ExtExprNode:
+    def _make_literal_node(self, node_type, value=0.0, left=None, right=None, third=None, channel_idx=0) -> ExtExprNode:
         """Helper to build a node with explicit fields (no random)."""
         node = ExtExprNode.__new__(ExtExprNode)
         node.node_type = node_type
@@ -234,6 +373,7 @@ class GrammarConstrainedBeam:
         node.lag = 1
         node.state_key = 0
         node.window = 10
+        node.channel_idx = channel_idx
         node.left = left
         node.right = right
         node.third = third
@@ -313,7 +453,9 @@ class GrammarConstrainedBeam:
 
     def _score(self, expr: ExtExprNode, observations: List[int]) -> float:
         try:
-            state: Dict[int, float] = {}
+            state: Dict[int, Any] = {}
+            if hasattr(self, '_channel_state') and self._channel_state:
+                state[-1] = self._channel_state
             predictions = []
             for t in range(len(observations)):
                 pred = expr.evaluate(t, observations[:t] if t > 0 else [], state)
@@ -340,13 +482,18 @@ class GrammarConstrainedBeam:
         r = self._rng.random()
 
         # 50%: perturb constant
-        if hasattr(node.node_type, 'name') and node.node_type.name == 'CONST' and r < 0.5:
-            delta = self._rng.gauss(0, max(1, abs(node.value) * 0.1))
-            node.value = max(-self.cfg.const_range, min(self.cfg.const_range, node.value + delta))
+        if hasattr(node.node_type, 'name') and node.node_type.name == 'CONST' and r < 0.65:
+            if abs(node.value) < 1.0:
+                # small fractional constant — perturb additively to keep it fractional
+                delta = self._rng.uniform(-0.05, 0.05)
+                node.value = node.value + delta
+            else:
+                scale = self._rng.choice([0.5, 2.0, 0.1, 10.0, -1.0])
+                node.value = max(-self.cfg.const_range, min(self.cfg.const_range, node.value * scale))
             return
 
         # 20%: replace entire subtree
-        if r < 0.2 and depth < self.cfg.max_depth - 1:
+        if r < 0.35 and depth < self.cfg.max_depth - 1:
             from ouroboros.grammar.math_grammar import ANY_TYPES
             fresh = self._random_expr(depth, ANY_TYPES)
             node.node_type = fresh.node_type
@@ -371,8 +518,13 @@ class GrammarConstrainedBeam:
         self,
         observations: List[int],
         verbose: bool = False,
+        extra_seeds: Optional[List] = None,
+        channel_state: Optional[dict] = None,
     ) -> Optional[ExtExprNode]:
         """Run grammar-constrained beam search. Returns the best expression found."""
+        if channel_state is not None:
+            self._channel_state = channel_state
+
         beam_width = self.cfg.beam_width
 
         # Random initial population
@@ -380,16 +532,16 @@ class GrammarConstrainedBeam:
         init_costs = [self._score(e, observations) for e in init_exprs]
 
         # Modular arithmetic seeds — (slope*t + intercept) % mod
-        mod_seeds = self._seed_modular_templates(observations)
+        mod_seeds    = self._seed_modular_templates(observations)
+        rec_seeds    = self._seed_recurrence_templates(observations)
+        growth_seeds = self._seed_growth_templates(observations)
 
-        # Recurrence seeds — (prev(a) + prev(b)) % mod, Fibonacci-style
-        rec_seeds = self._seed_recurrence_templates(observations)
-
-        # Merge all seeds and keep best beam_width
         candidates = sorted(
             [GrammarBeamCandidate(e, c) for e, c in zip(init_exprs, init_costs)]
             + mod_seeds
-            + rec_seeds,
+            + rec_seeds
+            + growth_seeds
+            + (extra_seeds or []),
         )[:beam_width]
 
         if verbose:
@@ -402,10 +554,25 @@ class GrammarConstrainedBeam:
                 break
             new_candidates = list(candidates)
             for cand in candidates:
-                for _ in range(3):
+                # 1. mutation (keep existing)
+                for _ in range(2):
                     mutated = self._mutate_grammar(cand.expr)
-                    cost    = self._score(mutated, observations)
+                    cost = self._score(mutated, observations)
                     new_candidates.append(GrammarBeamCandidate(mutated, cost))
+
+                # 2. 🔥 NEW: additive composition
+                for other in candidates[:5]:  # limit for speed
+                    try:
+                        combined = ExtExprNode(
+                            ExtNodeType.ADD,
+                            left=cand.expr,
+                            right=other.expr
+                        )
+
+                        cost = self._score(combined, observations)
+                        new_candidates.append(GrammarBeamCandidate(combined, cost))
+                    except Exception:
+                        pass
 
             new_candidates.sort()
             candidates = new_candidates[:beam_width]

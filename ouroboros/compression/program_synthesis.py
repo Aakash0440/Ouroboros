@@ -16,21 +16,29 @@ class NodeType(Enum):
     ADD   = auto()
     MUL   = auto()
     MOD   = auto()
-    # New arithmetic
+    # Arithmetic
     SUB   = auto()
     DIV   = auto()
     POW   = auto()
-    PRIME = auto()  # ✅ Added for prime sequence discovery
-    # New structural
+    PRIME = auto()
+    # Structural
     PREV  = auto()
     IF    = auto()
     EQ    = auto()
     LT    = auto()
+    # Transcendentals — needed for LOG/SQRT discovery
+    LOG   = auto()
+    SQRT  = auto()
+    SIN   = auto()
+    COS   = auto()
+    EXP   = auto()
+    ABS   = auto()
 
 
 # Node category helpers
 LEAF_TYPES    = {NodeType.CONST, NodeType.TIME, NodeType.PREV}
-UNARY_TYPES   = {NodeType.PRIME}  # ✅ PRIME only takes one child
+UNARY_TYPES = {NodeType.PRIME, NodeType.LOG, NodeType.SQRT,
+               NodeType.SIN, NodeType.COS, NodeType.EXP, NodeType.ABS}
 BINARY_TYPES  = {NodeType.ADD, NodeType.MUL, NodeType.MOD,
                  NodeType.SUB, NodeType.DIV, NodeType.POW,
                  NodeType.EQ, NodeType.LT}
@@ -73,6 +81,43 @@ class ExprNode:
             # We use % 10000 to keep sympy from hanging on massive primes during search
             idx = int(abs(np.round(self.left.evaluate(t, history, alphabet_size)))) % 10000
             return int(sympy.prime(idx + 1))
+
+        if self.node_type in (NodeType.LOG, NodeType.SQRT, NodeType.SIN,
+                            NodeType.COS, NodeType.EXP, NodeType.ABS):
+            child_str = self.left.to_string() if self.left else '?'
+            return f"{self.node_type.name}({child_str})"
+
+        if self.node_type == NodeType.LOG:
+            import math
+            v = abs(self.left.evaluate(t, history, alphabet_size)) if self.left else 0
+            return int(round(math.log(v))) if v > 1e-10 else 0
+
+        if self.node_type == NodeType.SQRT:
+            import math
+            v = self.left.evaluate(t, history, alphabet_size) if self.left else 0
+            return int(round(math.sqrt(abs(v))))
+
+        if self.node_type == NodeType.SIN:
+            import math
+            v = self.left.evaluate(t, history, alphabet_size) if self.left else 0
+            return int(round(math.sin(v) * 100))
+
+        if self.node_type == NodeType.COS:
+            import math
+            v = self.left.evaluate(t, history, alphabet_size) if self.left else 0
+            return int(round(math.cos(v) * 100))
+
+        if self.node_type == NodeType.EXP:
+            import math
+            v = self.left.evaluate(t, history, alphabet_size) if self.left else 0
+            try:
+                return int(round(math.exp(min(v, 20))))
+            except Exception:
+                return 0
+
+        if self.node_type == NodeType.ABS:
+            v = self.left.evaluate(t, history, alphabet_size) if self.left else 0
+            return abs(int(round(v)))
 
         # ── Binary nodes ─────────────────────────────────────────────────
         lv = self.left.evaluate(t, history, alphabet_size)
@@ -206,6 +251,12 @@ def EQ(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.EQ, left=
 def LT(l: ExprNode, r: ExprNode) -> ExprNode: return ExprNode(NodeType.LT, left=l, right=r)
 def IF(c: ExprNode, t: ExprNode, e: ExprNode) -> ExprNode:
     return ExprNode(NodeType.IF, left=c, right=t, extra=e)
+def LOG(x):  return ExprNode(NodeType.LOG,  left=x)
+def SQRT(x): return ExprNode(NodeType.SQRT, left=x)
+def SIN(x):  return ExprNode(NodeType.SIN,  left=x)
+def COS(x):  return ExprNode(NodeType.COS,  left=x)
+def EXP(x):  return ExprNode(NodeType.EXP,  left=x)
+def ABS(x):  return ExprNode(NodeType.ABS,  left=x)
 
 # ── Program builders ──────────────────────────────────────────────────────────
 
