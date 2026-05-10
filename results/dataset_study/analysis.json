@@ -1,0 +1,72 @@
+{
+  "n_total": 138,
+  "n_real": 130,
+  "n_structure_found": 51,
+  "n_strong_structure": 9,
+  "structure_rate": 0.3923076923076923,
+  "strong_structure_rate": 0.06923076923076923,
+  "by_domain": {
+    "environment": {
+      "n": 1,
+      "n_structure": 1,
+      "avg_ratio": 0.03
+    },
+    "social_science": {
+      "n": 3,
+      "n_structure": 2,
+      "avg_ratio": 0.44806111940787136
+    },
+    "astronomy": {
+      "n": 5,
+      "n_structure": 3,
+      "avg_ratio": 0.35392907333307216
+    },
+    "economics": {
+      "n": 26,
+      "n_structure": 14,
+      "avg_ratio": 0.4826482776916569
+    },
+    "commodities": {
+      "n": 2,
+      "n_structure": 1,
+      "avg_ratio": 0.5144569066324849
+    },
+    "climate": {
+      "n": 37,
+      "n_structure": 14,
+      "avg_ratio": 0.4970518546676265
+    },
+    "public_health": {
+      "n": 31,
+      "n_structure": 10,
+      "avg_ratio": 0.5624243503531181
+    },
+    "finance": {
+      "n": 14,
+      "n_structure": 4,
+      "avg_ratio": 0.5817167839932027
+    },
+    "hydrology": {
+      "n": 8,
+      "n_structure": 2,
+      "avg_ratio": 0.5669619013947537
+    },
+    "energy": {
+      "n": 1,
+      "n_structure": 0,
+      "avg_ratio": 0.5564051643796344
+    },
+    "transport": {
+      "n": 2,
+      "n_structure": 0,
+      "avg_ratio": 0.7143808998359016
+    }
+  },
+  "family_distribution": {
+    "MONOTONE": 75,
+    "MIXED": 19,
+    "NUMBER_THEOR": 19,
+    "PERIODIC": 17
+  },
+  "n_potentially_novel": 0
+}

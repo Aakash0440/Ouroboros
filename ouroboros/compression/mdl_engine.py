@@ -27,23 +27,24 @@ class MDLEngine:
         if n == 0:
             return MDLResult(total_bits=float('inf'), program_bits=0, error_bits=float('inf'))
 
-        # --- FIX 1: Use integer residuals + Shannon entropy, not Gaussian MSE ---
-        # Count how often each residual value appears
-        residuals = [int(round(p)) - int(round(a)) for p, a in zip(predictions, actuals)]
-        max_resid = max(abs(r) for r in residuals) if residuals else 0
+        # Mean squared error
+        mse = sum((p - a) ** 2 for p, a in zip(predictions, actuals)) / n
 
-        if max_resid == 0:
-            # Perfect prediction
+        if mse < 1e-9:
+            # Perfect or near-perfect: 0 error bits
             error_bits = 0.0
         else:
-            # Encode each residual as log2(2 * max_resid + 1) bits (uniform over range)
-            # This never goes negative
-            error_bits = n * math.log2(2 * max_resid + 1)
+            # Gaussian MDL — but shift so minimum is 0, not negative
+            # log2(sqrt(2*pi*e)) ≈ 2.047 bits — this is the per-sample floor
+            # We add it so error_bits is always >= 0
+            GAUSS_FLOOR = 0.5 * math.log2(2 * math.pi * math.e)  # ~2.047
+            raw = 0.5 * math.log2(mse)
+            error_bits = n * max(0.0, raw + GAUSS_FLOOR)
 
-        # --- FIX 2: Scale program bits by log2(alphabet_size) for context ---
-        # Larger alphabets need more bits to specify constants
+        # Program bits: nodes cost log2(n_node_types) ≈ 6 bits each
+        # Constants cost log2(const_range) bits — use alphabet as proxy
         alpha_bits = math.log2(max(alphabet_size, 2))
-        program_bits = (node_count * 4.0) + (constant_count * alpha_bits)
+        program_bits = (node_count * 6.0) + (constant_count * alpha_bits)
 
         total = program_bits + error_bits
 

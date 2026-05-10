@@ -169,7 +169,7 @@ class HierarchicalSearchRouter:
 
         # Step 5: Run grammar-constrained beam search
         beam = GrammarConstrainedBeam(beam_cfg)
-        expr = beam.search(observations, verbose=verbose)
+        expr = beam.search(observations, verbose=verbose, alphabet_size=alphabet_size)
 
         elapsed = time.time() - start
         cost = float('inf')

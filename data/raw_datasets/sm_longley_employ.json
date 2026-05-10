@@ -1,0 +1,29 @@
+{
+  "dataset_id": "sm_longley_employ",
+  "name": "US Total Employment (Longley)",
+  "domain": "economics",
+  "source": "statsmodels",
+  "url": "",
+  "unit": "persons",
+  "description": "",
+  "n_observations": 16,
+  "values": [
+    60323.0,
+    61122.0,
+    60171.0,
+    61187.0,
+    63221.0,
+    63639.0,
+    64989.0,
+    63761.0,
+    66019.0,
+    67857.0,
+    68169.0,
+    66513.0,
+    68655.0,
+    69564.0,
+    69331.0,
+    70551.0
+  ],
+  "metadata": {}
+}

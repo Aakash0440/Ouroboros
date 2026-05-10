@@ -1,0 +1,1496 @@
+[
+  {
+    "dataset_id": "noaa_gst_global",
+    "name": "Global Surface Temperature Anomaly (Annual)",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "\u00b0C anomaly"
+  },
+  {
+    "dataset_id": "noaa_co2_mauna_loa",
+    "name": "Mauna Loa CO2 Monthly Mean",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 818,
+    "download_success": true,
+    "unit": "ppm"
+  },
+  {
+    "dataset_id": "noaa_co2_annual",
+    "name": "Global Mean CO2 Annual",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 67,
+    "download_success": true,
+    "unit": "ppm"
+  },
+  {
+    "dataset_id": "noaa_ch4_monthly",
+    "name": "Global Mean CH4 Monthly",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 511,
+    "download_success": true,
+    "unit": "ppb"
+  },
+  {
+    "dataset_id": "noaa_n2o_monthly",
+    "name": "Global Mean N2O Monthly",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 301,
+    "download_success": true,
+    "unit": "ppb"
+  },
+  {
+    "dataset_id": "noaa_sunspots_monthly",
+    "name": "Monthly Sunspot Number",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "count"
+  },
+  {
+    "dataset_id": "noaa_sea_level_global",
+    "name": "Global Mean Sea Level (satellite)",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "fred_gdp_usa",
+    "name": "US Real GDP (Quarterly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Billions of chained 2017 dollars"
+  },
+  {
+    "dataset_id": "fred_unemployment",
+    "name": "US Unemployment Rate (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Percent"
+  },
+  {
+    "dataset_id": "fred_cpi",
+    "name": "US Consumer Price Index (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Index 1982-84=100"
+  },
+  {
+    "dataset_id": "fred_fedfunds",
+    "name": "Federal Funds Rate (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Percent per annum"
+  },
+  {
+    "dataset_id": "fred_sp500",
+    "name": "S&P 500 Index (Monthly)",
+    "domain": "finance",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Index"
+  },
+  {
+    "dataset_id": "fred_m2",
+    "name": "M2 Money Supply (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Billions of dollars"
+  },
+  {
+    "dataset_id": "fred_10yr_treasury",
+    "name": "10-Year Treasury Rate (Monthly)",
+    "domain": "finance",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Percent per annum"
+  },
+  {
+    "dataset_id": "fred_housing_starts",
+    "name": "US Housing Starts (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Thousands of units"
+  },
+  {
+    "dataset_id": "fred_industrial_prod",
+    "name": "US Industrial Production (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Index 2017=100"
+  },
+  {
+    "dataset_id": "fred_trade_balance",
+    "name": "US Trade Balance (Monthly)",
+    "domain": "economics",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Millions of dollars"
+  },
+  {
+    "dataset_id": "fred_oil_price",
+    "name": "Crude Oil Price WTI (Monthly)",
+    "domain": "commodities",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "Dollars per barrel"
+  },
+  {
+    "dataset_id": "fred_gold_price",
+    "name": "Gold Price (Monthly)",
+    "domain": "commodities",
+    "source": "FRED",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "USD per Troy Oz"
+  },
+  {
+    "dataset_id": "usgs_mississippi_vicksburg",
+    "name": "Mississippi River at Vicksburg MS",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_colorado_leesferry",
+    "name": "Colorado River at Lees Ferry AZ",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_columbia_dalles",
+    "name": "Columbia River at The Dalles OR",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_ohio_markland",
+    "name": "Ohio River at Markland Dam",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_hudson_ny",
+    "name": "Hudson River at Green Island NY",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_delaware_trenton",
+    "name": "Delaware River at Trenton NJ",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_sacramento_ca",
+    "name": "Sacramento River at Sacramento CA",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "usgs_snake_idaho",
+    "name": "Snake River at Brownlee Dam ID",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "cfs (cubic feet per second)"
+  },
+  {
+    "dataset_id": "nasa_exo_orbital_periods",
+    "name": "Exoplanet Orbital Periods (Confirmed)",
+    "domain": "astronomy",
+    "source": "NASA",
+    "n_observations": 1000,
+    "download_success": true,
+    "unit": "days"
+  },
+  {
+    "dataset_id": "nasa_exo_planet_radius",
+    "name": "Exoplanet Radii (Confirmed)",
+    "domain": "astronomy",
+    "source": "NASA",
+    "n_observations": 1000,
+    "download_success": true,
+    "unit": "Earth radii"
+  },
+  {
+    "dataset_id": "nasa_exo_stellar_teff",
+    "name": "Host Star Effective Temperature",
+    "domain": "astronomy",
+    "source": "NASA",
+    "n_observations": 1000,
+    "download_success": true,
+    "unit": "Kelvin"
+  },
+  {
+    "dataset_id": "who_malaria_incidence",
+    "name": "Global Malaria Incidence Rate",
+    "domain": "public_health",
+    "source": "WHO",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "per 1000 at-risk population"
+  },
+  {
+    "dataset_id": "who_tb_incidence",
+    "name": "Global TB Incidence Rate",
+    "domain": "public_health",
+    "source": "WHO",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "per 100,000 population"
+  },
+  {
+    "dataset_id": "who_infant_mortality",
+    "name": "Global Infant Mortality Rate",
+    "domain": "public_health",
+    "source": "WHO",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "per 1000 live births"
+  },
+  {
+    "dataset_id": "who_life_expectancy",
+    "name": "Global Life Expectancy at Birth",
+    "domain": "public_health",
+    "source": "WHO",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "uci_air_quality_no2",
+    "name": "Air Quality NO2 Sensor (Hourly)",
+    "domain": "environment",
+    "source": "UCI",
+    "n_observations": 0,
+    "download_success": false,
+    "unit": "\u00b5g/m\u00b3"
+  },
+  {
+    "dataset_id": "synth_mod7",
+    "name": "Modular arithmetic (3t+1)%7",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 300,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_fibonacci",
+    "name": "Fibonacci sequence mod 11",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 300,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_hooke",
+    "name": "Spring oscillation A*cos(0.3t)",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 200,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_decay",
+    "name": "Exponential decay 1000*exp(-0.05t)",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 200,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_linear",
+    "name": "Linear trend 3t+7",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 300,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_pi_n",
+    "name": "Prime counting function pi(n)",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 300,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_random",
+    "name": "Uniform random integers [0,9]",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 200,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "synth_kepler",
+    "name": "Kepler T^2 proportional to a^3",
+    "domain": "synthetic_benchmark",
+    "source": "OUROBOROS",
+    "n_observations": 199,
+    "download_success": true,
+    "unit": "synthetic"
+  },
+  {
+    "dataset_id": "sm_sunspots",
+    "name": "Sunspot Activity (Annual)",
+    "domain": "astronomy",
+    "source": "statsmodels",
+    "n_observations": 309,
+    "download_success": true,
+    "unit": "count"
+  },
+  {
+    "dataset_id": "sm_co2_weekly",
+    "name": "Mauna Loa CO2 Weekly",
+    "domain": "climate",
+    "source": "statsmodels",
+    "n_observations": 2225,
+    "download_success": true,
+    "unit": "ppm"
+  },
+  {
+    "dataset_id": "sm_elnino",
+    "name": "El Nino Sea Surface Temperature",
+    "domain": "climate",
+    "source": "statsmodels",
+    "n_observations": 732,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "sm_macro_realgdp",
+    "name": "US Real GDP (statsmodels)",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "B$"
+  },
+  {
+    "dataset_id": "sm_macro_realcons",
+    "name": "US Real Consumption",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "B$"
+  },
+  {
+    "dataset_id": "sm_macro_realinv",
+    "name": "US Real Investment",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "B$"
+  },
+  {
+    "dataset_id": "sm_macro_realgovt",
+    "name": "US Real Government Spending",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "B$"
+  },
+  {
+    "dataset_id": "sm_macro_realdpi",
+    "name": "US Real Disposable Income",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "B$"
+  },
+  {
+    "dataset_id": "sm_macro_cpi",
+    "name": "US CPI (statsmodels)",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "index"
+  },
+  {
+    "dataset_id": "sm_macro_m1",
+    "name": "US M1 Money Stock",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "B$"
+  },
+  {
+    "dataset_id": "sm_macro_tbilrate",
+    "name": "US T-Bill Rate (statsmodels)",
+    "domain": "finance",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "sm_macro_unemp",
+    "name": "US Unemployment (statsmodels)",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "sm_macro_infl",
+    "name": "US Inflation Rate",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "sm_macro_realint",
+    "name": "US Real Interest Rate",
+    "domain": "finance",
+    "source": "statsmodels",
+    "n_observations": 203,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "sm_longley_employ",
+    "name": "US Total Employment (Longley)",
+    "domain": "economics",
+    "source": "statsmodels",
+    "n_observations": 16,
+    "download_success": true,
+    "unit": "persons"
+  },
+  {
+    "dataset_id": "sm_fair_affair",
+    "name": "Extramarital Affairs Rate (Fair)",
+    "domain": "social_science",
+    "source": "statsmodels",
+    "n_observations": 6366,
+    "download_success": true,
+    "unit": "count"
+  },
+  {
+    "dataset_id": "sm_interest_rate",
+    "name": "Interest Rate Series",
+    "domain": "finance",
+    "source": "statsmodels",
+    "n_observations": 107,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "jb_daily_temp",
+    "name": "Daily Min Temperature Melbourne",
+    "domain": "climate",
+    "source": "Brownlee-GitHub",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "jb_airline",
+    "name": "Monthly Airline Passengers",
+    "domain": "transport",
+    "source": "Brownlee-GitHub",
+    "n_observations": 144,
+    "download_success": true,
+    "unit": "passengers"
+  },
+  {
+    "dataset_id": "jb_shampoo_sales",
+    "name": "Monthly Shampoo Sales",
+    "domain": "economics",
+    "source": "Brownlee-GitHub",
+    "n_observations": 36,
+    "download_success": true,
+    "unit": "units"
+  },
+  {
+    "dataset_id": "jb_monthly_births",
+    "name": "Daily Total Female Births CA",
+    "domain": "public_health",
+    "source": "Brownlee-GitHub",
+    "n_observations": 365,
+    "download_success": true,
+    "unit": "count"
+  },
+  {
+    "dataset_id": "jb_sunspots",
+    "name": "Monthly Sunspots (Brownlee)",
+    "domain": "astronomy",
+    "source": "Brownlee-GitHub",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "count"
+  },
+  {
+    "dataset_id": "jb_pollution",
+    "name": "Beijing PM2.5 Pollution (Hourly)",
+    "domain": "environment",
+    "source": "Brownlee-GitHub",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "\u00b5g/m\u00b3"
+  },
+  {
+    "dataset_id": "jb_motor_vehicle",
+    "name": "Monthly Motor Vehicle Sales",
+    "domain": "transport",
+    "source": "Brownlee-GitHub",
+    "n_observations": 108,
+    "download_success": true,
+    "unit": "units"
+  },
+  {
+    "dataset_id": "owid_co2",
+    "name": "World CO2 Emissions (Annual)",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 275,
+    "download_success": true,
+    "unit": "MtCO2"
+  },
+  {
+    "dataset_id": "owid_co2_per_capita",
+    "name": "World CO2 per Capita",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 230,
+    "download_success": true,
+    "unit": "tCO2"
+  },
+  {
+    "dataset_id": "owid_methane",
+    "name": "World Methane Emissions",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 175,
+    "download_success": true,
+    "unit": "MtCO2eq"
+  },
+  {
+    "dataset_id": "owid_nitrous_oxide",
+    "name": "World Nitrous Oxide Emissions",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 175,
+    "download_success": true,
+    "unit": "MtCO2eq"
+  },
+  {
+    "dataset_id": "owid_coal_co2",
+    "name": "World Coal CO2 Emissions",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 275,
+    "download_success": true,
+    "unit": "MtCO2"
+  },
+  {
+    "dataset_id": "owid_oil_co2",
+    "name": "World Oil CO2 Emissions",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 170,
+    "download_success": true,
+    "unit": "MtCO2"
+  },
+  {
+    "dataset_id": "owid_gas_co2",
+    "name": "World Gas CO2 Emissions",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 143,
+    "download_success": true,
+    "unit": "MtCO2"
+  },
+  {
+    "dataset_id": "owid_cement_co2",
+    "name": "World Cement CO2 Emissions",
+    "domain": "climate",
+    "source": "OWID",
+    "n_observations": 145,
+    "download_success": true,
+    "unit": "MtCO2"
+  },
+  {
+    "dataset_id": "owid_vaccinations",
+    "name": "World COVID Vaccinations per 100",
+    "domain": "public_health",
+    "source": "OWID",
+    "n_observations": 1352,
+    "download_success": true,
+    "unit": "per 100 people"
+  },
+  {
+    "dataset_id": "openmeteo_london_temp",
+    "name": "London Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_newyork_temp",
+    "name": "New York Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_tokyo_temp",
+    "name": "Tokyo Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_dubai_temp",
+    "name": "Dubai Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_moscow_temp",
+    "name": "Moscow Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_cairo_temp",
+    "name": "Cairo Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "wb_world_gdp_growth",
+    "name": "World GDP Growth Rate",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 60,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "wb_world_pop",
+    "name": "World Population",
+    "domain": "social_science",
+    "source": "World Bank",
+    "n_observations": 60,
+    "download_success": true,
+    "unit": "count"
+  },
+  {
+    "dataset_id": "wb_world_lifeexp",
+    "name": "World Life Expectancy",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 60,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_world_fertility",
+    "name": "World Fertility Rate",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 60,
+    "download_success": true,
+    "unit": "births"
+  },
+  {
+    "dataset_id": "wb_world_trade",
+    "name": "World Trade (% of GDP)",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 55,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "wb_world_electricity",
+    "name": "World Electricity Access",
+    "domain": "energy",
+    "source": "World Bank",
+    "n_observations": 26,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "wb_world_urban",
+    "name": "World Urban Population %",
+    "domain": "social_science",
+    "source": "World Bank",
+    "n_observations": 60,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "yf_sp500",
+    "name": "S&P 500 (yfinance)",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "index"
+  },
+  {
+    "dataset_id": "yf_nasdaq",
+    "name": "NASDAQ Composite",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "index"
+  },
+  {
+    "dataset_id": "yf_gold",
+    "name": "Gold Futures (yfinance)",
+    "domain": "commodities",
+    "source": "yfinance",
+    "n_observations": 103,
+    "download_success": true,
+    "unit": "USD/oz"
+  },
+  {
+    "dataset_id": "yf_oil",
+    "name": "Crude Oil Futures",
+    "domain": "commodities",
+    "source": "yfinance",
+    "n_observations": 103,
+    "download_success": true,
+    "unit": "USD/bbl"
+  },
+  {
+    "dataset_id": "yf_btc",
+    "name": "Bitcoin/USD",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "yf_aapl",
+    "name": "Apple Stock Price",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "yf_msft",
+    "name": "Microsoft Stock Price",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "yf_dxy",
+    "name": "US Dollar Index",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "index"
+  },
+  {
+    "dataset_id": "yf_vix",
+    "name": "VIX Fear Index (yf)",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 120,
+    "download_success": true,
+    "unit": "index"
+  },
+  {
+    "dataset_id": "yf_tnx",
+    "name": "10Y Treasury Yield (yf)",
+    "domain": "finance",
+    "source": "yfinance",
+    "n_observations": 97,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "noaa_sf6_monthly",
+    "name": "Global Mean SF6 Monthly",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 343,
+    "download_success": true,
+    "unit": "ppt"
+  },
+  {
+    "dataset_id": "noaa_co2_daily",
+    "name": "Mauna Loa CO2 Daily",
+    "domain": "climate",
+    "source": "NOAA",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "ppm"
+  },
+  {
+    "dataset_id": "usgs_mississippi",
+    "name": "Mississippi River at Vicksburg",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_colorado",
+    "name": "Colorado River at Lees Ferry AZ",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_columbia",
+    "name": "Columbia River at The Dalles OR",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_ohio",
+    "name": "Ohio River at Cincinnati OH",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_hudson",
+    "name": "Hudson River at Green Island NY",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_delaware",
+    "name": "Delaware River at Trenton NJ",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_sacramento",
+    "name": "Sacramento River at Sacramento CA",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "usgs_snake",
+    "name": "Snake River at Brownlee Dam ID",
+    "domain": "hydrology",
+    "source": "USGS",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "cfs"
+  },
+  {
+    "dataset_id": "ecb_de_inflation",
+    "name": "Germany Inflation Rate (HICP)",
+    "domain": "economics",
+    "source": "ECB",
+    "n_observations": 360,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "ecb_fr_inflation",
+    "name": "France Inflation Rate (HICP)",
+    "domain": "economics",
+    "source": "ECB",
+    "n_observations": 348,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "ecb_it_inflation",
+    "name": "Italy Inflation Rate (HICP)",
+    "domain": "economics",
+    "source": "ECB",
+    "n_observations": 348,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "ecb_es_inflation",
+    "name": "Spain Inflation Rate (HICP)",
+    "domain": "economics",
+    "source": "ECB",
+    "n_observations": 360,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "ecb_eurusd",
+    "name": "EUR/USD Exchange Rate",
+    "domain": "finance",
+    "source": "ECB",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "rate"
+  },
+  {
+    "dataset_id": "ecb_eurgbp",
+    "name": "EUR/GBP Exchange Rate",
+    "domain": "finance",
+    "source": "ECB",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "rate"
+  },
+  {
+    "dataset_id": "ecb_eurjpy",
+    "name": "EUR/JPY Exchange Rate",
+    "domain": "finance",
+    "source": "ECB",
+    "n_observations": 2000,
+    "download_success": true,
+    "unit": "rate"
+  },
+  {
+    "dataset_id": "ecb_ea_m3",
+    "name": "Euro Area M3 Money Supply Growth",
+    "domain": "economics",
+    "source": "ECB",
+    "n_observations": 543,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "ecb_ea_gdp",
+    "name": "Euro Area GDP Growth",
+    "domain": "economics",
+    "source": "ECB",
+    "n_observations": 113,
+    "download_success": true,
+    "unit": "%"
+  },
+  {
+    "dataset_id": "covid_confirmed_us",
+    "name": "COVID Confirmed Cases \u2014 US",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_us",
+    "name": "COVID Deaths \u2014 US",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_germany",
+    "name": "COVID Confirmed Cases \u2014 Germany",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_germany",
+    "name": "COVID Deaths \u2014 Germany",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_united_kingdom",
+    "name": "COVID Confirmed Cases \u2014 United Kingdom",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_united_kingdom",
+    "name": "COVID Deaths \u2014 United Kingdom",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_france",
+    "name": "COVID Confirmed Cases \u2014 France",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_france",
+    "name": "COVID Deaths \u2014 France",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_italy",
+    "name": "COVID Confirmed Cases \u2014 Italy",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_italy",
+    "name": "COVID Deaths \u2014 Italy",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_brazil",
+    "name": "COVID Confirmed Cases \u2014 Brazil",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_brazil",
+    "name": "COVID Deaths \u2014 Brazil",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_india",
+    "name": "COVID Confirmed Cases \u2014 India",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_india",
+    "name": "COVID Deaths \u2014 India",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_japan",
+    "name": "COVID Confirmed Cases \u2014 Japan",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_japan",
+    "name": "COVID Deaths \u2014 Japan",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "covid_confirmed_australia",
+    "name": "COVID Confirmed Cases \u2014 Australia",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative cases"
+  },
+  {
+    "dataset_id": "covid_deaths_australia",
+    "name": "COVID Deaths \u2014 Australia",
+    "domain": "public_health",
+    "source": "Pomber",
+    "n_observations": 1143,
+    "download_success": true,
+    "unit": "cumulative deaths"
+  },
+  {
+    "dataset_id": "wb_usa_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 United States",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_usa_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 United States",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_chn_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 China",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_jpn_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 Japan",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_jpn_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 Japan",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_gbr_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 UK",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_gbr_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 UK",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_ind_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 India",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_ind_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 India",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_bra_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 Brazil",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_bra_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 Brazil",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_zaf_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 South Africa",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_nga_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 Nigeria",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_nga_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 Nigeria",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "wb_mex_ny_gdp_pcap_kd",
+    "name": "GDP per Capita (constant 2015 USD) \u2014 Mexico",
+    "domain": "economics",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "USD"
+  },
+  {
+    "dataset_id": "wb_mex_sp_dyn_le00_in",
+    "name": "Life Expectancy at Birth \u2014 Mexico",
+    "domain": "public_health",
+    "source": "World Bank",
+    "n_observations": 65,
+    "download_success": true,
+    "unit": "years"
+  },
+  {
+    "dataset_id": "openmeteo_sydney",
+    "name": "Sydney Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_sydney_precip",
+    "name": "Sydney Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "openmeteo_chicago",
+    "name": "Chicago Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_chicago_precip",
+    "name": "Chicago Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "openmeteo_singapore",
+    "name": "Singapore Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_singapore_precip",
+    "name": "Singapore Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "openmeteo_lagos",
+    "name": "Lagos Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_lagos_precip",
+    "name": "Lagos Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "openmeteo_saopaulo",
+    "name": "S\u00e3o Paulo Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_saopaulo_precip",
+    "name": "S\u00e3o Paulo Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "openmeteo_paris",
+    "name": "Paris Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_paris_precip",
+    "name": "Paris Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  },
+  {
+    "dataset_id": "openmeteo_beijing",
+    "name": "Beijing Daily Temperature",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "\u00b0C"
+  },
+  {
+    "dataset_id": "openmeteo_beijing_precip",
+    "name": "Beijing Daily Precipitation",
+    "domain": "climate",
+    "source": "Open-Meteo",
+    "n_observations": 3287,
+    "download_success": true,
+    "unit": "mm"
+  }
+]
