@@ -1,0 +1,971 @@
+{
+  "summary": {
+    "total": 120,
+    "passed": 99,
+    "rate": 0.825,
+    "avg_time": 16.620014144976935,
+    "median_time": 13.991186380386353
+  },
+  "results": [
+    {
+      "name": "I.6.2a",
+      "true": "exp(-t^2/2)/sqrt(2*pi)",
+      "passed": true,
+      "ratio": 0.1033774629463243,
+      "time": 14.10786509513855,
+      "found": "MUL(100.000, EXP(MUL(-0.020, POW(t, 2.000))))"
+    },
+    {
+      "name": "I.6.2",
+      "true": "exp(-t^2/2)/sqrt(2*pi)",
+      "passed": true,
+      "ratio": 0.1033774629463243,
+      "time": 14.161229133605957,
+      "found": "MUL(100.000, EXP(MUL(-0.020, POW(t, 2.000))))"
+    },
+    {
+      "name": "I.6.20",
+      "true": "exp(-t^2/(2*sigma^2))",
+      "passed": false,
+      "ratio": 0.9021389258402984,
+      "time": 9.359580278396606,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.6.20a",
+      "true": "exp(-t^2/(2*sigma^2))",
+      "passed": true,
+      "ratio": 0.3010770688620321,
+      "time": 9.92990231513977,
+      "found": "MUL(500.000, EXP(MUL(-0.050, POW(t, 2.000))))"
+    },
+    {
+      "name": "I.8.14",
+      "true": "sqrt(t^2+1)",
+      "passed": true,
+      "ratio": 0.2096367058701052,
+      "time": 10.987264156341553,
+      "found": "ADD(obs[t-1], 10.000)"
+    },
+    {
+      "name": "I.9.18",
+      "true": "1/(t+1)",
+      "passed": true,
+      "ratio": 0.05502391407028474,
+      "time": 15.601904153823853,
+      "found": "DIV(1000.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.10.7",
+      "true": "m0/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.9154899510427957,
+      "time": 10.94093632698059,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.11.19",
+      "true": "x1+x2+x3",
+      "passed": true,
+      "ratio": 0.053881352004165904,
+      "time": 15.110573291778564,
+      "found": "MUL(3.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.12.1",
+      "true": "q*Ef",
+      "passed": true,
+      "ratio": 0.053881352004165904,
+      "time": 15.525154829025269,
+      "found": "MUL(3.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.12.2",
+      "true": "q1*q2/(4*pi*e*r^2)",
+      "passed": true,
+      "ratio": 0.1508833898104965,
+      "time": 11.793739795684814,
+      "found": "DIV(1000.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "I.12.4",
+      "true": "q1/(4*pi*e*r^2)",
+      "passed": true,
+      "ratio": 0.1508833898104965,
+      "time": 11.599533796310425,
+      "found": "DIV(1000.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "I.12.11",
+      "true": "q*(Ef+B*v*sin(theta))",
+      "passed": false,
+      "ratio": 0.5935230079302544,
+      "time": 10.975501775741577,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.13.4",
+      "true": "m*v^2/2",
+      "passed": true,
+      "ratio": 0.13320338030273618,
+      "time": 11.801234483718872,
+      "found": "MUL(0.500, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "I.13.12",
+      "true": "G*m1*m2*(1/r2-1/r1)",
+      "passed": true,
+      "ratio": 0.10910500490979906,
+      "time": 11.39918065071106,
+      "found": "DIV(1000.000, ADD(t, 2.000))"
+    },
+    {
+      "name": "I.14.3",
+      "true": "m*g*z",
+      "passed": true,
+      "ratio": 0.04810912362951713,
+      "time": 14.640844106674194,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.14.4",
+      "true": "k*x^2/2",
+      "passed": true,
+      "ratio": 0.13320338030273618,
+      "time": 11.768807172775269,
+      "found": "MUL(0.500, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "I.15.1",
+      "true": "(x-u*t)/sqrt(1-u^2/c^2)",
+      "passed": true,
+      "ratio": 0.1008391707349842,
+      "time": 11.805639266967773,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.15.10",
+      "true": "m0/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.9154899510427957,
+      "time": 10.97126030921936,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.16.12",
+      "true": "(v-u)/(1-u*v/c^2)",
+      "passed": true,
+      "ratio": 0.11105660508116905,
+      "time": 12.065780401229858,
+      "found": "DIV(500.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.18.4",
+      "true": "2*t+3",
+      "passed": true,
+      "ratio": 0.05646734754497381,
+      "time": 14.14123821258545,
+      "found": "ADD(MUL(2.000, t), 3.000)"
+    },
+    {
+      "name": "I.18.12",
+      "true": "r*F*sin(theta)",
+      "passed": false,
+      "ratio": 0.5935230079302544,
+      "time": 11.097438335418701,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.18.14",
+      "true": "m*r*v*sin(theta)",
+      "passed": true,
+      "ratio": 0.10944729371088667,
+      "time": 15.000484228134155,
+      "found": "MUL(MUL(5.000, ADD(t, 1.000)), SIN(MUL(0.100, ADD(t, 1.000))))"
+    },
+    {
+      "name": "I.24.6",
+      "true": "(w^2+w0^2)*x^2/4",
+      "passed": true,
+      "ratio": 0.12068093107826085,
+      "time": 12.605024099349976,
+      "found": "MUL(2.250, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "I.26.2",
+      "true": "arcsin(n*sin(t))",
+      "passed": false,
+      "ratio": 0.6233866540207825,
+      "time": 15.542147159576416,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.27.18",
+      "true": "1/((n-1)*(1/r1-1/r2))",
+      "passed": true,
+      "ratio": 0.10345400043986926,
+      "time": 17.694175243377686,
+      "found": "DIV(1000.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.29.4",
+      "true": "1/2*e*Ef^2",
+      "passed": true,
+      "ratio": 0.13320338030273618,
+      "time": 11.95485520362854,
+      "found": "MUL(0.500, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "I.29.16",
+      "true": "x1+x2*cos(t)",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 11.7744619846344,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.30.5",
+      "true": "n*d*sin(t)",
+      "passed": true,
+      "ratio": 0.11524152274698092,
+      "time": 16.35163402557373,
+      "found": "MUL(MUL(3.000, ADD(t, 1.000)), SIN(MUL(0.100, ADD(t, 1.000))))"
+    },
+    {
+      "name": "I.34.1",
+      "true": "w*(1+v/c)",
+      "passed": true,
+      "ratio": 0.04810912362951713,
+      "time": 13.046601057052612,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.34.8",
+      "true": "q*Ef/m",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 14.390216588973999,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.34.10",
+      "true": "w0+k*v",
+      "passed": true,
+      "ratio": 0.05780135187375534,
+      "time": 14.69306206703186,
+      "found": "ADD(MUL(2.000, t), 5.000)"
+    },
+    {
+      "name": "I.34.14",
+      "true": "w0/(1-v)",
+      "passed": true,
+      "ratio": 0.04810912362951713,
+      "time": 15.100099325180054,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.34.27",
+      "true": "h*w",
+      "passed": true,
+      "ratio": 0.053881352004165904,
+      "time": 15.204909324645996,
+      "found": "MUL(3.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.37.4",
+      "true": "I1+I2+2*sqrt(I1*I2)*cos(delta)",
+      "passed": true,
+      "ratio": 0.052312354857969354,
+      "time": 14.847312211990356,
+      "found": "ADD(MUL(4.000, t), 6.000)"
+    },
+    {
+      "name": "I.38.12",
+      "true": "4*pi*eps*h^2/(m*q^2)",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 15.104341268539429,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.39.11",
+      "true": "n*kb*T/V",
+      "passed": true,
+      "ratio": 0.13834605304457753,
+      "time": 11.712672233581543,
+      "found": "DIV(100.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.39.22",
+      "true": "kb*T/P",
+      "passed": true,
+      "ratio": 0.13834605304457753,
+      "time": 11.58180046081543,
+      "found": "DIV(100.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.41.16",
+      "true": "h*w^3/(pi^2*c^3*(exp(h*w/kb/T)-1))",
+      "passed": true,
+      "ratio": 0.27808263321796056,
+      "time": 12.475290536880493,
+      "found": "DIV(10.000, SUB(EXP(MUL(0.100, ADD(t, 1.000))), 1.000))"
+    },
+    {
+      "name": "I.43.31",
+      "true": "mob*kb*T",
+      "passed": true,
+      "ratio": 0.031933134721803494,
+      "time": 14.183810472488403,
+      "found": "ADD(obs[t-1], 2.000)"
+    },
+    {
+      "name": "I.43.43",
+      "true": "1/3*v*lambda*cv",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 15.325342178344727,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "I.44.4",
+      "true": "n*kb*T*log(V2/V1)",
+      "passed": true,
+      "ratio": 0.0897132056060745,
+      "time": 14.859336614608765,
+      "found": "MUL(10.000, LOG(ADD(t, 2.000)))"
+    },
+    {
+      "name": "I.47.23",
+      "true": "sqrt(gamma*P/rho)",
+      "passed": true,
+      "ratio": 0.4830689687664226,
+      "time": 15.653029680252075,
+      "found": "MUL(32.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "I.48.2",
+      "true": "m0/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.9083885457302115,
+      "time": 11.024909496307373,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "I.50.26",
+      "true": "x*exp(e*t)",
+      "passed": true,
+      "ratio": 0.14832806470425217,
+      "time": 11.615312814712524,
+      "found": "MUL(ADD(t, 1.000), EXP(MUL(0.100, ADD(t, 1.000))))"
+    },
+    {
+      "name": "II.2.42",
+      "true": "kappa*(T2-T1)/d",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 16.109692811965942,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.6.15a",
+      "true": "e*Ef/(m*w^2)",
+      "passed": true,
+      "ratio": 0.20184682841540963,
+      "time": 11.88446831703186,
+      "found": "DIV(100.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "II.6.15b",
+      "true": "sqrt(1+P/eps/Ef)",
+      "passed": true,
+      "ratio": 0.11327926844680361,
+      "time": 11.683144092559814,
+      "found": "MUL(100.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "II.11.3",
+      "true": "n0*exp(-m*g*x/kb/T)",
+      "passed": true,
+      "ratio": 0.14259188052101893,
+      "time": 11.809854984283447,
+      "found": "MUL(95.000, EXP(MUL(-0.050, t)))"
+    },
+    {
+      "name": "II.11.17",
+      "true": "n0*exp(-m*g*x/kb/T)",
+      "passed": true,
+      "ratio": 0.16275735280848314,
+      "time": 11.257586479187012,
+      "found": "MUL(45.000, EXP(MUL(-0.100, t)))"
+    },
+    {
+      "name": "II.11.18",
+      "true": "n0*exp(-m*g*x/kb/T)",
+      "passed": true,
+      "ratio": 0.14259188052101893,
+      "time": 11.565821886062622,
+      "found": "MUL(95.000, EXP(MUL(-0.050, t)))"
+    },
+    {
+      "name": "II.11.19",
+      "true": "n0*(1+p*d*cos(theta)/kb/T)",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 12.755914688110352,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.11.27",
+      "true": "n*alpha/(1-n*alpha/3)",
+      "passed": true,
+      "ratio": 0.44323631483997084,
+      "time": 23.696184158325195,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.11.28",
+      "true": "1+n*alpha/(1-n*a/3)",
+      "passed": true,
+      "ratio": 0.15555980492843677,
+      "time": 11.958677530288696,
+      "found": "ADD(MUL(0.500, t), 1.500)"
+    },
+    {
+      "name": "II.11.3b",
+      "true": "n0*exp(-m*g*x/kb/T)",
+      "passed": true,
+      "ratio": 0.3670503387810821,
+      "time": 11.34263014793396,
+      "found": "ADD(STREAK(t), MUL(906.000, EXP(MUL(-0.100, t))))"
+    },
+    {
+      "name": "II.13.17",
+      "true": "1/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.9154899510427957,
+      "time": 11.169440984725952,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.13.23",
+      "true": "rho0/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.9154899510427957,
+      "time": 11.162089347839355,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.13.34",
+      "true": "rho_c0/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.9154899510427957,
+      "time": 11.081582307815552,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.15.4",
+      "true": "F-p*d*cos(theta)",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 11.909048318862915,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.15.5",
+      "true": "F-M*B*cos(theta)",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 11.907374620437622,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.21.32",
+      "true": "q/(4*pi*eps*r*(1-v/c))",
+      "passed": true,
+      "ratio": 0.10345400043986926,
+      "time": 11.446738004684448,
+      "found": "DIV(1000.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.24.17",
+      "true": "sqrt(w^2/c^2-w_p^2/c^2)",
+      "passed": true,
+      "ratio": 0.25794953349026506,
+      "time": 14.975355386734009,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.27.18",
+      "true": "eps*Ef^2/2",
+      "passed": true,
+      "ratio": 0.13320338030273618,
+      "time": 18.090698719024658,
+      "found": "MUL(0.500, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "II.27.16",
+      "true": "eps*c*Ef^2",
+      "passed": true,
+      "ratio": 0.11875178014080064,
+      "time": 13.67126202583313,
+      "found": "MUL(3.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "II.34.2",
+      "true": "q*v/(2*pi*r)",
+      "passed": true,
+      "ratio": 0.25154972584116503,
+      "time": 9.711936473846436,
+      "found": "DIV(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.34.2a",
+      "true": "q*v*r/2",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 15.09171199798584,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.34.29a",
+      "true": "q*h/(4*pi*m)",
+      "passed": true,
+      "ratio": 0.10813231646586856,
+      "time": 11.369774103164673,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.34.29b",
+      "true": "g*q*h/(4*pi*m)",
+      "passed": true,
+      "ratio": 0.056665639351226926,
+      "time": 11.314438581466675,
+      "found": "ADD(obs[t-1], 10.000)"
+    },
+    {
+      "name": "II.35.18",
+      "true": "n0/(exp(m*g*x/kb/T)+1)",
+      "passed": false,
+      "ratio": 0.5882512736541866,
+      "time": 9.84960389137268,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.35.21",
+      "true": "n*h*tanh(h*B/kb/T)",
+      "passed": true,
+      "ratio": 0.47256497823670757,
+      "time": 14.040302515029907,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "II.36.38",
+      "true": "n*h^2/V/eps/kb/T",
+      "passed": true,
+      "ratio": 0.11919553562048672,
+      "time": 11.6461820602417,
+      "found": "DIV(100.000, CUMSUM(1.000))"
+    },
+    {
+      "name": "II.37.1",
+      "true": "mu0*(1+chi)*H",
+      "passed": true,
+      "ratio": 0.04810912362951713,
+      "time": 14.748711347579956,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "II.38.3",
+      "true": "F*l/(A*d)",
+      "passed": true,
+      "ratio": 0.11919553562048672,
+      "time": 11.625196695327759,
+      "found": "DIV(100.000, CUMSUM(1.000))"
+    },
+    {
+      "name": "II.38.2",
+      "true": "Y/(2*(1+sigma))",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 15.113475799560547,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "III.4.32",
+      "true": "h*w/(exp(h*w/kb/T)-1)",
+      "passed": true,
+      "ratio": 0.27808263321796056,
+      "time": 11.91578483581543,
+      "found": "DIV(10.000, SUB(EXP(MUL(0.100, ADD(t, 1.000))), 1.000))"
+    },
+    {
+      "name": "III.4.33",
+      "true": "h*w*exp(h*w/kb/T)/(exp(h*w/kb/T)-1)^2",
+      "passed": true,
+      "ratio": 0.2799335042559342,
+      "time": 10.657860040664673,
+      "found": "ADD(-0.805, DIV(1000.000, POW(ADD(t, 1.000), 2.000)))"
+    },
+    {
+      "name": "III.7.38",
+      "true": "2*mu*B/h",
+      "passed": true,
+      "ratio": 0.052296937303478105,
+      "time": 14.064179182052612,
+      "found": "ADD(MUL(4.000, t), 4.000)"
+    },
+    {
+      "name": "III.8.54",
+      "true": "sin(F*t/h)^2",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 12.193534135818481,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "III.9.52",
+      "true": "(p_d*Ef/h)^2*sin^2((w0-w)*t/2)",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 13.821402788162231,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "III.10.19",
+      "true": "mu_M*sqrt(Bx^2+By^2+Bz^2)",
+      "passed": true,
+      "ratio": 0.33314600357174606,
+      "time": 16.810016632080078,
+      "found": "MUL(10.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "III.12.4",
+      "true": "h/(2*pi*m*v)",
+      "passed": true,
+      "ratio": 0.13834605304457753,
+      "time": 13.253833770751953,
+      "found": "DIV(100.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "III.13.18",
+      "true": "2*E_n*d^2*k/h",
+      "passed": true,
+      "ratio": 0.052296937303478105,
+      "time": 19.124483108520508,
+      "found": "ADD(MUL(4.000, t), 4.000)"
+    },
+    {
+      "name": "III.14.14",
+      "true": "I0*(exp(q*Vb/kb/T)-1)",
+      "passed": true,
+      "ratio": 0.1986576223602529,
+      "time": 13.177478075027466,
+      "found": "MUL(100.000, EXP(MUL(-0.100, ADD(t, 1.000))))"
+    },
+    {
+      "name": "III.15.12",
+      "true": "2*pi*E_n*d/h",
+      "passed": true,
+      "ratio": 0.05029967103821117,
+      "time": 30.114525079727173,
+      "found": "ADD(MUL(6.000, t), 6.000)"
+    },
+    {
+      "name": "III.15.14",
+      "true": "h^2/(2*m*(E_n-U))",
+      "passed": true,
+      "ratio": 0.1576467209811596,
+      "time": 13.140373706817627,
+      "found": "DIV(50.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "III.15.27",
+      "true": "2*pi/lambda",
+      "passed": true,
+      "ratio": 0.15365841741783048,
+      "time": 13.501178979873657,
+      "found": "DIV(63.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "III.17.37",
+      "true": "beta*(1+alpha*cos(theta))",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 13.707930564880371,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "III.19.51",
+      "true": "m*q^4/(2*(4*pi*eps)^2*h^2*n^2)",
+      "passed": true,
+      "ratio": 0.20184682841540963,
+      "time": 12.955266952514648,
+      "found": "DIV(100.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "III.21.20",
+      "true": "rho_c*v_d",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 17.37031865119934,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "B1",
+      "true": "eps*Ef",
+      "passed": true,
+      "ratio": 0.053881352004165904,
+      "time": 35.76714205741882,
+      "found": "MUL(3.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "B2",
+      "true": "m*v^2/2",
+      "passed": true,
+      "ratio": 0.13320338030273618,
+      "time": 23.06918692588806,
+      "found": "MUL(0.500, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "B3",
+      "true": "1/t",
+      "passed": true,
+      "ratio": 0.13834605304457753,
+      "time": 13.623683214187622,
+      "found": "DIV(100.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "B4",
+      "true": "q/(4*pi*eps*r^2)",
+      "passed": true,
+      "ratio": 0.1508833898104965,
+      "time": 14.316594362258911,
+      "found": "DIV(1000.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "B5",
+      "true": "sqrt(k/m)",
+      "passed": true,
+      "ratio": 0.07349879106963143,
+      "time": 18.470295429229736,
+      "found": "MUL(10.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "B6",
+      "true": "J*exp(-t/tau)",
+      "passed": true,
+      "ratio": 0.1986576223602529,
+      "time": 13.329209327697754,
+      "found": "MUL(100.000, EXP(MUL(-0.100, ADD(t, 1.000))))"
+    },
+    {
+      "name": "B7",
+      "true": "m*sqrt(G*M*r)",
+      "passed": true,
+      "ratio": 0.07349879106963143,
+      "time": 20.330000638961792,
+      "found": "MUL(10.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "B8",
+      "true": "m*v/sqrt(1-v^2/c^2)",
+      "passed": false,
+      "ratio": 0.5935230079302544,
+      "time": 16.768481969833374,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "B9",
+      "true": "q/(4*pi*eps*r^2)",
+      "passed": true,
+      "ratio": 0.1508833898104965,
+      "time": 17.722036838531494,
+      "found": "DIV(1000.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "B10",
+      "true": "sqrt(2*m*(E-V))/h",
+      "passed": true,
+      "ratio": 0.3683572816047079,
+      "time": 25.69149422645569,
+      "found": "MUL(14.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "B11",
+      "true": "mu0*I/(4*pi*r)",
+      "passed": true,
+      "ratio": 0.13834605304457753,
+      "time": 16.464375019073486,
+      "found": "DIV(100.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "B12",
+      "true": "2*pi*sqrt(m/k)",
+      "passed": true,
+      "ratio": 0.31267910999604337,
+      "time": 48.794615745544434,
+      "found": "MUL(63.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "B13",
+      "true": "sqrt(p^2*c^2+m^2*c^4)",
+      "passed": true,
+      "ratio": 0.14494616580973121,
+      "time": 36.82640266418457,
+      "found": "ADD(MUL(10.000, ADD(t, 1.000)), 5.000)"
+    },
+    {
+      "name": "B14",
+      "true": "sqrt(2*G*M/r)",
+      "passed": true,
+      "ratio": 0.07349879106963143,
+      "time": 25.764033555984497,
+      "found": "MUL(10.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "B15",
+      "true": "c*Ef*B/(4*pi)",
+      "passed": true,
+      "ratio": 0.051166305593634644,
+      "time": 25.050074577331543,
+      "found": "MUL(5.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "B16",
+      "true": "Saha",
+      "passed": true,
+      "ratio": 0.14259188052101893,
+      "time": 17.028761863708496,
+      "found": "MUL(95.000, EXP(MUL(-0.050, t)))"
+    },
+    {
+      "name": "B17",
+      "true": "q^4/(6*pi*eps^2*m^2*c^3)*Ef^2",
+      "passed": true,
+      "ratio": 0.07524380687872194,
+      "time": 75.2048704624176,
+      "found": "MUL(1.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "B18",
+      "true": "q^2*a^2/(6*pi*eps*c^3)",
+      "passed": true,
+      "ratio": 0.12685537033775973,
+      "time": 37.208322286605835,
+      "found": "MUL(1.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "B19",
+      "true": "sqrt(k/m-(gamma/2)^2)",
+      "passed": true,
+      "ratio": 0.07349879106963143,
+      "time": 24.570952653884888,
+      "found": "MUL(10.000, SQRT(ADD(t, 1.000)))"
+    },
+    {
+      "name": "B20",
+      "true": "2*pi*m/q/B",
+      "passed": true,
+      "ratio": 0.15365841741783048,
+      "time": 17.454781532287598,
+      "found": "DIV(63.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "linear_1",
+      "true": "3*t+2",
+      "passed": true,
+      "ratio": 0.05391352599591213,
+      "time": 55.29918050765991,
+      "found": "ADD(MUL(3.000, t), 2.000)"
+    },
+    {
+      "name": "linear_2",
+      "true": "7*(t+1)",
+      "passed": true,
+      "ratio": 0.04960356164609184,
+      "time": 45.06681418418884,
+      "found": "MUL(7.000, ADD(t, 1.000))"
+    },
+    {
+      "name": "quad_1",
+      "true": "t^2",
+      "passed": true,
+      "ratio": 0.2228879437340538,
+      "time": 32.02948474884033,
+      "found": "MUL(1.000, POW(ADD(t, 1.000), 2.000))"
+    },
+    {
+      "name": "quad_2",
+      "true": "2*t^2+1",
+      "passed": true,
+      "ratio": 0.2629605521113456,
+      "time": 32.200477838516235,
+      "found": "ADD(COS(COMPLETELY_MULTIPLICATIVE_FUNC), MUL(2.000, POW(ADD(t, 1.000), 2.000)))"
+    },
+    {
+      "name": "log_1",
+      "true": "10*log(t+1)",
+      "passed": true,
+      "ratio": 0.0897132056060745,
+      "time": 21.751919984817505,
+      "found": "MUL(10.000, LOG(ADD(t, 2.000)))"
+    },
+    {
+      "name": "sqrt_1",
+      "true": "10*sqrt(t+1)",
+      "passed": true,
+      "ratio": 0.07383726157954879,
+      "time": 17.414854049682617,
+      "found": "MUL(10.000, SQRT(ADD(t, 2.000)))"
+    },
+    {
+      "name": "exp_1",
+      "true": "100*exp(-t/10)",
+      "passed": true,
+      "ratio": 0.1986576223602529,
+      "time": 13.325279951095581,
+      "found": "MUL(100.000, EXP(MUL(-0.100, ADD(t, 1.000))))"
+    },
+    {
+      "name": "inv_1",
+      "true": "100/(t+1)",
+      "passed": true,
+      "ratio": 0.15334416499675335,
+      "time": 13.991186380386353,
+      "found": "DIV(100.000, ADD(t, 2.000))"
+    },
+    {
+      "name": "inv2_1",
+      "true": "100/(t+1)^2",
+      "passed": true,
+      "ratio": 0.43550196128809704,
+      "time": 11.868499994277954,
+      "found": "DIV(100.000, POW(ADD(t, 2.000), 2.000))"
+    },
+    {
+      "name": "cubic_1",
+      "true": "t^3",
+      "passed": true,
+      "ratio": 0.157906528032944,
+      "time": 20.564518690109253,
+      "found": "MUL(1.000, POW(ADD(t, 1.000), 3.000))"
+    },
+    {
+      "name": "sin_1",
+      "true": "100*sin(t/10)",
+      "passed": false,
+      "ratio": 0.5954002082419064,
+      "time": 12.501708984375,
+      "found": "obs[t-1]"
+    },
+    {
+      "name": "cos_1",
+      "true": "100*cos(t/10)",
+      "passed": false,
+      "ratio": 0.8019582656664702,
+      "time": 13.609955787658691,
+      "found": "obs[t-1]"
+    }
+  ]
+}

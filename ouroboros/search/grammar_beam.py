@@ -279,6 +279,23 @@ class GrammarConstrainedBeam:
                         seeds.append(GrammarBeamCandidate(expr, self._score(expr, observations)))
                     except Exception:
                         pass
+                
+                # ── CUBIC: scale * (t + b)^3 ─────────────────────────────────────────
+        if POW_NT:
+            scales_c = set([1.0, 0.5, 0.125, 0.25])
+            for t_idx in range(2, min(8, len(observations))):
+                denom = (t_idx + 1) ** 3
+                if denom > 0:
+                    scales_c.add(round(observations[t_idx] / denom, 4))
+            for scale in scales_c:
+                for b in [0, 1, 2, 3]:
+                    try:
+                        base = t_plus(b)
+                        pw   = n(POW_NT, left=base, right=n(C, 3.0))
+                        expr = n(MUL, left=n(C, float(scale)), right=pw)
+                        seeds.append(GrammarBeamCandidate(expr, self._score(expr, observations)))
+                    except Exception:
+                        pass
 
         # ── SQRT: scale * sqrt(t + b) ─────────────────────────────────────────
         if SQRT_NT:
@@ -701,10 +718,11 @@ class GrammarConstrainedBeam:
                 # 2. 🔥 NEW: additive composition
                 for other in candidates[:5]:  # limit for speed
                     try:
-                        combined = ExtExprNode(
-                            ExtNodeType.ADD,
-                            left=cand.expr,
-                            right=other.expr
+                        from ouroboros.synthesis.expr_node import NodeType as _NT
+                        combined = self._make_literal_node(
+                            _NT.ADD,
+                            left=copy.deepcopy(cand.expr),
+                            right=copy.deepcopy(other.expr)
                         )
 
                         cost = self._score(combined, observations)

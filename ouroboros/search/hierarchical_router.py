@@ -152,6 +152,11 @@ class HierarchicalSearchRouter:
             prior_scale = prior_cat_weights.get(cat.name, 1.0)
             category_weights[cat] = base * prior_scale
 
+        if classification.primary_family.name == "MONOTONE":
+            for cat in all_cats:
+                if cat.name in ("POWER", "POLYNOMIAL", "ALGEBRAIC"):
+                    category_weights[cat] = 2.0
+
         # Always keep TERMINAL at high weight
         category_weights[NodeCategory.TERMINAL] = 3.0
 

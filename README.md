@@ -4,6 +4,7 @@
 
 A society of agents that discovers mathematical laws from raw observation sequences using Minimum Description Length as its sole learning signal. No training data. No domain knowledge. Compression pressure alone drives the discovery of modular arithmetic, the Chinese Remainder Theorem, Hooke's Law, the prime counting function, and the Fundamental Theorem of Calculus.
 
+
 [![Tests](https://img.shields.io/badge/tests-1435%2B-success)](tests/)
 [![Lean4 sorry](https://img.shields.io/badge/Lean4%20sorry-0-success)](ouroboros_lean/)
 [![Version](https://img.shields.io/badge/version-v15.0.0-blue)](CHANGELOG.md)
